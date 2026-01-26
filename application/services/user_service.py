@@ -24,6 +24,20 @@ def create_user_service(user: UserCreateDTO, db: Session) -> bool:
     logging.info("user exists %s", userDto.email)
     raise UserAlreadyExistError(user.email)
 
+
+def create_user_if_needed_and_allow_email(user: UserCreateDTO, db: Session) -> bool:
+    logging.info("create_user_service %s", user.email)
+    user.password = hash_password(user.password)
+    userDto = get_user_by_email_service(email=user.email, db=db)
+    if userDto is None:
+        create_user_repository(user=user, db=db)
+        return True
+    if not userDto.email_verified or not userDto.is_active:
+        logging.info("user exists but not active or not verified isActive=%s emailVerified=%s", userDto.is_active, userDto.email_verified)
+        return True
+    logging.info("user exists %s", userDto.email)
+    return False
+
 def get_user_by_email_service(email: str, db: Session) -> UserDTO:
     logging.info("get_user_by_email_service %s", email)
     return get_user_by_email_repository(email = email, db = db)

@@ -23,7 +23,6 @@ class ClubCreateDto:
     has_estatutos: bool
     has_normas: bool
     has_hazte_socio: bool
-    plan: int
     user: UserCreateDTO
 
 @dataclass

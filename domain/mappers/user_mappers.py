@@ -14,7 +14,7 @@ def user_create_dto_to_user_model(
 def user_model_to_user_dto(
     user: UserModel
 ) -> UserDTO:
-    logging.info("user_create_dto_to_user_create_model %s", user.email)
+    logging.info("user_create_dto_to_user_create_model %s", user)
     return UserDTO(email=user.email,
                    first_name=user.first_name,
                    last_name=user.last_name,

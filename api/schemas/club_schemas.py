@@ -2,12 +2,10 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-
-class UserCreateSchema:
-    pass
+from api.schemas.user_schemas import UserCreate
 
 
-class ClubCreateSchema(BaseModel):
+class ClubCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=255)
     nif: str = Field(..., min_length=5, max_length=50)
     description: Optional[str] = None
@@ -27,9 +25,5 @@ class ClubCreateSchema(BaseModel):
     has_estatutos: bool = False
     has_normas: bool = False
     has_hazte_socio: bool = False
-
-    # Campo extra (plan seleccionado)
-    plan: int = Field(..., ge=1, le=3)
-
     # Usuario creador del club
-    user: UserCreateSchema
+    user: UserCreate

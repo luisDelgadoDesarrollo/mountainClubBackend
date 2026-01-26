@@ -13,7 +13,8 @@ def create_user_repository(user: UserCreateDTO, db: Session) -> None:
 
 def get_user_by_email_repository(email: str, db: Session) -> UserDTO:
     logging.info("get_user_by_email_repository email=%s", email)
-    return user_model_to_user_dto(db.query(UserModel).filter(UserModel.email == email).first())
+    userModel = db.query(UserModel).filter(UserModel.email == email).first()
+    return user_model_to_user_dto(userModel) if userModel is not None else None
 
 def get_user_auth_by_email(email: str,  db: Session) -> UserAuthDTO:
     logging.info("get_user_auth_by_email email=%s", email)
