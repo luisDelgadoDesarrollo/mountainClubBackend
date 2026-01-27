@@ -5,7 +5,7 @@
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} [traceId=%X{traceId}] - %msg%n"/>
 
     <!-- Ruta configurable -->
-    <property name="LOG_PATH" value="D:\Proyectos\ClubMontaña\logs"/>
+    <property name="LOG_PATH" value="logs"/>
     <property name="LOG_FILE" value="${LOG_PATH}/backend.log"/>
 
     <!-- ===== CONSOLA (SIEMPRE) ===== -->
