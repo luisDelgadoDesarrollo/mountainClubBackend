@@ -1,0 +1,116 @@
+2026-01-27 11:52:03.565 [main] INFO  l.d.c.backend.BackendApplication [traceId=] - Starting BackendApplication using Java 25.0.2 with PID 1988 (D:\Proyectos\ClubMontaña\backend\target\classes started by Luis in D:\Proyectos\ClubMontaña\backend)
+2026-01-27 11:52:03.568 [main] INFO  l.d.c.backend.BackendApplication [traceId=] - No active profile set, falling back to 1 default profile: "default"
+2026-01-27 11:52:05.653 [main] WARN  org.hibernate.orm.deprecation [traceId=] - HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-27 11:52:06.547 [main] WARN  o.s.b.t.a.ThymeleafAutoConfiguration$DefaultTemplateResolverConfiguration [traceId=] - Cannot find template location: classpath:/templates/ (please add some templates, check your Thymeleaf configuration, or set spring.thymeleaf.check-template-location=false)
+2026-01-27 11:52:06.734 [main] WARN  o.s.b.s.a.UserDetailsServiceAutoConfiguration [traceId=] - 
+
+Using generated security password: 064c8b2c-b2f6-4057-8c66-4ac932b565be
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-27 11:52:07.318 [main] INFO  l.d.c.backend.BackendApplication [traceId=] - Started BackendApplication in 4.209 seconds (process running for 4.631)
+2026-01-27 11:52:25.000 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ➡️  UserController.createUser() START | args=[UserCreateRequestDto[email=socio@clubmontana.es, password=PasswordSeguro123, firstName=Juan, lastName=Pérez, dni=12345678Z, birthDate=1990-05-12, sex=M, phone=+34 600 123 456, address=Calle Mayor 10, city=Zaragoza, postalCode=50001, country=España]]
+2026-01-27 11:52:25.000 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ➡️  UserControllerMapperImpl.createUserDtoToCreateUserCommand() START | args=[UserCreateRequestDto[email=socio@clubmontana.es, password=PasswordSeguro123, firstName=Juan, lastName=Pérez, dni=12345678Z, birthDate=1990-05-12, sex=M, phone=+34 600 123 456, address=Calle Mayor 10, city=Zaragoza, postalCode=50001, country=España]]
+2026-01-27 11:52:25.001 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ✅ UserControllerMapperImpl.createUserDtoToCreateUserCommand() END | time=1ms
+2026-01-27 11:52:25.001 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ➡️  UserUseCasesImpl.createUserUseCase() START | args=[CreateUserCommand[email=socio@clubmontana.es, password=PasswordSeguro123, firstName=Juan, lastName=Pérez, dni=12345678Z, birthDate=1990-05-12, sex=M, phone=+34 600 123 456, address=Calle Mayor 10, city=Zaragoza, postalCode=50001, country=España]]
+2026-01-27 11:52:25.002 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ➡️  GetUserByEmailRepositoryImpl.execute() START | args=[socio@clubmontana.es]
+2026-01-27 11:52:25.003 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ➡️  $Proxy155.findByEmail() START | args=[socio@clubmontana.es]
+2026-01-27 11:52:25.292 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ✅ $Proxy155.findByEmail() END | time=289ms
+2026-01-27 11:52:25.293 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ➡️  UserRepositoryMapperImpl.userEntityToUser() START | args=[luis.delgado.clubmontana.backend.infrastructure.entitys.UserEntity@38637d26]
+2026-01-27 11:52:25.293 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ✅ UserRepositoryMapperImpl.userEntityToUser() END | time=0ms
+2026-01-27 11:52:25.293 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ✅ GetUserByEmailRepositoryImpl.execute() END | time=291ms
+2026-01-27 11:52:25.295 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ✅ UserUseCasesImpl.createUserUseCase() END | time=294ms
+2026-01-27 11:52:25.296 [task-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=] - ➡️  MailSenderImpl.execute() START | args=[MailMessage[to=socio@clubmontana.es, type=USER_CREATED, variables={}]]
+2026-01-27 11:52:25.299 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ➡️  UserControllerMapperImpl.userToUserResponseDto() START | args=[CreateUserResponse[userId=1, email=socio@clubmontana.es, firstName=Juan, lastName=Pérez, dni=12345678Z, birthDate=1990-05-12, sex=M, phone=+34 600 123 456, address=Calle Mayor 10, city=Zaragoza, postalCode=50001, country=España, response=Usuario no verificado]]
+2026-01-27 11:52:25.299 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ✅ UserControllerMapperImpl.userToUserResponseDto() END | time=0ms
+2026-01-27 11:52:25.300 [http-nio-8080-exec-1] INFO  l.d.c.b.core.logging.LoggingAspect [traceId=b6f718e5-8bd8-4a1c-9186-41be7bb79346] - ✅ UserController.createUser() END | time=300ms
+2026-01-27 11:52:25.376 [task-1] ERROR org.thymeleaf.TemplateEngine [traceId=] - [THYMELEAF][task-1] Exception processing template "mail/templates/user-created.html": Error resolving template [mail/templates/user-created.html], template might not exist or might not be accessible by any of the configured Template Resolvers
+org.thymeleaf.exceptions.TemplateInputException: Error resolving template [mail/templates/user-created.html], template might not exist or might not be accessible by any of the configured Template Resolvers
+	at org.thymeleaf.engine.TemplateManager.resolveTemplate(TemplateManager.java:869)
+	at org.thymeleaf.engine.TemplateManager.parseAndProcess(TemplateManager.java:607)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1103)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1064)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1053)
+	at luis.delgado.clubmontana.backend.infrastructure.mails.MailSenderImpl.execute(MailSenderImpl.java:42)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:190)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:158)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:82)
+	at luis.delgado.clubmontana.backend.core.logging.LoggingAspect.logMethodExecution(LoggingAspect.java:32)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:648)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:630)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:96)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:112)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:328)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+2026-01-27 11:52:25.377 [task-1] ERROR l.d.c.b.core.logging.LoggingAspect [traceId=] - ❌ MailSenderImpl.execute() ERROR after 81ms
+org.thymeleaf.exceptions.TemplateInputException: Error resolving template [mail/templates/user-created.html], template might not exist or might not be accessible by any of the configured Template Resolvers
+	at org.thymeleaf.engine.TemplateManager.resolveTemplate(TemplateManager.java:869)
+	at org.thymeleaf.engine.TemplateManager.parseAndProcess(TemplateManager.java:607)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1103)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1064)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1053)
+	at luis.delgado.clubmontana.backend.infrastructure.mails.MailSenderImpl.execute(MailSenderImpl.java:42)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:190)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:158)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:82)
+	at luis.delgado.clubmontana.backend.core.logging.LoggingAspect.logMethodExecution(LoggingAspect.java:32)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:648)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:630)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:96)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:112)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:328)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+2026-01-27 11:52:25.377 [task-1] ERROR o.s.a.i.SimpleAsyncUncaughtExceptionHandler [traceId=] - Unexpected exception occurred invoking async method: public void luis.delgado.clubmontana.backend.infrastructure.mails.MailSenderImpl.execute(luis.delgado.clubmontana.backend.domain.model.MailMessage)
+org.thymeleaf.exceptions.TemplateInputException: Error resolving template [mail/templates/user-created.html], template might not exist or might not be accessible by any of the configured Template Resolvers
+	at org.thymeleaf.engine.TemplateManager.resolveTemplate(TemplateManager.java:869)
+	at org.thymeleaf.engine.TemplateManager.parseAndProcess(TemplateManager.java:607)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1103)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1064)
+	at org.thymeleaf.TemplateEngine.process(TemplateEngine.java:1053)
+	at luis.delgado.clubmontana.backend.infrastructure.mails.MailSenderImpl.execute(MailSenderImpl.java:42)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:190)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:158)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:82)
+	at luis.delgado.clubmontana.backend.core.logging.LoggingAspect.logMethodExecution(LoggingAspect.java:32)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:648)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:630)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:70)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:96)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.interceptor.AsyncExecutionInterceptor.lambda$invoke$0(AsyncExecutionInterceptor.java:112)
+	at java.base/java.util.concurrent.FutureTask.run$$$capture(FutureTask.java:328)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1090)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:614)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+2026-01-27 11:55:48.497 [main] INFO  l.d.c.backend.BackendApplication [traceId=] - Starting BackendApplication using Java 25.0.2 with PID 7480 (D:\Proyectos\ClubMontaña\backend\target\classes started by Luis in D:\Proyectos\ClubMontaña\backend)
+2026-01-27 11:55:48.500 [main] INFO  l.d.c.backend.BackendApplication [traceId=] - No active profile set, falling back to 1 default profile: "default"
+2026-01-27 11:55:52.646 [main] INFO  l.d.c.backend.BackendApplication [traceId=] - Started BackendApplication in 4.729 seconds (process running for 5.154)

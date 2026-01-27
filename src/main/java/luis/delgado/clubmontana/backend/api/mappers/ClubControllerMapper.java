@@ -1,0 +1,14 @@
+package luis.delgado.clubmontana.backend.api.mappers;
+
+import luis.delgado.clubmontana.backend.api.dtos.ClubRequestDto;
+import luis.delgado.clubmontana.backend.api.dtos.ClubResponseDto;
+import luis.delgado.clubmontana.backend.domain.model.commands.createClub.CreateClubCommand;
+import luis.delgado.clubmontana.backend.domain.model.commands.createClub.CreateClubResponse;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface ClubControllerMapper {
+  CreateClubCommand clubRequestDtoToCreateCLubCommand(ClubRequestDto clubRequestDto);
+
+  ClubResponseDto createCLubResponseToClubResponseDto(CreateClubResponse club);
+}
