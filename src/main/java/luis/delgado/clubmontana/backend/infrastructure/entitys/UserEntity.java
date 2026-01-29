@@ -20,6 +20,10 @@ public class UserEntity {
   @Column(name = "user_id")
   private Long userId;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "club_id", nullable = false, unique = true)
+  private ClubEntity club;
+
   @Column(nullable = false, unique = true)
   private String email;
 
@@ -55,9 +59,6 @@ public class UserEntity {
 
   @Column(length = 100)
   private String country;
-
-  @Column(name = "is_active", nullable = false)
-  private boolean active = true;
 
   @Column(name = "email_verified", nullable = false)
   private boolean emailVerified = false;

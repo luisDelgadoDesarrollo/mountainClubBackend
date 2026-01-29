@@ -16,3 +16,13 @@ spring:
   mail:
     host: localhost
     port: 25
+
+
+security:
+  jwt:
+    secret: ${SECRET:(2uA,z*8GdN)VfW$5t3(Kl'EQ9|5\`[[U5}v9!~£so~>D+A'U}
+    expiration-seconds: 900
+
+logging:
+  level:
+    root: ${LOG:INFO}

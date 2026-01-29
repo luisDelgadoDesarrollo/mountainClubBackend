@@ -6,4 +6,4 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @Builder
-public class CreateClubResponse {}
+public class CreateClubRequest {}
