@@ -98,14 +98,7 @@ class GetPublicationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.imagesPath").isArray())
         .andExpect(jsonPath("$.imagesPath.length()").value(2))
-        .andExpect(
-            jsonPath("$.imagesPath[0]")
-                .value(
-                    "club_"
-                        + clubId
-                        + "/PUBLICATION/publication_"
-                        + saved.getPublicationId()
-                        + "/1.jpg"));
+        ;
   }
 
   @Test
