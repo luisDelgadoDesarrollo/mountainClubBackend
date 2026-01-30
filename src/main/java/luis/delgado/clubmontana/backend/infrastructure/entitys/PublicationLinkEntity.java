@@ -17,7 +17,7 @@ public class PublicationLinkEntity {
   private Long publicationLinkId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "publication_id", nullable = false, unique = true)
+  @JoinColumn(name = "publication_id", nullable = false)
   private PublicationEntity publication;
 
   @Column private String link;

@@ -4,4 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 public record CreatePublicationRequestDto(
-        @NotBlank String title, String text, List<PublicationImageDto> images, List<PublicationLinkDto> links) {}
+    @NotBlank String title,
+    String text,
+    List<PublicationRequestImageDto> images,
+    List<PublicationRequestLinkDto> links) {}

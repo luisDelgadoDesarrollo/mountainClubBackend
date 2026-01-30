@@ -16,10 +16,10 @@ public class PublicationImageEntity {
   private Long publicationImageId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "publication_id", nullable = false, unique = true)
+  @JoinColumn(name = "publication_id", nullable = false)
   private PublicationEntity publication;
 
-  @Column private String imageName;
-
   @Column private String description;
+
+  @Column private String image;
 }

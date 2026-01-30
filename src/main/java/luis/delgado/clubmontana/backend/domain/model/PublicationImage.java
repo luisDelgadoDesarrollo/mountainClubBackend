@@ -8,8 +8,8 @@ import lombok.*;
 @Getter
 @Setter
 public class PublicationImage {
+  Long publicationImageId;
   Long publicationId;
-  Long imageId;
   String image;
-  String desc;
+  String description;
 }

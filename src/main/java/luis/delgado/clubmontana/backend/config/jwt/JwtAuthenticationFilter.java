@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
 
-      log.debug("JWT authenticated user={}", email);
+      log.info("JWT authenticated user={}", email);
     }
 
     filterChain.doFilter(request, response);

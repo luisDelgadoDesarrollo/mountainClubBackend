@@ -1,8 +1,9 @@
 package luis.delgado.clubmontana.backend.domain.userCases;
 
-import luis.delgado.clubmontana.backend.domain.model.commands.createPublication.CreatePublicationRequest;
-import luis.delgado.clubmontana.backend.domain.model.commands.createPublication.CreatePublicationResponse;
+import java.util.Map;
+import luis.delgado.clubmontana.backend.domain.model.Publication;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface PublicationUseCases {
-  CreatePublicationResponse create(Long clubId, CreatePublicationRequest createPublicationRequest);
+  Publication create(Long clubId, Publication publication, Map<String, MultipartFile> files);
 }

@@ -26,3 +26,7 @@ security:
 logging:
   level:
     root: ${LOG:INFO}
+
+storage:
+  images:
+    base-path: ./data/images
