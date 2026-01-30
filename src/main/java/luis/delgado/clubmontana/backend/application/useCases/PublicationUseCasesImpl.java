@@ -1,5 +1,6 @@
 package luis.delgado.clubmontana.backend.application.useCases;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,7 +13,9 @@ import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
 import luis.delgado.clubmontana.backend.domain.services.ImageStorageService;
 import luis.delgado.clubmontana.backend.domain.userCases.PublicationUseCases;
-import org.antlr.v4.runtime.misc.Pair;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 
 @UseCase
@@ -79,6 +82,21 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     List<String> images =
         imageStorageService.getImages(
             publication.getClubId(), publication.getPublicationId(), ImageType.PUBLICATION);
-    return new Pair<>(publication, images);
+    return Pair.of(publication, images);
+  }
+
+  @Override
+  public List<Pair<Publication, List<String>>> getPublications(Long clubId, Pageable pageable) {
+    List<Pair<Publication, List<String>>> publicationsWithPath = new ArrayList<>();
+    Page<Publication> publications = publicationRepository.getPublications(clubId, pageable);
+    publications.forEach(
+        publication -> {
+          List<String> images =
+              imageStorageService.getImages(
+                  publication.getClubId(), publication.getPublicationId(), ImageType.PUBLICATION);
+          publicationsWithPath.add(Pair.of(publication, images));
+        });
+
+    return publicationsWithPath;
   }
 }

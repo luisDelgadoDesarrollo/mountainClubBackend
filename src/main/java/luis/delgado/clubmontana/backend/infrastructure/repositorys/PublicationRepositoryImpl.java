@@ -5,6 +5,8 @@ import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.PublicationEntityJpa;
 import luis.delgado.clubmontana.backend.infrastructure.mappers.PublicationRepositoryMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -38,5 +40,12 @@ public class PublicationRepositoryImpl implements PublicationRepository {
         publicationEntityJpa
             .findByClubAndId(clubId, publicationId)
             .orElseThrow(() -> new PublicationNotFoundException(clubId, publicationId)));
+  }
+
+  @Override
+  public Page<Publication> getPublications(Long clubId, Pageable pageable) {
+    return publicationEntityJpa
+        .findByClub_ClubId(clubId, pageable)
+        .map(publicationRepositoryMapper::publicationEntityToPublication);
   }
 }

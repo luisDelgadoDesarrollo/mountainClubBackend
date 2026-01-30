@@ -1,6 +1,7 @@
 package luis.delgado.clubmontana.backend.infrastructure.entitys;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.*;
@@ -35,6 +36,9 @@ public class PublicationEntity {
       fetch = FetchType.LAZY)
   private Set<PublicationImageEntity> images = new HashSet<>();
 
+  @Column(name = "created_at", nullable = true, updatable = false)
+  private LocalDateTime createdAt;
+
   @OneToMany(
       mappedBy = "publication",
       cascade = CascadeType.ALL,
@@ -50,5 +54,10 @@ public class PublicationEntity {
   public void addLink(PublicationLinkEntity link) {
     links.add(link);
     link.setPublication(this);
+  }
+
+  @PrePersist
+  protected void onCreate() {
+    this.createdAt = LocalDateTime.now();
   }
 }
