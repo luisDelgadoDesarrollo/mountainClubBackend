@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
@@ -26,7 +25,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
 
   public PublicationUseCasesImpl(
       PublicationRepository publicationRepository,
-      FileSystemImageStorageService imageStorageService) {
+      ImageStorageService imageStorageService) {
     this.publicationRepository = publicationRepository;
     this.imageStorageService = imageStorageService;
   }

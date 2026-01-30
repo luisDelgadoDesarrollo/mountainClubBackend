@@ -32,7 +32,7 @@ public class FileSystemImageStorageService implements ImageStorageService {
   public void store(
       Map<String, MultipartFile> files,
       Map<String, Long> imageIds,
-      Long publicationId,
+      Long ownerId,
       Long clubId,
       ImageType imageType) {
 
@@ -47,7 +47,7 @@ public class FileSystemImageStorageService implements ImageStorageService {
     }
 
     files.forEach(
-        (key, value) -> storeSingle(value, imageIds.get(key), publicationId, clubId, imageType));
+        (key, value) -> storeSingle(value, imageIds.get(key), ownerId, clubId, imageType));
   }
 
   private void storeSingle(

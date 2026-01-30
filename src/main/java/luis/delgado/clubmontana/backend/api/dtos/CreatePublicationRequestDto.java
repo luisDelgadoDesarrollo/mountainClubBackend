@@ -6,5 +6,5 @@ import java.util.List;
 public record CreatePublicationRequestDto(
     @NotBlank String title,
     String text,
-    List<PublicationRequestImageDto> images,
-    List<PublicationRequestLinkDto> links) {}
+    List<ImageRequestDto> images,
+    List<LinkRequestDto> links) {}
