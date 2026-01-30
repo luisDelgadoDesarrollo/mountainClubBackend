@@ -1,14 +1,14 @@
 package luis.delgado.clubmontana.backend.application.services;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.Map;
 import java.util.Set;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.services.ImageStorageService;
+import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -87,5 +87,28 @@ public class FileSystemImageStorageService implements ImageStorageService {
       case "image/webp" -> "webp";
       default -> throw new IllegalStateException("Unexpected mime: " + mime);
     };
+  }
+
+  public void deleteImages(Long clubId, ImageType imageType, Long publicationId) {
+    Path publicationDir =
+        basePath
+            .resolve("club_" + clubId)
+            .resolve(imageType.name())
+            .resolve("publication_" + publicationId)
+            .normalize();
+
+    if (!publicationDir.startsWith(basePath.normalize())) {
+      throw new SecurityException("Path traversal detected");
+    }
+
+    if (!Files.exists(publicationDir)) {
+      return;
+    }
+
+    try {
+      FileUtils.deleteDirectory(new File(publicationDir.toUri()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

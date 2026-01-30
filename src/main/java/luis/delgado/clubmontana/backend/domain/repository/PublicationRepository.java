@@ -4,4 +4,6 @@ import luis.delgado.clubmontana.backend.domain.model.Publication;
 
 public interface PublicationRepository {
   Publication createPublication(Publication publication);
+
+  void deletePublication(Long publicationId);
 }

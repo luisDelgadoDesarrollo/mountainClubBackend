@@ -41,4 +41,10 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
         ImageType.PUBLICATION);
     return publicationSaved;
   }
+
+  @Override
+  public void delete(Long clubId, Long publicationId) {
+    publicationRepository.deletePublication(publicationId);
+    fileSystemImageStorageService.deleteImages(clubId, ImageType.PUBLICATION, publicationId);
+  }
 }

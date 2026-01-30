@@ -25,4 +25,9 @@ public class PublicationRepositoryImpl implements PublicationRepository {
         publicationEntityJpa.save(
             publicationRepositoryMapper.publicationToPublicationEntity(publication)));
   }
+
+  @Override
+  public void deletePublication(Long publicationId) {
+    publicationEntityJpa.deleteById(publicationId);
+  }
 }

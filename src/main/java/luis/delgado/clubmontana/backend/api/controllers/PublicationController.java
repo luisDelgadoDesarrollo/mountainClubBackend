@@ -39,4 +39,11 @@ public class PublicationController {
                         request),
                     files)));
   }
+
+  @DeleteMapping("/{publicationId}")
+  public ResponseEntity<PublicationResponseDto> deletePublication(
+      @PathVariable Long clubId, @PathVariable Long publicationId) {
+    publicationUseCases.delete(clubId, publicationId);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
 }

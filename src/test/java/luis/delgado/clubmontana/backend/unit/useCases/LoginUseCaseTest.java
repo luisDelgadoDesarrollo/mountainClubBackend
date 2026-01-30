@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
-class LoginUseCaseImplTest {
+class LoginUseCaseTest {
 
   @Mock private UserRepository userRepository;
 
