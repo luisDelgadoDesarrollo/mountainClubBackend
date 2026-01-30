@@ -3,6 +3,7 @@ package luis.delgado.clubmontana.backend.config.security;
 import luis.delgado.clubmontana.backend.config.jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,7 +24,9 @@ public class SecurityConfig {
         .addFilterBefore(jwtAuthenticationFilter, AnonymousAuthenticationFilter.class)
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/auth/**", "/users/**")
+                auth.requestMatchers(HttpMethod.GET, "/publications/{clubId}/{publicationId}")
+                    .permitAll()
+                    .requestMatchers("/auth/**", "/users/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

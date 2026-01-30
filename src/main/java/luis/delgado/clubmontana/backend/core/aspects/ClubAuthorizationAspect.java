@@ -15,7 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 @Aspect
 @Component
 public class ClubAuthorizationAspect {
-  @Before("execution(* *..*UseCase.*(Long, ..))")
+  @Before(
+      "execution(* *..*UseCase.*(Long, ..)) "
+          + " && !@annotation(luis.delgado.clubmontana.backend.core.security.NoAuthenticationNeeded)")
   public void checkClubAuthorization(JoinPoint joinPoint) {
 
     Object[] args = joinPoint.getArgs();

@@ -2,8 +2,10 @@ package luis.delgado.clubmontana.backend.unit.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
 import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
@@ -149,5 +151,69 @@ class FileSystemImageStorageServiceTest {
 
     // then
     assertFalse(Files.exists(publicationDir));
+  }
+
+  @Test
+  void getImages_whenDirectoryDoesNotExist_returnsEmptyList() {
+    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+
+    List<String> images = service.getImages(1L, 99L, ImageType.PUBLICATION);
+
+    assertNotNull(images);
+    assertTrue(images.isEmpty());
+  }
+
+  @Test
+  void getImages_whenImagesExist_returnsRelativePathsWithForwardSlashes() throws Exception {
+
+    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+
+    Path publicationDir =
+        tempDir.resolve("club_1").resolve(ImageType.PUBLICATION.name()).resolve("publication_10");
+
+    Files.createDirectories(publicationDir);
+
+    Files.createFile(publicationDir.resolve("1.jpg"));
+    Files.createFile(publicationDir.resolve("2.png"));
+
+    List<String> images = service.getImages(1L, 10L, ImageType.PUBLICATION);
+
+    assertEquals(2, images.size());
+
+    images.forEach(
+        path -> {
+          assertTrue(path.startsWith("club_1/"));
+          assertTrue(path.contains("/publication_10/"));
+          assertFalse(path.contains(File.separator.equals("/") ? "\\" : File.separator));
+        });
+  }
+
+  @Test
+  void getImages_ignoresSubdirectories() throws Exception {
+
+    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+
+    Path publicationDir =
+        tempDir.resolve("club_1").resolve(ImageType.PUBLICATION.name()).resolve("publication_20");
+
+    Files.createDirectories(publicationDir);
+    Files.createFile(publicationDir.resolve("image.jpg"));
+
+    // subdirectorio (debe ignorarse)
+    Files.createDirectories(publicationDir.resolve("thumbnails"));
+
+    List<String> images = service.getImages(1L, 20L, ImageType.PUBLICATION);
+
+    assertEquals(1, images.size());
+    assertTrue(images.get(0).endsWith("image.jpg"));
+  }
+
+  @Test
+  void getImages_whenPathTraversalAttempt_throwsSecurityException() {
+
+    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+
+    assertThrows(
+        IllegalArgumentException.class, () -> service.getImages(1L, 1L, ImageType.valueOf("..")));
   }
 }

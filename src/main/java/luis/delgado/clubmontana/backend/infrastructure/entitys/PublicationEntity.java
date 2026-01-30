@@ -1,8 +1,8 @@
 package luis.delgado.clubmontana.backend.infrastructure.entitys;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.*;
 
 @Builder
@@ -33,14 +33,14 @@ public class PublicationEntity {
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       fetch = FetchType.LAZY)
-  private List<PublicationImageEntity> images = new ArrayList<>();
+  private Set<PublicationImageEntity> images = new HashSet<>();
 
   @OneToMany(
       mappedBy = "publication",
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       fetch = FetchType.LAZY)
-  private List<PublicationLinkEntity> links = new ArrayList<>();
+  private Set<PublicationLinkEntity> links = new HashSet<>();
 
   public void addImage(PublicationImageEntity image) {
     images.add(image);

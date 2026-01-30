@@ -15,4 +15,10 @@ public class GlobalExceptionHandler {
 
     return Map.of("error", "UNSUPPORTED_IMAGE_TYPE", "message", ex.getMessage());
   }
+
+  @ExceptionHandler(PublicationNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public Map<String, String> handlePublicationNotFound(PublicationNotFoundException ex) {
+    return Map.of("error", "PUBLICATION_NOT_FOUND", "message", ex.getMessage());
+  }
 }

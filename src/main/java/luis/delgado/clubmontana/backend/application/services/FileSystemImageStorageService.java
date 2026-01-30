@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
@@ -90,6 +91,7 @@ public class FileSystemImageStorageService implements ImageStorageService {
     };
   }
 
+  @Override
   public void deleteImages(Long clubId, ImageType imageType, Long publicationId) {
     Path publicationDir =
         basePath
@@ -110,6 +112,35 @@ public class FileSystemImageStorageService implements ImageStorageService {
       FileUtils.deleteDirectory(new File(publicationDir.toUri()));
     } catch (IOException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public List<String> getImages(Long clubId, Long publicationId, ImageType imageType) {
+
+    Path publicationDir =
+        basePath
+            .resolve("club_" + clubId)
+            .resolve(imageType.name())
+            .resolve("publication_" + publicationId)
+            .normalize();
+
+    if (!publicationDir.startsWith(basePath.normalize())) {
+      throw new SecurityException("Path traversal detected");
+    }
+
+    if (!Files.exists(publicationDir)) {
+      return List.of();
+    }
+
+    try (var stream = Files.list(publicationDir)) {
+      return stream
+          .filter(Files::isRegularFile)
+          .map(basePath::relativize)
+          .map(path -> path.toString().replace(File.separatorChar, '/')) // 🔥 AQUÍ
+          .toList();
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
     }
   }
 }

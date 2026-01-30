@@ -13,6 +13,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PublicationRepositoryMapper {
 
+  @Mapping(target = "clubId", source = "club.clubId")
   Publication publicationEntityToPublication(PublicationEntity publicationEntity);
 
   default PublicationEntity publicationToPublicationEntity(Publication publication) {
