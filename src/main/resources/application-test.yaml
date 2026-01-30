@@ -20,3 +20,7 @@ spring:
 security:
   jwt:
     expiration-seconds: 900
+
+storage:
+  images:
+    base-path: ./data/test/images

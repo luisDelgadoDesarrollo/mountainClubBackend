@@ -9,10 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.UUID;
+import luis.delgado.clubmontana.backend.domain.model.Publication;
+import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -28,9 +31,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class CreatePublicationIT {
+class UpdatePublicationTest {
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private PublicationRepository publicationRepository;
   @Autowired private JdbcTemplate jdbcTemplate;
 
   private Long insertClub() {
@@ -41,33 +45,33 @@ class CreatePublicationIT {
           PreparedStatement ps =
               connection.prepareStatement(
                   """
-                                  INSERT INTO club (
-                                    name,
-                                    nif,
-                                    description,
-                                    logo,
-                                    url,
-                                    created_at,
-                                    created_by,
-                                    has_inicio,
-                                    has_secciones,
-                                    has_galeria,
-                                    has_enlaces,
-                                    has_contacto,
-                                    has_federarse,
-                                    has_tienda,
-                                    has_calendario,
-                                    has_conocenos,
-                                    has_noticias,
-                                    has_foro,
-                                    has_estatutos,
-                                    has_normas,
-                                    has_hazte_socio
-                                  ) VALUES (
-                                    ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
-                                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-                                  )
-                                  """,
+                      INSERT INTO club (
+                        name,
+                        nif,
+                        description,
+                        logo,
+                        url,
+                        created_at,
+                        created_by,
+                        has_inicio,
+                        has_secciones,
+                        has_galeria,
+                        has_enlaces,
+                        has_contacto,
+                        has_federarse,
+                        has_tienda,
+                        has_calendario,
+                        has_conocenos,
+                        has_noticias,
+                        has_foro,
+                        has_estatutos,
+                        has_normas,
+                        has_hazte_socio
+                      ) VALUES (
+                        ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
+                        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                      )
+                      """,
                   Statement.RETURN_GENERATED_KEYS);
 
           String suffix = UUID.randomUUID().toString().substring(0, 8);
@@ -102,16 +106,26 @@ class CreatePublicationIT {
   }
 
   @Test
-  void createPublication_happyPath_returns201() throws Exception {
+  void updatePublication_happyPath_returns201() throws Exception {
 
     Long clubId = insertClub();
+    Publication publication = new Publication();
+    publication.setClubId(clubId);
+    publication.setTitle("Original title");
+    publication.setText("Original text");
+    publication.setImages(List.of());
+    publication.setLinks(List.of());
+
+    Publication savedPublication = publicationRepository.savePublication(publication);
+    Long publicationId = savedPublication.getPublicationId();
+
     String json =
         """
             {
-              "title": "Mi publicación",
-              "text": "Texto",
+              "title": "Updated title",
+              "text": "Updated text",
               "images": [
-                { "image": "img-1", "description": "foto 1" }
+                { "image": "image-1", "description": "desc" }
               ],
               "links": []
             }
@@ -120,57 +134,26 @@ class CreatePublicationIT {
     MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-    // JPEG real mínimo (para que Tika detecte bien)
+    // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
-            "img-1", "photo.jpg", "image/jpeg", new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+            "image-1",
+            "photo.jpg",
+            "image/jpeg",
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     Authentication authentication =
         new UsernamePasswordAuthenticationToken(
             "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
+    // when / then
     mockMvc
         .perform(
-            multipart("/publications/{clubId}", clubId)
+            multipart(
+                    HttpMethod.PUT, "/publications/{clubId}/{publicationId}", clubId, publicationId)
                 .part(data)
                 .file(image)
                 .with(authentication(authentication)))
         .andExpect(status().isCreated());
-  }
-
-  @Test
-  void createPublication_withoutAuthentication_returns401() throws Exception {
-    Long clubId = insertClub();
-    MockPart data = new MockPart("data", "{}".getBytes(StandardCharsets.UTF_8));
-    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-
-    mockMvc
-        .perform(multipart("/publications/{clubId}", clubId).part(data))
-        .andExpect(status().is4xxClientError());
-  }
-
-  @Test
-  void createPublication_invalidPayload_returns400() throws Exception {
-    Long clubId = insertClub();
-    String invalidJson =
-        """
-            {
-              "text": "sin título"
-            }
-            """;
-
-    MockPart data = new MockPart("data", invalidJson.getBytes(StandardCharsets.UTF_8));
-    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(
-            "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
-
-    mockMvc
-        .perform(
-            multipart("/publications/{clubId}", clubId)
-                .part(data)
-                .with(authentication(authentication)))
-        .andExpect(status().isBadRequest());
   }
 }

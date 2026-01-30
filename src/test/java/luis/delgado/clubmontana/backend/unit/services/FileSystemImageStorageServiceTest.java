@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
 import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,9 +79,9 @@ class FileSystemImageStorageServiceTest {
     MockMultipartFile file =
         new MockMultipartFile("img-1", "file.txt", "text/plain", "hello".getBytes());
 
-    IllegalArgumentException ex =
+    UnsupportedImageTypeException ex =
         assertThrows(
-            IllegalArgumentException.class,
+            UnsupportedImageTypeException.class,
             () ->
                 service.store(
                     Map.of("img-1", file), Map.of("img-1", 1L), 1L, 1L, ImageType.PUBLICATION));

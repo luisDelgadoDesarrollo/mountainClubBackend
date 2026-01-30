@@ -50,7 +50,7 @@ class CreatePublicationUseCaseTest {
             "img-1", mock(MultipartFile.class),
             "img-2", mock(MultipartFile.class));
 
-    when(publicationRepository.createPublication(any())).thenReturn(saved);
+    when(publicationRepository.savePublication(any())).thenReturn(saved);
 
     // when
     Publication result = publicationUseCases.create(clubId, publication, files);
@@ -58,7 +58,7 @@ class CreatePublicationUseCaseTest {
     // then
     assertThat(result).isSameAs(saved);
 
-    verify(publicationRepository).createPublication(any());
+    verify(publicationRepository).savePublication(any());
 
     verify(fileSystemImageStorageService)
         .store(
@@ -88,7 +88,7 @@ class CreatePublicationUseCaseTest {
     saved.setPublicationId(1L);
     saved.setImages(publication.getImages());
 
-    when(publicationRepository.createPublication(any())).thenReturn(saved);
+    when(publicationRepository.savePublication(any())).thenReturn(saved);
 
     doThrow(new IllegalArgumentException())
         .when(fileSystemImageStorageService)

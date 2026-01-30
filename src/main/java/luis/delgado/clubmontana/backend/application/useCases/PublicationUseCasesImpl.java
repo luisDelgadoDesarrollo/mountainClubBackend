@@ -28,7 +28,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
   public Publication create(
       Long clubId, Publication publication, Map<String, MultipartFile> files) {
     publication.setClubId(clubId);
-    Publication publicationSaved = publicationRepository.createPublication(publication);
+    Publication publicationSaved = publicationRepository.savePublication(publication);
 
     fileSystemImageStorageService.store(
         files,
@@ -46,5 +46,25 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
   public void delete(Long clubId, Long publicationId) {
     publicationRepository.deletePublication(publicationId);
     fileSystemImageStorageService.deleteImages(clubId, ImageType.PUBLICATION, publicationId);
+  }
+
+  @Override
+  public Publication update(
+      Long clubId, Long publicationId, Publication publication, Map<String, MultipartFile> files) {
+    publication.setClubId(clubId);
+    publication.setPublicationId(publicationId);
+    Publication publicationSaved = publicationRepository.savePublication(publication);
+    fileSystemImageStorageService.deleteImages(clubId, ImageType.PUBLICATION, publicationId);
+    fileSystemImageStorageService.store(
+        files,
+        publicationSaved.getImages().stream()
+            .collect(
+                Collectors.toMap(
+                    PublicationImage::getImage, PublicationImage::getPublicationImageId)),
+        publicationId,
+        clubId,
+        ImageType.PUBLICATION);
+
+    return publicationSaved;
   }
 }

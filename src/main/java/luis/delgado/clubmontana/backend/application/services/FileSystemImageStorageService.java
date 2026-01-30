@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.file.*;
 import java.util.Map;
 import java.util.Set;
+import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.services.ImageStorageService;
 import org.apache.commons.io.FileUtils;
@@ -56,7 +57,7 @@ public class FileSystemImageStorageService implements ImageStorageService {
       String detectedType = tika.detect(is);
 
       if (!ALLOWED_TYPES.contains(detectedType)) {
-        throw new IllegalArgumentException("Unsupported image type: " + detectedType);
+        throw new UnsupportedImageTypeException(detectedType);
       }
 
       String extension = extensionFromMime(detectedType);

@@ -20,7 +20,7 @@ public class PublicationRepositoryImpl implements PublicationRepository {
   }
 
   @Override
-  public Publication createPublication(Publication publication) {
+  public Publication savePublication(Publication publication) {
     return publicationRepositoryMapper.publicationEntityToPublication(
         publicationEntityJpa.save(
             publicationRepositoryMapper.publicationToPublicationEntity(publication)));

@@ -24,17 +24,22 @@ public interface PublicationRepositoryMapper {
     ClubEntity club = new ClubEntity();
     club.setClubId(publication.getClubId());
     publicationEntity.setClub(club);
-    publication
-        .getImages()
-        .forEach(
-            publicationImage ->
-                publicationEntity.addImage(
-                    publicationImageToPublicationImageEntity(publicationImage)));
-    publication
-        .getLinks()
-        .forEach(
-            publicationLink ->
-                publicationEntity.addLink(publicationLinkToPublicationLinkEntity(publicationLink)));
+    if (publication.getImages() != null) {
+      publication
+          .getImages()
+          .forEach(
+              publicationImage ->
+                  publicationEntity.addImage(
+                      publicationImageToPublicationImageEntity(publicationImage)));
+    }
+    if (publication.getLinks() != null) {
+      publication
+          .getLinks()
+          .forEach(
+              publicationLink ->
+                  publicationEntity.addLink(
+                      publicationLinkToPublicationLinkEntity(publicationLink)));
+    }
     return publicationEntity;
   }
 

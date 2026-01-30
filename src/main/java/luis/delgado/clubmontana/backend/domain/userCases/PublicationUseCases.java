@@ -8,4 +8,7 @@ public interface PublicationUseCases {
   Publication create(Long clubId, Publication publication, Map<String, MultipartFile> files);
 
   void delete(Long clubId, Long publicationId);
+
+  Publication update(
+      Long clubId, Long publicationId, Publication publication, Map<String, MultipartFile> files);
 }
