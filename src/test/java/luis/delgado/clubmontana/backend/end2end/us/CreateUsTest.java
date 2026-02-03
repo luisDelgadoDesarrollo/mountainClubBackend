@@ -1,9 +1,11 @@
-package luis.delgado.clubmontana.backend.end2end.publications;
+package luis.delgado.clubmontana.backend.end2end.us;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,9 +15,15 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
+import luis.delgado.clubmontana.backend.infrastructure.entitys.UsEntity;
+import luis.delgado.clubmontana.backend.infrastructure.jpa.UsEntityJpa;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
@@ -33,19 +41,24 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 @ActiveProfiles("test")
-class CreatePublicationTest {
+class CreateUsTest {
 
+  private static final Path IMAGES_DIR =
+      Paths.get("D:/Proyectos/ClubMontaña/backend/data/test/images");
+
+  @TempDir Path tempDir;
+  FileSystemImageStorageService service;
   @Autowired private MockMvc mockMvc;
+  @Autowired private UsEntityJpa usEntityJpa;
   @Autowired private JdbcTemplate jdbcTemplate;
 
   @AfterAll
   static void afterAll() throws IOException {
-    Path dir = Paths.get("D:/Proyectos/ClubMontaña/backend/data/test/images");
-
-    if (Files.exists(dir)) {
+    if (Files.exists(IMAGES_DIR)) {
       // Borrar primero los archivos hijos
-      Files.walk(dir)
+      Files.walk(IMAGES_DIR)
           .sorted(Comparator.reverseOrder())
           .forEach(
               path -> {
@@ -62,6 +75,11 @@ class CreatePublicationTest {
     }
   }
 
+  @BeforeEach
+  void setUp() {
+    service = new FileSystemImageStorageService(tempDir.toString());
+  }
+
   private Long insertClub() {
     KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -70,33 +88,33 @@ class CreatePublicationTest {
           PreparedStatement ps =
               connection.prepareStatement(
                   """
-                                  INSERT INTO club (
-                                    name,
-                                    nif,
-                                    description,
-                                    logo,
-                                    url,
-                                    created_at,
-                                    created_by,
-                                    has_inicio,
-                                    has_secciones,
-                                    has_galeria,
-                                    has_enlaces,
-                                    has_contacto,
-                                    has_federarse,
-                                    has_tienda,
-                                    has_calendario,
-                                    has_conocenos,
-                                    has_noticias,
-                                    has_foro,
-                                    has_estatutos,
-                                    has_normas,
-                                    has_hazte_socio
-                                  ) VALUES (
-                                    ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
-                                    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-                                  )
-                                  """,
+                                              INSERT INTO club (
+                                                name,
+                                                nif,
+                                                description,
+                                                logo,
+                                                url,
+                                                created_at,
+                                                created_by,
+                                                has_inicio,
+                                                has_secciones,
+                                                has_galeria,
+                                                has_enlaces,
+                                                has_contacto,
+                                                has_federarse,
+                                                has_tienda,
+                                                has_calendario,
+                                                has_conocenos,
+                                                has_noticias,
+                                                has_foro,
+                                                has_estatutos,
+                                                has_normas,
+                                                has_hazte_socio
+                                              ) VALUES (
+                                                ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
+                                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                                              )
+                                              """,
                   Statement.RETURN_GENERATED_KEYS);
 
           String suffix = UUID.randomUUID().toString().substring(0, 8);
@@ -116,7 +134,7 @@ class CreatePublicationTest {
           ps.setBoolean(12, false);
           ps.setBoolean(13, false);
           ps.setBoolean(14, false);
-          ps.setBoolean(15, false);
+          ps.setBoolean(15, true);
           ps.setBoolean(16, false);
           ps.setBoolean(17, false);
           ps.setBoolean(18, false);
@@ -131,77 +149,52 @@ class CreatePublicationTest {
   }
 
   @Test
-  void createPublication_happyPath_returns201() throws Exception {
-
+  void shouldCreateUsWithImagesAndFiles() throws Exception {
     Long clubId = insertClub();
-    String json =
-        """
-            {
-              "title": "Mi publicación",
-              "text": "Texto",
-              "images": [
-                { "image": "img-1", "description": "foto 1" }
-              ],
-              "links": []
-            }
-            """;
 
-    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
-    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-
-    MockMultipartFile image =
+    // ---------- multipart files ----------
+    MockMultipartFile file1 =
         new MockMultipartFile(
-            "img-1",
-            "photo.jpg",
+            "files",
+            "image1.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
+    // ---------- UsRequestDto como JSON ----------
+    String usRequestJson =
+        """
+        {
+          "text": "Texto de prueba",
+          "images": [
+            { "image": "image1.jpg" }
+          ]
+        }
+        """;
+
+    MockPart data = new MockPart("us", usRequestJson.getBytes(StandardCharsets.UTF_8));
+    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
     Authentication authentication =
         new UsernamePasswordAuthenticationToken(
             "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
 
     mockMvc
         .perform(
-            multipart("/publications/{clubId}", clubId)
+            multipart("/us/{clubId}", clubId)
                 .part(data)
-                .file(image)
+                .file(file1)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
                 .with(authentication(authentication)))
         .andExpect(status().isCreated());
-  }
 
-  @Test
-  void createPublication_withoutAuthentication_returns401() throws Exception {
-    Long clubId = insertClub();
-    MockPart data = new MockPart("data", "{}".getBytes(StandardCharsets.UTF_8));
-    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+    Optional<UsEntity> usEntityOptional = usEntityJpa.findById(clubId);
+    assertThat(usEntityOptional.isPresent()).isTrue();
+    UsEntity usEntity = usEntityOptional.get();
+    assertThat(usEntity.getClubId()).isEqualTo(clubId);
+    assertThat(usEntity.getText()).isEqualTo("Texto de prueba");
 
-    mockMvc
-        .perform(multipart("/publications/{clubId}", clubId).part(data))
-        .andExpect(status().is4xxClientError());
-  }
-
-  @Test
-  void createPublication_invalidPayload_returns400() throws Exception {
-    Long clubId = insertClub();
-    String invalidJson =
-        """
-            {
-              "text": "sin título"
-            }
-            """;
-
-    MockPart data = new MockPart("data", invalidJson.getBytes(StandardCharsets.UTF_8));
-    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
-
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(
-            "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
-
-    mockMvc
-        .perform(
-            multipart("/publications/{clubId}", clubId)
-                .part(data)
-                .with(authentication(authentication)))
-        .andExpect(status().isBadRequest());
+    Optional<UsEntity> images = usEntityJpa.findById(usEntity.getClubId());
+    assertThat(images).isPresent();
+    assertThat(images.get().getImages()).hasSize(1);
   }
 }

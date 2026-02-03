@@ -13,7 +13,7 @@ public interface ImageStorageService {
       Long clubId,
       ImageType imageType);
 
-  void deleteImages(Long clubId, ImageType imageType, Long publicationId);
+  void deleteImages(Long clubId, ImageType imageType, Long ownerId);
 
-  List<String> getImages(Long clubId, Long publicationId, ImageType imageType);
+  List<String> getImages(Long clubId, Long ownerId, ImageType imageType);
 }

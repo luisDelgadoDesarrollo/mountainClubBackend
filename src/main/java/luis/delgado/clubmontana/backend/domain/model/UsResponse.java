@@ -1,10 +1,5 @@
 package luis.delgado.clubmontana.backend.domain.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.List;
 
-@NoArgsConstructor
-@Builder
-@Getter
-public class UsResponse {}
+public record UsResponse(Long clubId, String text, List<String> images) {}

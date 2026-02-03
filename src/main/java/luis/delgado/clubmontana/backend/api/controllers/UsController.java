@@ -1,9 +1,9 @@
 package luis.delgado.clubmontana.backend.api.controllers;
 
-import jakarta.validation.constraints.Null;
+import jakarta.validation.Valid;
 import java.util.Map;
-import luis.delgado.clubmontana.backend.api.dtos.PublicationResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.UsRequestDto;
+import luis.delgado.clubmontana.backend.api.dtos.UsResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.UsControllerMapper;
 import luis.delgado.clubmontana.backend.domain.userCases.UsUseCases;
 import org.springframework.http.HttpStatus;
@@ -25,25 +25,25 @@ public class UsController {
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<Null> createUs(
+  public ResponseEntity<Void> createUs(
       @PathVariable Long clubId,
-      @RequestParam UsRequestDto us,
+      @RequestPart("us") @Valid UsRequestDto us,
       @RequestParam Map<String, MultipartFile> files) {
     usUseCases.create(clubId, usControllerMapper.usRequestDroToUsRequest(us), files);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
   @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<Null> updateUs(
+  public ResponseEntity<Void> updateUs(
       @PathVariable Long clubId,
-      @RequestParam UsRequestDto us,
+      @RequestPart("us") @Valid UsRequestDto us,
       @RequestParam Map<String, MultipartFile> files) {
     usUseCases.update(clubId, usControllerMapper.usRequestDroToUsRequest(us), files);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   @GetMapping
-  public ResponseEntity<PublicationResponseDto> getUs(@PathVariable Long clubId) {
+  public ResponseEntity<UsResponseDto> getUs(@PathVariable Long clubId) {
     return ResponseEntity.ok(usControllerMapper.useResponseToUsResponseDto(usUseCases.get(clubId)));
   }
 }

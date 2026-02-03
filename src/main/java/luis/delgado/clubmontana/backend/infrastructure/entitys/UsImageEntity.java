@@ -13,8 +13,12 @@ import lombok.*;
 public class UsImageEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long usImageId;
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "club_id", nullable = false)
-  private Long clubId;
+  private UsEntity us;
 
   @Column private String image;
 

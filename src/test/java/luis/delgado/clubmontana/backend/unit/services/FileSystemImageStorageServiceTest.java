@@ -169,7 +169,7 @@ class FileSystemImageStorageServiceTest {
     FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
 
     Path publicationDir =
-        tempDir.resolve("club_1").resolve(ImageType.PUBLICATION.name()).resolve("publication_10");
+        tempDir.resolve("club_1").resolve(ImageType.PUBLICATION.name()).resolve("PUBLICATION_10");
 
     Files.createDirectories(publicationDir);
 
@@ -183,7 +183,7 @@ class FileSystemImageStorageServiceTest {
     images.forEach(
         path -> {
           assertTrue(path.startsWith("club_1/"));
-          assertTrue(path.contains("/publication_10/"));
+          assertTrue(path.contains("/PUBLICATION_10/"));
           assertFalse(path.contains(File.separator.equals("/") ? "\\" : File.separator));
         });
   }

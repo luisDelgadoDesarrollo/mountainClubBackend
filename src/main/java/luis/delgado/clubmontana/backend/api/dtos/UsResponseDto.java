@@ -1,3 +1,5 @@
 package luis.delgado.clubmontana.backend.api.dtos;
 
-public record UsResponseDto() {}
+import java.util.List;
+
+public record UsResponseDto(Long clubId, String text, List<String> images) {}

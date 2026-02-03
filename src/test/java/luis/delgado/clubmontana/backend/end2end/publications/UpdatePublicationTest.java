@@ -4,13 +4,19 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +42,29 @@ class UpdatePublicationTest {
   @Autowired private MockMvc mockMvc;
   @Autowired private PublicationRepository publicationRepository;
   @Autowired private JdbcTemplate jdbcTemplate;
+
+  @AfterAll
+  static void afterAll() throws IOException {
+    Path dir = Paths.get("D:/Proyectos/ClubMontaña/backend/data/test/images");
+
+    if (Files.exists(dir)) {
+      // Borrar primero los archivos hijos
+      Files.walk(dir)
+          .sorted(Comparator.reverseOrder())
+          .forEach(
+              path -> {
+                try {
+                  Files.delete(path);
+                } catch (IOException e) {
+                  throw new RuntimeException("Error borrando " + path, e);
+                }
+              });
+
+      System.out.println("🧹 Carpeta de imágenes de test borrada");
+    } else {
+      System.out.println("ℹ️ La carpeta no existe, nada que borrar");
+    }
+  }
 
   private Long insertClub() {
     KeyHolder keyHolder = new GeneratedKeyHolder();

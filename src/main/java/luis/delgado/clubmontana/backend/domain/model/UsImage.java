@@ -1,14 +1,12 @@
 package luis.delgado.clubmontana.backend.domain.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 public class UsImage {
   private Long clubId;
   private String image;

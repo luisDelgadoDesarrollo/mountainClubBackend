@@ -20,12 +20,12 @@ public class UsEntity {
 
   @OneToOne
   @MapsId
-  @JoinColumn(name = "club_id")
+  @JoinColumn(name = "club_id", insertable = false, updatable = false)
   private ClubEntity club;
 
   @Column(columnDefinition = "text")
   private String text;
 
-  @OneToMany(mappedBy = "clubId", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "us", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<UsImageEntity> images = new ArrayList<>();
 }

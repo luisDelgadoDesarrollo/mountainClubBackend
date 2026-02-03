@@ -67,7 +67,7 @@ public class FileSystemImageStorageService implements ImageStorageService {
 
       Path typeDir = clubDir.resolve(imageType.name());
 
-      Path publicationDir = typeDir.resolve("publication_" + publicationId);
+      Path publicationDir = typeDir.resolve(imageType + "_" + publicationId);
 
       Files.createDirectories(publicationDir);
 
@@ -92,12 +92,12 @@ public class FileSystemImageStorageService implements ImageStorageService {
   }
 
   @Override
-  public void deleteImages(Long clubId, ImageType imageType, Long publicationId) {
+  public void deleteImages(Long clubId, ImageType imageType, Long ownerId) {
     Path publicationDir =
         basePath
             .resolve("club_" + clubId)
             .resolve(imageType.name())
-            .resolve("publication_" + publicationId)
+            .resolve(imageType + "_" + ownerId)
             .normalize();
 
     if (!publicationDir.startsWith(basePath.normalize())) {
@@ -116,13 +116,13 @@ public class FileSystemImageStorageService implements ImageStorageService {
   }
 
   @Override
-  public List<String> getImages(Long clubId, Long publicationId, ImageType imageType) {
+  public List<String> getImages(Long clubId, Long ownerId, ImageType imageType) {
 
     Path publicationDir =
         basePath
             .resolve("club_" + clubId)
             .resolve(imageType.name())
-            .resolve("publication_" + publicationId)
+            .resolve(imageType + "_" + ownerId)
             .normalize();
 
     if (!publicationDir.startsWith(basePath.normalize())) {
