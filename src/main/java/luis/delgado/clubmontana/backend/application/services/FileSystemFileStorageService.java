@@ -3,28 +3,33 @@ package luis.delgado.clubmontana.backend.application.services;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import luis.delgado.clubmontana.backend.api.exceptions.PdfGetException;
+import luis.delgado.clubmontana.backend.api.exceptions.PdfStorageException;
 import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
-import luis.delgado.clubmontana.backend.domain.services.ImageStorageService;
+import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class FileSystemImageStorageService implements ImageStorageService {
+public class FileSystemFileStorageService implements FileStorageService {
 
   private static final Set<String> ALLOWED_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
 
   private final Path basePath;
   private final Tika tika = new Tika();
 
-  public FileSystemImageStorageService(@Value("${storage.images.base-path}") String basePath) {
+  public FileSystemFileStorageService(@Value("${storage.images.base-path}") String basePath) {
     this.basePath = Paths.get(basePath);
   }
 
@@ -141,6 +146,56 @@ public class FileSystemImageStorageService implements ImageStorageService {
           .toList();
     } catch (IOException e) {
       throw new IllegalStateException(e);
+    }
+  }
+
+  @Override
+  public void savePdf(Long clubId, MultipartFile file, ImageType imageType, String name) {
+
+    if (file == null || file.isEmpty()) {
+      throw new PdfStorageException(clubId, "It failed on file null");
+    }
+
+    if (!"application/pdf".equalsIgnoreCase(file.getContentType())) {
+      throw new PdfStorageException(clubId, "It failed on file content type");
+    }
+
+    Path pathClub = basePath.resolve("club_" + clubId);
+
+    Path pathClubPdf = pathClub.resolve(String.valueOf(imageType));
+
+    Path target = pathClubPdf.resolve(name + ".pdf");
+
+    try {
+      Files.createDirectories(pathClubPdf);
+      Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+    } catch (IOException e) {
+      throw new PdfStorageException(clubId, e.getMessage());
+    }
+  }
+
+  @Override
+  public Resource getPdf(Long clubId, ImageType imageType, String name) {
+
+    Path pathClub = basePath.resolve("club_" + clubId);
+    Path pathClubPdf = pathClub.resolve(String.valueOf(imageType));
+    Path target = pathClubPdf.resolve(name + ".pdf");
+
+    try {
+      if (!Files.exists(target) || !Files.isReadable(target)) {
+        throw new PdfGetException(clubId, "PDF not found or not readable");
+      }
+
+      Resource resource = new UrlResource(target.toUri());
+
+      if (!resource.exists() || !resource.isReadable()) {
+        throw new PdfGetException(clubId, "PDF not accessible");
+      }
+
+      return resource;
+
+    } catch (MalformedURLException e) {
+      throw new PdfGetException(clubId, "It failed on PDF load");
     }
   }
 }

@@ -1,29 +1,35 @@
 package luis.delgado.clubmontana.backend.unit.services;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
-import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
+import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.springframework.core.io.Resource;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.multipart.MultipartFile;
 
-class FileSystemImageStorageServiceTest {
+@ActiveProfiles("test")
+class FileSystemFileStorageServiceTest {
 
   @TempDir Path tempDir;
 
-  FileSystemImageStorageService service;
+  FileSystemFileStorageService service;
 
   @BeforeEach
   void setUp() {
-    service = new FileSystemImageStorageService(tempDir.toString());
+    service = new FileSystemFileStorageService(tempDir.toString());
   }
 
   private byte[] minimalJpeg() {
@@ -155,7 +161,7 @@ class FileSystemImageStorageServiceTest {
 
   @Test
   void getImages_whenDirectoryDoesNotExist_returnsEmptyList() {
-    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+    FileSystemFileStorageService service = new FileSystemFileStorageService(tempDir.toString());
 
     List<String> images = service.getImages(1L, 99L, ImageType.PUBLICATION);
 
@@ -166,7 +172,7 @@ class FileSystemImageStorageServiceTest {
   @Test
   void getImages_whenImagesExist_returnsRelativePathsWithForwardSlashes() throws Exception {
 
-    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+    FileSystemFileStorageService service = new FileSystemFileStorageService(tempDir.toString());
 
     Path publicationDir =
         tempDir.resolve("club_1").resolve(ImageType.PUBLICATION.name()).resolve("PUBLICATION_10");
@@ -191,7 +197,7 @@ class FileSystemImageStorageServiceTest {
   @Test
   void getImages_ignoresSubdirectories() throws Exception {
 
-    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+    FileSystemFileStorageService service = new FileSystemFileStorageService(tempDir.toString());
 
     Path publicationDir =
         tempDir.resolve("club_1").resolve(ImageType.PUBLICATION.name()).resolve("publication_20");
@@ -205,15 +211,34 @@ class FileSystemImageStorageServiceTest {
     List<String> images = service.getImages(1L, 20L, ImageType.PUBLICATION);
 
     assertEquals(1, images.size());
-    assertTrue(images.get(0).endsWith("image.jpg"));
+    assertTrue(images.getFirst().endsWith("image.jpg"));
   }
 
   @Test
   void getImages_whenPathTraversalAttempt_throwsSecurityException() {
 
-    FileSystemImageStorageService service = new FileSystemImageStorageService(tempDir.toString());
+    FileSystemFileStorageService service = new FileSystemFileStorageService(tempDir.toString());
 
     assertThrows(
         IllegalArgumentException.class, () -> service.getImages(1L, 1L, ImageType.valueOf("..")));
+  }
+
+  @Test
+  void saveAndGetPdf_happyPath() throws Exception {
+    Long clubId = 1L;
+    String name = "pylaws";
+
+    byte[] content = "PDF content".getBytes();
+    MultipartFile file = new MockMultipartFile("file", "estatutos.pdf", "application/pdf", content);
+
+    service.savePdf(clubId, file, ImageType.BY_LAWS, name);
+
+    Resource resource = service.getPdf(clubId, ImageType.BY_LAWS, name);
+
+    assertThat(resource).isNotNull();
+    assertThat(resource.exists()).isTrue();
+    try (InputStream is = resource.getInputStream()) {
+      assertThat(is.readAllBytes()).isEqualTo(content);
+    }
   }
 }

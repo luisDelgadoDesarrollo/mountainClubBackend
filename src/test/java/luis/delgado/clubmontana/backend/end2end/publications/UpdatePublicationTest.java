@@ -1,6 +1,5 @@
 package luis.delgado.clubmontana.backend.end2end.publications;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
+import luis.delgado.clubmontana.backend.end2end.UtilTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +28,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -171,9 +168,7 @@ class UpdatePublicationTest {
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(
-            "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    UtilTest.mockUserWithClub(clubId);
 
     // when / then
     mockMvc
@@ -181,8 +176,7 @@ class UpdatePublicationTest {
             multipart(
                     HttpMethod.PUT, "/publications/{clubId}/{publicationId}", clubId, publicationId)
                 .part(data)
-                .file(image)
-                .with(authentication(authentication)))
+                .file(image))
         .andExpect(status().isCreated());
   }
 }

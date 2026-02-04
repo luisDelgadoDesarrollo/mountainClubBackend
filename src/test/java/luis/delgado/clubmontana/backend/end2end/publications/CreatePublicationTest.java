@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import luis.delgado.clubmontana.backend.end2end.UtilTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,16 +157,12 @@ class CreatePublicationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(
-            "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
-
+      UtilTest.mockUserWithClub(clubId);
     mockMvc
         .perform(
             multipart("/publications/{clubId}", clubId)
                 .part(data)
-                .file(image)
-                .with(authentication(authentication)))
+                .file(image))
         .andExpect(status().isCreated());
   }
 

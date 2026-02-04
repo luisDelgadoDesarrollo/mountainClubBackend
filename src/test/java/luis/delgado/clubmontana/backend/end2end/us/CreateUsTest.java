@@ -1,7 +1,6 @@
 package luis.delgado.clubmontana.backend.end2end.us;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -14,10 +13,10 @@ import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
+import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
+import luis.delgado.clubmontana.backend.end2end.UtilTest;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.UsEntity;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.UsEntityJpa;
 import org.junit.jupiter.api.AfterAll;
@@ -33,9 +32,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -49,7 +45,7 @@ class CreateUsTest {
       Paths.get("D:/Proyectos/ClubMontaña/backend/data/test/images");
 
   @TempDir Path tempDir;
-  FileSystemImageStorageService service;
+  FileSystemFileStorageService service;
   @Autowired private MockMvc mockMvc;
   @Autowired private UsEntityJpa usEntityJpa;
   @Autowired private JdbcTemplate jdbcTemplate;
@@ -77,7 +73,7 @@ class CreateUsTest {
 
   @BeforeEach
   void setUp() {
-    service = new FileSystemImageStorageService(tempDir.toString());
+    service = new FileSystemFileStorageService(tempDir.toString());
   }
 
   private Long insertClub() {
@@ -174,17 +170,14 @@ class CreateUsTest {
     MockPart data = new MockPart("us", usRequestJson.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(
-            "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    UtilTest.mockUserWithClub(clubId);
 
     mockMvc
         .perform(
             multipart("/us/{clubId}", clubId)
                 .part(data)
                 .file(file1)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .with(authentication(authentication)))
+                .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isCreated());
 
     Optional<UsEntity> usEntityOptional = usEntityJpa.findById(clubId);

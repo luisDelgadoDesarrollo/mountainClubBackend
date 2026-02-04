@@ -10,7 +10,7 @@ import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
-import luis.delgado.clubmontana.backend.domain.services.ImageStorageService;
+import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import luis.delgado.clubmontana.backend.domain.userCases.PublicationUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +21,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class PublicationUseCasesImpl implements PublicationUseCases {
 
   private final PublicationRepository publicationRepository;
-  private final ImageStorageService imageStorageService;
+  private final FileStorageService fileStorageService;
 
   public PublicationUseCasesImpl(
-      PublicationRepository publicationRepository,
-      ImageStorageService imageStorageService) {
+      PublicationRepository publicationRepository, FileStorageService fileStorageService) {
     this.publicationRepository = publicationRepository;
-    this.imageStorageService = imageStorageService;
+    this.fileStorageService = fileStorageService;
   }
 
   @Override
@@ -36,7 +35,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     publication.setClubId(clubId);
     Publication publicationSaved = publicationRepository.savePublication(publication);
 
-    imageStorageService.store(
+    fileStorageService.store(
         files,
         publicationSaved.getImages().stream()
             .collect(
@@ -51,7 +50,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
   @Override
   public void delete(Long clubId, Long publicationId) {
     publicationRepository.deletePublication(clubId, publicationId);
-    imageStorageService.deleteImages(clubId, ImageType.PUBLICATION, publicationId);
+    fileStorageService.deleteImages(clubId, ImageType.PUBLICATION, publicationId);
   }
 
   @Override
@@ -60,8 +59,8 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     publication.setClubId(clubId);
     publication.setPublicationId(publicationId);
     Publication publicationSaved = publicationRepository.savePublication(publication);
-    imageStorageService.deleteImages(clubId, ImageType.PUBLICATION, publicationId);
-    imageStorageService.store(
+    fileStorageService.deleteImages(clubId, ImageType.PUBLICATION, publicationId);
+    fileStorageService.store(
         files,
         publicationSaved.getImages().stream()
             .collect(
@@ -79,11 +78,12 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
   public Pair<Publication, List<String>> getPublication(Long clubId, Long publicationId) {
     Publication publication = publicationRepository.getPublication(clubId, publicationId);
     List<String> images =
-        imageStorageService.getImages(
+        fileStorageService.getImages(
             publication.getClubId(), publication.getPublicationId(), ImageType.PUBLICATION);
     return Pair.of(publication, images);
   }
 
+  @NoAuthenticationNeeded
   @Override
   public List<Pair<Publication, List<String>>> getPublications(Long clubId, Pageable pageable) {
     List<Pair<Publication, List<String>>> publicationsWithPath = new ArrayList<>();
@@ -91,7 +91,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     publications.forEach(
         publication -> {
           List<String> images =
-              imageStorageService.getImages(
+              fileStorageService.getImages(
                   publication.getClubId(), publication.getPublicationId(), ImageType.PUBLICATION);
           publicationsWithPath.add(Pair.of(publication, images));
         });

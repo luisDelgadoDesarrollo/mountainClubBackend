@@ -24,7 +24,11 @@ public class SecurityConfig {
         .addFilterBefore(jwtAuthenticationFilter, AnonymousAuthenticationFilter.class)
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers(HttpMethod.GET, "/publications/{clubId}/**", "/us/{clubId}")
+                auth.requestMatchers(
+                        HttpMethod.GET,
+                        "/publications/{clubId}/**",
+                        "/us/{clubId}",
+                        "/bylaws/{clubId}")
                     .permitAll()
                     .requestMatchers("/auth/**", "/users/**")
                     .permitAll()

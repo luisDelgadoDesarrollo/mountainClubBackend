@@ -10,7 +10,8 @@ import java.nio.file.*;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.*;
-import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
+import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
+import luis.delgado.clubmontana.backend.end2end.UtilTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class UpdateUsTest {
   private static final Path IMAGES_DIR =
       Paths.get("D:/Proyectos/ClubMontaña/backend/data/test/images");
   @TempDir Path tempDir;
-  FileSystemImageStorageService service;
+  FileSystemFileStorageService service;
   @Autowired private MockMvc mockMvc;
   @Autowired private JdbcTemplate jdbcTemplate;
 
@@ -59,7 +60,7 @@ class UpdateUsTest {
 
   @BeforeEach
   void setUp() {
-    service = new FileSystemImageStorageService(tempDir.toString());
+    service = new FileSystemFileStorageService(tempDir.toString());
   }
 
   // ---------------- CLEANUP ----------------
@@ -182,16 +183,13 @@ class UpdateUsTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    Authentication authentication =
-        new UsernamePasswordAuthenticationToken(
-            "user-1", null, List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    UtilTest.mockUserWithClub(clubId);
 
     mockMvc
         .perform(
             multipart("/us/{clubId}", clubId)
                 .part(data)
                 .file(image)
-                .with(authentication(authentication))
                 .with(
                     request -> {
                       request.setMethod("PUT");

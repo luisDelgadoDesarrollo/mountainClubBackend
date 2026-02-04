@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Map;
-import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
+import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.application.useCases.PublicationUseCasesImpl;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
@@ -25,13 +25,11 @@ import org.springframework.web.multipart.MultipartFile;
 @ExtendWith(MockitoExtension.class)
 class UpdatePublicationUseCaseTest {
 
-  @Mock
-  private PublicationRepository publicationRepository;
+  @Mock private PublicationRepository publicationRepository;
 
-  @Mock private FileSystemImageStorageService fileSystemImageStorageService;
+  @Mock private FileSystemFileStorageService fileSystemImageStorageService;
 
-  @InjectMocks
-  private PublicationUseCasesImpl publicationUseCases;
+  @InjectMocks private PublicationUseCasesImpl publicationUseCases;
 
   @Test
   void update_happyPath_updatesPublicationAndStoresImages() {

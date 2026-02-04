@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 import java.util.Map;
-import luis.delgado.clubmontana.backend.application.services.FileSystemImageStorageService;
+import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.application.useCases.PublicationUseCasesImpl;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
@@ -25,7 +25,7 @@ class CreatePublicationUseCaseTest {
 
   @Mock private PublicationRepository publicationRepository;
 
-  @Mock private FileSystemImageStorageService fileSystemImageStorageService;
+  @Mock private FileSystemFileStorageService fileSystemImageStorageService;
 
   @InjectMocks private PublicationUseCasesImpl publicationUseCases;
 

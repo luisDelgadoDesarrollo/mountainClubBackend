@@ -16,16 +16,13 @@ import org.springframework.web.server.ResponseStatusException;
 @Component
 public class ClubAuthorizationAspect {
   @Before(
-      "execution(* *..*UseCase.*(Long, ..)) "
-          + " && !@annotation(luis.delgado.clubmontana.backend.core.security.NoAuthenticationNeeded)")
-  public void checkClubAuthorization(JoinPoint joinPoint) {
+      "@within(luis.delgado.clubmontana.backend.core.annotations.UseCase) "
+          + "&& execution(* *(..)) "
+          + "&& args(clubId, ..) "
+          + "&& !@annotation(luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded)")
+  public void checkClubAuthorization(JoinPoint joinPoint, Long clubId) {
 
     Object[] args = joinPoint.getArgs();
-
-    // Seguridad extra
-    if (args.length == 0 || !(args[0] instanceof Long clubIdFromMethod)) {
-      return;
-    }
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -33,12 +30,12 @@ public class ClubAuthorizationAspect {
         || !(authentication.getPrincipal() instanceof CustomUserDetails user)) {
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Usuario no autenticado");
     }
-    if (!clubIdFromMethod.equals(user.getClubId())) {
+    if (!clubId.equals(user.getClubId())) {
       log.warn(
           "Access denied: user={} userClub={} requestedClub={}",
           user.getUsername(),
           user.getClubId(),
-          clubIdFromMethod);
+          clubId);
 
       throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No pertenece a este club");
     }
