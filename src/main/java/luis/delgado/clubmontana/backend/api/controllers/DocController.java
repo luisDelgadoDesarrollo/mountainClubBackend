@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/bylaws/{clubId}")
+@RequestMapping("/doc/{clubId}")
 public class DocController {
 
   private final DocUseCase docUseCase;

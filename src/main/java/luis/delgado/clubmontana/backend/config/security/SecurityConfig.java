@@ -28,7 +28,7 @@ public class SecurityConfig {
                         HttpMethod.GET,
                         "/publications/{clubId}/**",
                         "/us/{clubId}",
-                        "/bylaws/{clubId}",
+                        "/doc/{clubId}",
                         "/rules/{clubId}")
                     .permitAll()
                     .requestMatchers("/auth/**", "/users/**")

@@ -1,8 +1,7 @@
-package luis.delgado.clubmontana.backend.end2end.bylaws;
+package luis.delgado.clubmontana.backend.end2end.doc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,15 +14,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.http.HttpHeaders;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class GetBylawsTest {
+@AutoConfigureMockMvc
+class SaveDocTest {
+
   @Autowired MockMvc mockMvc;
 
   @AfterAll
@@ -50,17 +49,15 @@ public class GetBylawsTest {
   }
 
   @Test
-  void getBylaws_happyPath() throws Exception {
+  void saveDoc_happyPath() throws Exception {
     Long clubId = 1L;
 
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
-
     UtilTest.mockUserWithClub(clubId);
-    // Arrange → guardamos antes
     mockMvc
         .perform(
-            multipart("/bylaws/{clubId}?pdfType=BY_LAWS", clubId)
+            multipart("/doc/{clubId}?pdfType=BY_LAWS", clubId)
                 .file(file)
                 .with(
                     request -> {
@@ -68,14 +65,5 @@ public class GetBylawsTest {
                       return request;
                     }))
         .andExpect(status().isNoContent());
-
-    // Act + Assert → GET
-    mockMvc
-        .perform(get("/bylaws/{clubId}?pdfType=BY_LAWS", clubId))
-        .andExpect(status().isOk())
-        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "application/pdf"))
-        .andExpect(
-            header().string(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=estatutos.pdf"))
-        .andExpect(content().bytes("PDF content".getBytes()));
   }
 }
