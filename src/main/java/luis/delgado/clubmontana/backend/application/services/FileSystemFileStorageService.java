@@ -12,6 +12,7 @@ import luis.delgado.clubmontana.backend.api.exceptions.PdfGetException;
 import luis.delgado.clubmontana.backend.api.exceptions.PdfStorageException;
 import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
+import luis.delgado.clubmontana.backend.domain.model.enums.PdfType;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
@@ -150,7 +151,7 @@ public class FileSystemFileStorageService implements FileStorageService {
   }
 
   @Override
-  public void savePdf(Long clubId, MultipartFile file, ImageType imageType, String name) {
+  public void savePdf(Long clubId, MultipartFile file, PdfType pdfType) {
 
     if (file == null || file.isEmpty()) {
       throw new PdfStorageException(clubId, "It failed on file null");
@@ -162,9 +163,9 @@ public class FileSystemFileStorageService implements FileStorageService {
 
     Path pathClub = basePath.resolve("club_" + clubId);
 
-    Path pathClubPdf = pathClub.resolve(String.valueOf(imageType));
+    Path pathClubPdf = pathClub.resolve(String.valueOf(pdfType));
 
-    Path target = pathClubPdf.resolve(name + ".pdf");
+    Path target = pathClubPdf.resolve(String.valueOf(pdfType).toLowerCase() + ".pdf");
 
     try {
       Files.createDirectories(pathClubPdf);
@@ -175,11 +176,11 @@ public class FileSystemFileStorageService implements FileStorageService {
   }
 
   @Override
-  public Resource getPdf(Long clubId, ImageType imageType, String name) {
+  public Resource getPdf(Long clubId, PdfType pdfType) {
 
     Path pathClub = basePath.resolve("club_" + clubId);
-    Path pathClubPdf = pathClub.resolve(String.valueOf(imageType));
-    Path target = pathClubPdf.resolve(name + ".pdf");
+    Path pathClubPdf = pathClub.resolve(String.valueOf(pdfType));
+    Path target = pathClubPdf.resolve(String.valueOf(pdfType).toLowerCase() + ".pdf");
 
     try {
       if (!Files.exists(target) || !Files.isReadable(target)) {

@@ -12,6 +12,7 @@ import java.util.Map;
 import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
+import luis.delgado.clubmontana.backend.domain.model.enums.PdfType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -231,9 +232,9 @@ class FileSystemFileStorageServiceTest {
     byte[] content = "PDF content".getBytes();
     MultipartFile file = new MockMultipartFile("file", "estatutos.pdf", "application/pdf", content);
 
-    service.savePdf(clubId, file, ImageType.BY_LAWS, name);
+    service.savePdf(clubId, file, PdfType.BY_LAWS);
 
-    Resource resource = service.getPdf(clubId, ImageType.BY_LAWS, name);
+    Resource resource = service.getPdf(clubId, PdfType.BY_LAWS);
 
     assertThat(resource).isNotNull();
     assertThat(resource.exists()).isTrue();

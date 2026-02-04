@@ -1,6 +1,7 @@
 package luis.delgado.clubmontana.backend.api.controllers;
 
-import luis.delgado.clubmontana.backend.domain.userCases.BylawsUseCase;
+import luis.delgado.clubmontana.backend.domain.model.enums.PdfType;
+import luis.delgado.clubmontana.backend.domain.userCases.DocUseCase;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,26 +12,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/bylaws/{clubId}")
-public class BylawsController {
+public class DocController {
 
-  private final BylawsUseCase bylawsUseCase;
+  private final DocUseCase docUseCase;
 
-  public BylawsController(BylawsUseCase bylawsUseCase) {
-    this.bylawsUseCase = bylawsUseCase;
+  public DocController(DocUseCase docUseCase) {
+    this.docUseCase = docUseCase;
   }
 
   @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> saveBylaws(
-      @PathVariable Long clubId, @RequestParam("file") MultipartFile file) {
-    bylawsUseCase.save(clubId, file);
+      @PathVariable Long clubId,
+      @RequestParam("file") MultipartFile file,
+      @RequestParam PdfType pdfType) {
+    docUseCase.save(clubId, file, pdfType);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   @GetMapping
-  public ResponseEntity<Resource> getUs(@PathVariable Long clubId) {
+  public ResponseEntity<Resource> getUs(@PathVariable Long clubId, @RequestParam PdfType pdfType) {
     return ResponseEntity.ok()
         .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=estatutos.pdf")
-        .body(bylawsUseCase.getBylaws(clubId));
+        .body(docUseCase.get(clubId, pdfType));
   }
 }

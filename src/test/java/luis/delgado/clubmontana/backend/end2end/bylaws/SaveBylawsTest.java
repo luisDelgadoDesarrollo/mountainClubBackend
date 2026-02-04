@@ -54,10 +54,10 @@ class SaveBylawsTest {
 
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
-      UtilTest.mockUserWithClub(clubId);
+    UtilTest.mockUserWithClub(clubId);
     mockMvc
         .perform(
-            multipart("/bylaws/{clubId}", clubId)
+            multipart("/bylaws/{clubId}?pdfType=BY_LAWS", clubId)
                 .file(file)
                 .with(
                     request -> {

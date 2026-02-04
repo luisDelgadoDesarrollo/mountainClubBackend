@@ -56,12 +56,11 @@ public class GetBylawsTest {
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
 
-
     UtilTest.mockUserWithClub(clubId);
     // Arrange → guardamos antes
     mockMvc
         .perform(
-            multipart("/bylaws/{clubId}", clubId)
+            multipart("/bylaws/{clubId}?pdfType=BY_LAWS", clubId)
                 .file(file)
                 .with(
                     request -> {
@@ -72,7 +71,7 @@ public class GetBylawsTest {
 
     // Act + Assert → GET
     mockMvc
-        .perform(get("/bylaws/{clubId}", clubId))
+        .perform(get("/bylaws/{clubId}?pdfType=BY_LAWS", clubId))
         .andExpect(status().isOk())
         .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "application/pdf"))
         .andExpect(
