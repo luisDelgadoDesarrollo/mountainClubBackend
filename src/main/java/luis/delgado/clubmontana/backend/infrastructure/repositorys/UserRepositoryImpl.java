@@ -1,5 +1,6 @@
 package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import luis.delgado.clubmontana.backend.domain.model.User;
 import luis.delgado.clubmontana.backend.domain.model.UserToLogin;
@@ -8,6 +9,7 @@ import luis.delgado.clubmontana.backend.infrastructure.jpa.UserEntityJpa;
 import luis.delgado.clubmontana.backend.infrastructure.mappers.UserRepositoryMapper;
 import org.springframework.stereotype.Repository;
 
+@Transactional
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 

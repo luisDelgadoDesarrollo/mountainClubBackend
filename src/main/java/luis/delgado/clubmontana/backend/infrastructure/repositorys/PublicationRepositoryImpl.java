@@ -1,5 +1,6 @@
 package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
+import jakarta.transaction.Transactional;
 import luis.delgado.clubmontana.backend.api.exceptions.PublicationNotFoundException;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+@Transactional
 @Repository
 public class PublicationRepositoryImpl implements PublicationRepository {
 

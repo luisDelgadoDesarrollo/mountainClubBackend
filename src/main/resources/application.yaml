@@ -29,7 +29,7 @@ security:
 
 logging:
   level:
-    root: ${LOG:DEBUG}
+    root: ${LOG:INFO}
 
 storage:
   images:

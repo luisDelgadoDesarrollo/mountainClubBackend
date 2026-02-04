@@ -11,6 +11,7 @@ import luis.delgado.clubmontana.backend.infrastructure.jpa.UsEntityJpa;
 import luis.delgado.clubmontana.backend.infrastructure.mappers.UsRepositoryMapper;
 import org.springframework.stereotype.Repository;
 
+@Transactional
 @Repository
 public class UsRepositoryImpl implements UsRepository {
   private final UsEntityJpa usEntityJpa;

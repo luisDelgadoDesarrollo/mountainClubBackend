@@ -1,11 +1,13 @@
 package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
+import jakarta.transaction.Transactional;
 import luis.delgado.clubmontana.backend.domain.model.TokenRefresh;
 import luis.delgado.clubmontana.backend.domain.repository.AuthRepository;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.TokenRefreshEntityJpa;
 import luis.delgado.clubmontana.backend.infrastructure.mappers.TokenRefreshRepositoryMapper;
 import org.springframework.stereotype.Repository;
 
+@Transactional
 @Repository
 public class AuthRepositoryImpl implements AuthRepository {
   private final TokenRefreshEntityJpa tokenRefreshEntityJpa;
