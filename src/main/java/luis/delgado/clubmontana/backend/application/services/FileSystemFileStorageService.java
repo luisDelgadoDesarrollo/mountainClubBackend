@@ -8,6 +8,7 @@ import java.nio.file.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import luis.delgado.clubmontana.backend.api.exceptions.ImageNotFoundException;
 import luis.delgado.clubmontana.backend.api.exceptions.PdfGetException;
 import luis.delgado.clubmontana.backend.api.exceptions.PdfStorageException;
 import luis.delgado.clubmontana.backend.api.exceptions.UnsupportedImageTypeException;
@@ -17,6 +18,7 @@ import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import org.apache.commons.io.FileUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -198,5 +200,20 @@ public class FileSystemFileStorageService implements FileStorageService {
     } catch (MalformedURLException e) {
       throw new PdfGetException(clubId, "It failed on PDF load");
     }
+  }
+
+  @Override
+  public Resource loadImage(String url) {
+    Path path = basePath.resolve(url).normalize();
+
+    if (!path.startsWith(basePath.normalize())) {
+      throw new SecurityException("Invalid path");
+    }
+
+    if (!Files.exists(path)) {
+      throw new ImageNotFoundException(url);
+    }
+
+    return new FileSystemResource(path);
   }
 }

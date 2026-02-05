@@ -8,6 +8,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface FileStorageService {
+  Resource loadImage(String url);
+
   void store(
       Map<String, MultipartFile> files,
       Map<String, Long> imageIds,
