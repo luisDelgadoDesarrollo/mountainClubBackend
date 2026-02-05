@@ -1,17 +1,19 @@
-package luis.delgado.clubmontana.backend.end2end.publications;
+package luis.delgado.clubmontana.backend.end2end.activities;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
-import luis.delgado.clubmontana.backend.domain.model.Publication;
-import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
+import luis.delgado.clubmontana.backend.domain.model.Activity;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
-import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
+import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.ClubEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -29,12 +31,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 @TestPropertySource(properties = {"storage.images.base-path=${java.io.tmpdir}/images-test"})
 @Transactional
-class GetPublicationTest {
+public class GetActivityTest {
 
   @TempDir static Path tempDir;
   @Autowired EntityManager entityManager;
   @Autowired private MockMvc mockMvc;
-  @Autowired private PublicationRepository publicationRepository;
+  @Autowired private ActivityRepository activityRepository;
 
   @DynamicPropertySource
   static void overrideProperties(DynamicPropertyRegistry registry) {
@@ -73,28 +75,31 @@ class GetPublicationTest {
 
     Long clubId = insertClub();
 
-    Publication publication = new Publication();
-    publication.setClubId(clubId);
-    publication.setTitle("Ruta al Mulhacén");
-    publication.setText("Texto");
-    publication.setImages(List.of(new PublicationImage(null, null, "img-1", "desc")));
-    publication.setLinks(List.of());
+    Activity a1 = new Activity();
+    a1.setClubId(clubId);
+    a1.setTitle("Pub 1");
+    a1.setDescription("Texto 1");
+    a1.setImages(List.of());
+    a1.setAffiliatePrice(BigDecimal.ONE);
+    a1.setNoAffiliatePrice(BigDecimal.ONE);
+    a1.setStartDate(LocalDateTime.now());
+    a1.setEndDate(LocalDateTime.now());
 
-    Publication saved = publicationRepository.savePublication(publication);
+    Activity saved = activityRepository.saveActivity(a1);
 
     // 👇 MISMA RUTA QUE USA EL SERVICIO
     Path imagesDir =
         tempDir
             .resolve("club_" + clubId)
-            .resolve(ImageType.PUBLICATION.name())
-            .resolve("publication_" + saved.getPublicationId());
+            .resolve(ImageType.ACTIVITY.name())
+            .resolve("activity_" + saved.getActivityId());
 
     Files.createDirectories(imagesDir);
     Files.createFile(imagesDir.resolve("1.jpg"));
     Files.createFile(imagesDir.resolve("2.jpg"));
 
     mockMvc
-        .perform(get("/publications/{clubId}/{publicationId}", clubId, saved.getPublicationId()))
+        .perform(get("/clubs/{clubId}/activities/{activityId}", clubId, saved.getActivityId()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.imagesPath").isArray())
         .andExpect(jsonPath("$.imagesPath.length()").value(2));
@@ -104,26 +109,28 @@ class GetPublicationTest {
   void getPublication_whenPublicationDoesNotExist_returns404() throws Exception {
 
     mockMvc
-        .perform(get("/publications/{clubId}/{publicationId}", 1L, 999L))
+        .perform(get("/clubs/{clubId}/activities/{activityId}", 1L, 999L))
         .andExpect(status().isNotFound());
   }
 
   @Test
   void getPublication_whenClubDoesNotMatch_returns404() throws Exception {
 
-    Publication publication = new Publication();
     Long clubId = insertClub();
-    publication.setClubId(clubId);
-    publication.setTitle("Titulo");
-    publication.setText("Texto");
-    publication.setImages(List.of());
-    publication.setLinks(List.of());
+    Activity a2 = new Activity();
+    a2.setClubId(clubId);
+    a2.setTitle("Pub 1");
+    a2.setDescription("Texto 1");
+    a2.setImages(List.of());
+    a2.setAffiliatePrice(BigDecimal.ONE);
+    a2.setNoAffiliatePrice(BigDecimal.ONE);
+    a2.setStartDate(LocalDateTime.now());
+    a2.setEndDate(LocalDateTime.now());
 
-    Publication saved = publicationRepository.savePublication(publication);
+    Activity saved = activityRepository.saveActivity(a2);
 
     mockMvc
-        .perform(
-            get("/publications/{clubId}/{publicationId}", clubId + 1, saved.getPublicationId()))
+        .perform(get("/clubs/{clubId}/activities/{activityId}", clubId + 1, saved.getActivityId()))
         .andExpect(status().isNotFound());
   }
 }

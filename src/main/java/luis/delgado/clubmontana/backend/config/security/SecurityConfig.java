@@ -27,6 +27,7 @@ public class SecurityConfig {
                 auth.requestMatchers(
                         HttpMethod.GET,
                         "/publications/{clubId}/**",
+                        "/clubs/{clubId}/activities/**",
                         "/us/{clubId}",
                         "/doc/{clubId}",
                         "/rules/{clubId}")

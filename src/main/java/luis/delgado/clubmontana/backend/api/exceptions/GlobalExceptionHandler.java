@@ -22,6 +22,12 @@ public class GlobalExceptionHandler {
     return Map.of("error", "PUBLICATION_NOT_FOUND", "message", ex.getMessage());
   }
 
+  @ExceptionHandler(ActivityNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public Map<String, String> handlePublicationNotFound(ActivityNotFoundException ex) {
+    return Map.of("error", "ACTIVITY_NOT_FOUND", "message", ex.getMessage());
+  }
+
   @ExceptionHandler(PdfStorageException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
   public Map<String, String> handlePdfStorageException(PdfStorageException ex) {

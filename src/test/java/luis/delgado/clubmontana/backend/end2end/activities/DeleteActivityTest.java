@@ -1,4 +1,4 @@
-package luis.delgado.clubmontana.backend.end2end.publications;
+package luis.delgado.clubmontana.backend.end2end.activities;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,16 +14,15 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class DeletePublicationTest {
+public class DeleteActivityTest {
 
   @Autowired private MockMvc mockMvc;
-
 
   @Test
   void deletePublication_existingPublication_returns204() throws Exception {
     UtilTest.mockUserWithClub(1L);
     mockMvc
-        .perform(delete("/publications/{clubId}/{publicationId}", 1L, 1L))
+        .perform(delete("/clubs/{clubId}/activities/{activityId}", 1L, 1L))
         .andExpect(status().isNoContent());
   }
 
@@ -31,7 +30,7 @@ class DeletePublicationTest {
   void deletePublication_notExistingPublication_returns204() throws Exception {
     UtilTest.mockUserWithClub(999L);
     mockMvc
-        .perform(delete("/publications/{clubId}/{publicationId}", 999L, 999L))
+        .perform(delete("/clubs/{clubId}/activities/{activityId}", 999L, 999L))
         .andExpect(status().isNoContent());
   }
 
@@ -39,7 +38,7 @@ class DeletePublicationTest {
   void deletePublication_withoutAuthentication_returnsForbidden() throws Exception {
 
     mockMvc
-        .perform(delete("/publications/{clubId}/{publicationId}", 1L, 1L))
+        .perform(delete("/clubs/{clubId}/activities/{activityId}", 1L, 1L))
         .andExpect(status().isForbidden());
   }
 }

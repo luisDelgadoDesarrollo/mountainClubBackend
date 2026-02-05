@@ -1,7 +1,6 @@
 package luis.delgado.clubmontana.backend.domain.model.enums;
 
-public enum ImageType {
-  PUBLICATION,
-  ACTIVITY,
-  US
+public enum Moment {
+  PRE_ACTIVITY,
+  POST_ACTIVITY
 }

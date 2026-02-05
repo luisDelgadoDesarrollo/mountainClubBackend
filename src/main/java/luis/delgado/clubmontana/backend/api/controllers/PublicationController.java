@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.CreatePublicationRequestDto;
-import luis.delgado.clubmontana.backend.api.dtos.PublicationIdResponseDto;
+import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.PublicationResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.PublicationControllerMapper;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
@@ -32,7 +32,7 @@ public class PublicationController {
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<PublicationIdResponseDto> createPublication(
+  public ResponseEntity<IdResponseDto> createPublication(
       @PathVariable Long clubId,
       @RequestPart("data") @Valid CreatePublicationRequestDto request,
       @RequestParam Map<String, MultipartFile> files) {
@@ -47,14 +47,14 @@ public class PublicationController {
   }
 
   @DeleteMapping("/{publicationId}")
-  public ResponseEntity<PublicationIdResponseDto> deletePublication(
+  public ResponseEntity<Void> deletePublication(
       @PathVariable Long clubId, @PathVariable Long publicationId) {
     publicationUseCases.delete(clubId, publicationId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   @PutMapping("/{publicationId}")
-  public ResponseEntity<PublicationIdResponseDto> updatePublication(
+  public ResponseEntity<IdResponseDto> updatePublication(
       @PathVariable Long clubId,
       @PathVariable Long publicationId,
       @RequestPart("data") @Valid CreatePublicationRequestDto request,
