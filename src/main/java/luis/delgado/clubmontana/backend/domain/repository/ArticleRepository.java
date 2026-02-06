@@ -4,4 +4,8 @@ import luis.delgado.clubmontana.backend.domain.model.Article;
 
 public interface ArticleRepository {
   Article save(Article article);
+
+  Article getArticle(Long clubId, Long articleId);
+
+  void delete(Long clubId, Long articleId);
 }

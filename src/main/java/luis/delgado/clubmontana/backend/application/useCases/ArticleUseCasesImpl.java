@@ -35,6 +35,38 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
     return articleSaved;
   }
 
+  @Override
+  public Article update(
+      Long clubId, Long articleId, Article article, Map<String, MultipartFile> files) {
+    Article articleOld = articleRepository.getArticle(clubId, articleId);
+    article.setClubId(clubId);
+    article.setArticleId(articleId);
+    Article articleSaved = articleRepository.save(article);
+    fileStorageService.deleteImages(clubId, ImageType.ARTICLE, articleId);
+    saveArticleImages(articleSaved, files);
+    articleOld
+        .getVariants()
+        .forEach(
+            articleVariant ->
+                fileStorageService.deleteImages(
+                    clubId, ImageType.ARTICLE_VARIANT, articleVariant.getArticleVariantId()));
+    saveArticleVariantsImages(articleSaved.getVariants(), files, clubId);
+    return articleSaved;
+  }
+
+  @Override
+  public void delete(Long clubId, Long articleId) {
+    Article articleOld = articleRepository.getArticle(clubId, articleId);
+    articleRepository.delete(clubId, articleId);
+    fileStorageService.deleteImages(clubId, ImageType.ARTICLE, articleId);
+    articleOld
+        .getVariants()
+        .forEach(
+            articleVariant ->
+                fileStorageService.deleteImages(
+                    clubId, ImageType.ARTICLE_VARIANT, articleVariant.getArticleVariantId()));
+  }
+
   private void saveArticleImages(Article article, Map<String, MultipartFile> files) {
     Map<String, MultipartFile> filesFiltered =
         files.entrySet().stream()

@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
-import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import luis.delgado.clubmontana.backend.end2end.UtilTest;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.ClubEntity;
 import org.junit.jupiter.api.AfterAll;
@@ -34,7 +33,6 @@ class CreateArticleTest {
 
   @Autowired EntityManager entityManager;
   @Autowired private MockMvc mockMvc;
-  @Autowired private FileStorageService fileStorageService;
 
   @AfterAll
   static void afterAll() throws IOException {

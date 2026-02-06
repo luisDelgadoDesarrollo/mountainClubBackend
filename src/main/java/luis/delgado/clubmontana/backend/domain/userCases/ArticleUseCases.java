@@ -6,4 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ArticleUseCases {
   Article create(Long clubId, Article article, Map<String, MultipartFile> files);
+
+  Article update(Long clubId, Long articleId, Article article, Map<String, MultipartFile> files);
+
+  void delete(Long clubId, Long articleId);
 }

@@ -25,4 +25,15 @@ public class ArticleRepositoryImpl implements ArticleRepository {
     return articleRepositoryMapper.articleEntityToArticle(
         articleEntityJpa.save(articleRepositoryMapper.articleToArticleEntity(article)));
   }
+
+  @Override
+  public Article getArticle(Long clubId, Long articleId) {
+    return articleRepositoryMapper.articleEntityToArticle(
+        articleEntityJpa.findByClubAndId(clubId, articleId).orElseThrow());
+  }
+
+  @Override
+  public void delete(Long clubId, Long articleId) {
+    articleEntityJpa.deleteByClub_ClubIdAndArticleId(clubId, articleId);
+  }
 }

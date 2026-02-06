@@ -1,5 +1,6 @@
 package luis.delgado.clubmontana.backend.api.controllers;
 
+import jakarta.validation.Valid;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.CreateArticleDto;
 import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
@@ -26,7 +27,7 @@ public class ArticleController {
   @PostMapping
   public ResponseEntity<IdResponseDto> post(
       @PathVariable Long clubId,
-      @RequestPart("article") CreateArticleDto createArticleDto,
+      @RequestPart("article") @Valid CreateArticleDto createArticleDto,
       @RequestParam Map<String, MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(
@@ -35,5 +36,27 @@ public class ArticleController {
                     clubId,
                     articleControllerMapper.createArticleDtoToArticle(createArticleDto),
                     files)));
+  }
+
+  @PutMapping("/{articleId}")
+  public ResponseEntity<IdResponseDto> put(
+      @PathVariable Long clubId,
+      @PathVariable Long articleId,
+      @RequestPart("article") @Valid CreateArticleDto createArticleDto,
+      @RequestParam Map<String, MultipartFile> files) {
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(
+            articleControllerMapper.articleToIdResponseDto(
+                articleUseCases.update(
+                    clubId,
+                    articleId,
+                    articleControllerMapper.createArticleDtoToArticle(createArticleDto),
+                    files)));
+  }
+
+  @DeleteMapping("/{articleId}")
+  public ResponseEntity<Void> delete(@PathVariable Long clubId, @PathVariable Long articleId) {
+    articleUseCases.delete(clubId, articleId);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
