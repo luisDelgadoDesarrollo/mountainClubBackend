@@ -39,8 +39,6 @@ public class MailSenderImpl implements MailSender {
     Context context = new Context();
     context.setVariables(mailMessage.variables());
     try {
-      // todo cambiar cuando configure emails
-      if (false) {
         String htmlBody = templateEngine.process(template, context);
 
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
@@ -54,8 +52,8 @@ public class MailSenderImpl implements MailSender {
         helper.setText(htmlBody, true);
         helper.setFrom("no-reply@clubmontana.es");
         log.info(mimeMessage.toString());
-        //    javaMailSender.send(mimeMessage);
-      }
+        javaMailSender.send(mimeMessage);
+
     } catch (MessagingException e) {
       log.warn(
           "Error sending email to {} of type {}. Ignoring.",

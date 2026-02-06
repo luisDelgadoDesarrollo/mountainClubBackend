@@ -31,7 +31,7 @@ public class SecurityConfig {
                         "/us/{clubId}",
                         "/doc/{clubId}",
                         "/rules/{clubId}",
-                        "/images/**")
+                        "/images/**", "/mailTest/**")
                     .permitAll()
                     .requestMatchers("/auth/**", "/users/**")
                     .permitAll()
