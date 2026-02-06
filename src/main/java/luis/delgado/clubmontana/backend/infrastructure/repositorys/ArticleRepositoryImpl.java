@@ -1,0 +1,28 @@
+package luis.delgado.clubmontana.backend.infrastructure.repositorys;
+
+import jakarta.transaction.Transactional;
+import luis.delgado.clubmontana.backend.domain.model.Article;
+import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
+import luis.delgado.clubmontana.backend.infrastructure.jpa.ArticleEntityJpa;
+import luis.delgado.clubmontana.backend.infrastructure.mappers.ArticleRepositoryMapper;
+import org.springframework.stereotype.Repository;
+
+@Transactional
+@Repository
+public class ArticleRepositoryImpl implements ArticleRepository {
+
+  private final ArticleEntityJpa articleEntityJpa;
+  private final ArticleRepositoryMapper articleRepositoryMapper;
+
+  public ArticleRepositoryImpl(
+      ArticleEntityJpa articleEntityJpa, ArticleRepositoryMapper articleRepositoryMapper) {
+    this.articleEntityJpa = articleEntityJpa;
+    this.articleRepositoryMapper = articleRepositoryMapper;
+  }
+
+  @Override
+  public Article save(Article article) {
+    return articleRepositoryMapper.articleEntityToArticle(
+        articleEntityJpa.save(articleRepositoryMapper.articleToArticleEntity(article)));
+  }
+}
