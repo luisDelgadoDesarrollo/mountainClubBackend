@@ -5,6 +5,8 @@ import luis.delgado.clubmontana.backend.domain.model.Article;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.ArticleEntityJpa;
 import luis.delgado.clubmontana.backend.infrastructure.mappers.ArticleRepositoryMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Transactional
@@ -35,5 +37,12 @@ public class ArticleRepositoryImpl implements ArticleRepository {
   @Override
   public void delete(Long clubId, Long articleId) {
     articleEntityJpa.deleteByClub_ClubIdAndArticleId(clubId, articleId);
+  }
+
+  @Override
+  public Page<Article> getArticles(Long clubId, Pageable pageable) {
+    return articleEntityJpa
+        .findByClub_ClubId(clubId, pageable)
+        .map(articleRepositoryMapper::articleEntityToArticle);
   }
 }

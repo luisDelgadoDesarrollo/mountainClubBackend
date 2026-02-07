@@ -8,6 +8,7 @@ import java.nio.file.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import luis.delgado.clubmontana.backend.api.exceptions.ImageNotFoundException;
 import luis.delgado.clubmontana.backend.api.exceptions.PdfGetException;
 import luis.delgado.clubmontana.backend.api.exceptions.PdfStorageException;
@@ -145,8 +146,8 @@ public class FileSystemFileStorageService implements FileStorageService {
       return stream
           .filter(Files::isRegularFile)
           .map(basePath::relativize)
-          .map(path -> path.toString().replace(File.separatorChar, '/')) // 🔥 AQUÍ
-          .toList();
+          .map(path -> path.toString().replace(File.separatorChar, '/'))
+          .collect(Collectors.toList());
     } catch (IOException e) {
       throw new IllegalStateException(e);
     }

@@ -18,6 +18,8 @@ public class DeleteActivityTest {
 
   @Autowired private MockMvc mockMvc;
 
+  // todo los dos primeros test no hacen nada baseicamente
+
   @Test
   void deletePublication_existingPublication_returns204() throws Exception {
     UtilTest.mockUserWithClub(1L);

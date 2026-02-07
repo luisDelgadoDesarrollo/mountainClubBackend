@@ -3,6 +3,7 @@ package luis.delgado.clubmontana.backend.application.useCases;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.Article;
 import luis.delgado.clubmontana.backend.domain.model.ArticleImage;
@@ -12,6 +13,8 @@ import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import luis.delgado.clubmontana.backend.domain.userCases.ArticleUseCases;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
 
 @UseCase
@@ -67,6 +70,19 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
                     clubId, ImageType.ARTICLE_VARIANT, articleVariant.getArticleVariantId()));
   }
 
+  @NoAuthenticationNeeded
+  @Override
+  public Pair<Article, List<String>> get(Long clubId, Long articleId) {
+    Article article = articleRepository.getArticle(clubId, articleId);
+    return buildPair(article);
+  }
+
+  @NoAuthenticationNeeded
+  @Override
+  public List<Pair<Article, List<String>>> getAll(Long clubId, Pageable pageable) {
+    return articleRepository.getArticles(clubId, pageable).map(this::buildPair).toList();
+  }
+
   private void saveArticleImages(Article article, Map<String, MultipartFile> files) {
     Map<String, MultipartFile> filesFiltered =
         files.entrySet().stream()
@@ -112,5 +128,23 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
                 ImageType.ARTICLE_VARIANT);
           }
         });
+  }
+
+  private Pair<Article, List<String>> buildPair(Article article) {
+    List<String> images =
+        fileStorageService.getImages(
+            article.getClubId(), article.getArticleId(), ImageType.ARTICLE);
+    article
+        .getVariants()
+        .forEach(
+            variant -> {
+              images.addAll(
+                  fileStorageService.getImages(
+                      article.getClubId(),
+                      variant.getArticleVariantId(),
+                      ImageType.ARTICLE_VARIANT));
+            });
+
+    return Pair.of(article, images);
   }
 }

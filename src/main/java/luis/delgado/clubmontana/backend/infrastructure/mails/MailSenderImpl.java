@@ -39,20 +39,21 @@ public class MailSenderImpl implements MailSender {
     Context context = new Context();
     context.setVariables(mailMessage.variables());
     try {
-        String htmlBody = templateEngine.process(template, context);
+      String htmlBody = templateEngine.process(template, context);
 
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper =
-            new MimeMessageHelper(
-                mimeMessage,
-                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                StandardCharsets.UTF_8.name());
-        helper.setTo(mailMessage.to());
-        helper.setSubject(subject);
-        helper.setText(htmlBody, true);
-        helper.setFrom("no-reply@clubmontana.es");
-        log.info(mimeMessage.toString());
-        javaMailSender.send(mimeMessage);
+      MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+      MimeMessageHelper helper =
+          new MimeMessageHelper(
+              mimeMessage,
+              MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+              StandardCharsets.UTF_8.name());
+      helper.setTo(mailMessage.to());
+      helper.setSubject(subject);
+      helper.setText(htmlBody, true);
+      // todo cambiar la cuenta de correo desde la que se envian los correos
+      helper.setFrom("misbarrancos@gmail.com");
+      log.info(mimeMessage.toString());
+      javaMailSender.send(mimeMessage);
 
     } catch (MessagingException e) {
       log.warn(
@@ -65,9 +66,9 @@ public class MailSenderImpl implements MailSender {
 
   private String resolveTemplate(MailType type) {
     return switch (type) {
-      case USER_CREATED -> "mail/templates/user-created.html";
-      case USER_REACTIVATED -> "mail/templates/user-reactivated.html";
-      case PASSWORD_RESET -> "mail/templates/password-reset.html";
+      case USER_CREATED -> "mail/user-created.html";
+      case USER_REACTIVATED -> "mail/user-reactivated";
+      case PASSWORD_RESET -> "mail/password-reset";
     };
   }
 
