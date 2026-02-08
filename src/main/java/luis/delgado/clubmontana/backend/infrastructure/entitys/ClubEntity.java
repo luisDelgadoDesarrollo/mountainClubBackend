@@ -33,6 +33,9 @@ public class ClubEntity {
   @Column(nullable = false, unique = true)
   private String url;
 
+  @Column(name = "contact_email", nullable = false)
+  private String contactEmail;
+
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 

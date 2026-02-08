@@ -4,5 +4,6 @@ public enum MailType {
   USER_CREATED,
   USER_REACTIVATED,
   PASSWORD_RESET,
-  TEST;
+  TEST,
+  CONTACT_REQUEST;
 }
