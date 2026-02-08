@@ -40,6 +40,7 @@ class UpdateUsTest {
   @TempDir Path tempDir;
   FileSystemFileStorageService service;
   @Autowired private MockMvc mockMvc;
+  @Autowired private UtilTest utilTest;
   @Autowired private JdbcTemplate jdbcTemplate;
 
   @AfterAll
@@ -61,77 +62,6 @@ class UpdateUsTest {
   @BeforeEach
   void setUp() {
     service = new FileSystemFileStorageService(tempDir.toString());
-  }
-
-  // ---------------- CLEANUP ----------------
-
-  // ---------------- HELPERS ----------------
-  private Long insertClub() {
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-
-    jdbcTemplate.update(
-        connection -> {
-          PreparedStatement ps =
-              connection.prepareStatement(
-                  """
-                                                              INSERT INTO club (
-                                                                name,
-                                                                nif,
-                                                                description,
-                                                                logo,
-                                                                url,
-                                                                created_at,
-                                                                created_by,
-                                                                has_inicio,
-                                                                has_secciones,
-                                                                has_galeria,
-                                                                has_enlaces,
-                                                                has_contacto,
-                                                                has_federarse,
-                                                                has_tienda,
-                                                                has_calendario,
-                                                                has_conocenos,
-                                                                has_noticias,
-                                                                has_foro,
-                                                                has_estatutos,
-                                                                has_normas,
-                                                                has_hazte_socio
-                                                              ) VALUES (
-                                                                ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
-                                                                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-                                                              )
-                                                              """,
-                  Statement.RETURN_GENERATED_KEYS);
-
-          String suffix = UUID.randomUUID().toString().substring(0, 8);
-
-          ps.setString(1, "Club Test");
-          ps.setString(2, "G" + suffix); // nif único
-          ps.setString(3, "Club de prueba");
-          ps.setString(4, "logo.png");
-          ps.setString(5, "club-" + suffix + ".es"); // url única
-          ps.setLong(6, 1L); // created_by
-
-          ps.setBoolean(7, true); // has_inicio
-          ps.setBoolean(8, true); // has_secciones
-          ps.setBoolean(9, false);
-          ps.setBoolean(10, false);
-          ps.setBoolean(11, false);
-          ps.setBoolean(12, false);
-          ps.setBoolean(13, false);
-          ps.setBoolean(14, false);
-          ps.setBoolean(15, true);
-          ps.setBoolean(16, false);
-          ps.setBoolean(17, false);
-          ps.setBoolean(18, false);
-          ps.setBoolean(19, false);
-          ps.setBoolean(20, false);
-
-          return ps;
-        },
-        keyHolder);
-
-    return keyHolder.getKey().longValue();
   }
 
   private Long insertUs(Long clubId) {
@@ -160,7 +90,7 @@ class UpdateUsTest {
   @Test
   void updateUs_happyPath_returns204() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
     insertUs(clubId);
 
     String usRequestJson =
@@ -183,11 +113,11 @@ class UpdateUsTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    UtilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubId);
 
     mockMvc
         .perform(
-            multipart("/us/{clubId}", clubId)
+            multipart("/clubs/{clubId}/us", clubId)
                 .part(data)
                 .file(image)
                 .with(
@@ -201,7 +131,7 @@ class UpdateUsTest {
   @Test
   void updateUs_withoutAuthentication_returns401() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     MockMultipartFile usPart =
         new MockMultipartFile(
@@ -209,7 +139,7 @@ class UpdateUsTest {
 
     mockMvc
         .perform(
-            multipart("/us/{clubId}", clubId)
+            multipart("/clubs/{clubId}/us", clubId)
                 .file(usPart)
                 .with(
                     request -> {
@@ -222,7 +152,7 @@ class UpdateUsTest {
   @Test
   void updateUs_invalidPayload_returns400() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     String invalidJson =
         """
@@ -240,7 +170,7 @@ class UpdateUsTest {
 
     mockMvc
         .perform(
-            multipart("/us/{clubId}", clubId)
+            multipart("/clubs/{clubId}/us", clubId)
                 .part(data)
                 .with(authentication(authentication))
                 .with(

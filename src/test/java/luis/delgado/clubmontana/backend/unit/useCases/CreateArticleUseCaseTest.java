@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.application.useCases.ArticleUseCasesImpl;
 import luis.delgado.clubmontana.backend.domain.model.Article;
-import luis.delgado.clubmontana.backend.domain.model.ArticleImage;
 import luis.delgado.clubmontana.backend.domain.model.ArticleVariant;
-import luis.delgado.clubmontana.backend.domain.model.ArticleVariantImage;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
@@ -37,17 +36,14 @@ public class CreateArticleUseCaseTest {
     Article article =
         Article.builder()
             .title("Artículo test")
-            .images(List.of(ArticleImage.builder().image("image-1").articleImageId(10L).build()))
+            .images(List.of(Image.builder().image("image-1").imageId(10L).parentId(1L).build()))
             .variants(
                 List.of(
                     ArticleVariant.builder()
                         .articleVariantId(20L)
                         .images(
                             List.of(
-                                ArticleVariantImage.builder()
-                                    .image("image-2")
-                                    .articleVariantImageId(30L)
-                                    .build()))
+                                Image.builder().image("image-2").imageId(30L).parentId(1L).build()))
                         .build()))
             .build();
 

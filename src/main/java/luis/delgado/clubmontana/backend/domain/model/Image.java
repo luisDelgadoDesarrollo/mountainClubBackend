@@ -7,9 +7,9 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class ArticleVariantImage {
-  Long articleVariantImageId;
-  Long articleVariantId;
+public class Image {
+  Long imageId;
+  Long parentId;
   String image;
-  String description;
+  String desc;
 }

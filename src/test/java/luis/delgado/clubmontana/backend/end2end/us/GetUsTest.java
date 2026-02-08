@@ -21,7 +21,7 @@ class GetUsTest {
     Long clubId = 1L;
 
     mockMvc
-        .perform(get("/us/{clubId}", clubId).contentType(MediaType.APPLICATION_JSON))
+        .perform(get("/clubs/{clubId}/us", clubId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.clubId").value(clubId))
         .andExpect(jsonPath("$.text").isNotEmpty())

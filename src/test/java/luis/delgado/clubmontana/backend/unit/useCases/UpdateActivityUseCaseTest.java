@@ -11,7 +11,7 @@ import java.util.Map;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.application.useCases.ActivityUseCasesImpl;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
-import luis.delgado.clubmontana.backend.domain.model.ActivityImage;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ public class UpdateActivityUseCaseTest {
 
     Activity activity = new Activity();
     activity.setImages(
-        List.of(ActivityImage.builder().activityImageId(100L).image("image-1").build()));
+        List.of(Image.builder().imageId(100L).parentId(1L).image("image-1").build()));
 
     Activity saved = new Activity();
     saved.setActivityId(activityId);

@@ -12,7 +12,7 @@ import java.util.Map;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.application.useCases.ActivityUseCasesImpl;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
-import luis.delgado.clubmontana.backend.domain.model.ActivityImage;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import org.junit.jupiter.api.Test;
@@ -40,8 +40,8 @@ public class CreateActivityUseCaseTest {
     Activity activity = new Activity();
     activity.setImages(
         List.of(
-            ActivityImage.builder().image("img-1").activityImageId(14L).build(),
-            ActivityImage.builder().image("img-2").activityImageId(15L).build()));
+            Image.builder().image("img-1").imageId(14L).parentId(1L).build(),
+            Image.builder().image("img-2").imageId(15L).parentId(1L).build()));
 
     Activity saved = new Activity();
     saved.setActivityId(activityId);
@@ -78,7 +78,7 @@ public class CreateActivityUseCaseTest {
   void create_whenFilesAndImagesCountMismatch_shouldThrowException() {
     // given
     Activity activity = new Activity();
-    activity.setImages(List.of(ActivityImage.builder().image("img-1").activityImageId(1L).build()));
+    activity.setImages(List.of(Image.builder().image("img-1").imageId(1L).build()));
 
     Map<String, MultipartFile> files =
         Map.of(

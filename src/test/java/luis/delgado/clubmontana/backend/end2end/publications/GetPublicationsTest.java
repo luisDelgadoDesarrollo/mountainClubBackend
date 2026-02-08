@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +12,7 @@ import java.util.List;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
-import luis.delgado.clubmontana.backend.infrastructure.entitys.ClubEntity;
+import luis.delgado.clubmontana.backend.end2end.UtilTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,44 +33,17 @@ class GetPublicationsTest {
   @TempDir static Path tempDir;
   @Autowired private MockMvc mockMvc;
   @Autowired private PublicationRepository publicationRepository;
-  @Autowired private EntityManager entityManager;
+  @Autowired private UtilTest utilTest;
 
   @DynamicPropertySource
   static void overrideProps(DynamicPropertyRegistry registry) {
     registry.add("storage.images.base-path", () -> tempDir.toString());
   }
 
-  private Long insertClub() {
-    ClubEntity club =
-        ClubEntity.builder()
-            .name("Club test")
-            .nif("NIF-" + System.nanoTime())
-            .url("club-" + System.nanoTime() + ".es")
-            .hasInicio(true)
-            .hasSecciones(true)
-            .hasGaleria(true)
-            .hasEnlaces(true)
-            .hasContacto(true)
-            .hasFederarse(true)
-            .hasTienda(true)
-            .hasCalendario(true)
-            .hasConocenos(true)
-            .hasNoticias(true)
-            .hasForo(true)
-            .hasEstatutos(true)
-            .hasNormas(true)
-            .hasHazteSocio(true)
-            .build();
-
-    entityManager.persist(club);
-    entityManager.flush();
-    return club.getClubId();
-  }
-
   @Test
   void getPublications_happyPath_returnsPublicationsWithImages() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     // publicación 1
     Publication p1 = new Publication();
@@ -99,7 +71,7 @@ class GetPublicationsTest {
 
     mockMvc
         .perform(
-            get("/publications/{clubId}", clubId)
+            get("/clubs/{clubId}/publications", clubId)
                 .param("page", "0")
                 .param("size", "10")
                 .accept(MediaType.APPLICATION_JSON))
@@ -113,10 +85,10 @@ class GetPublicationsTest {
   @Test
   void getPublications_whenNoPublications_returnsEmptyList() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     mockMvc
-        .perform(get("/publications/{clubId}", clubId).param("page", "0").param("size", "10"))
+        .perform(get("/clubs/{clubId}/publications", clubId).param("page", "0").param("size", "10"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(0));

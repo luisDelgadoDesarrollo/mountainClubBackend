@@ -9,12 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.end2end.UtilTest;
@@ -25,9 +22,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.ActiveProfiles;
@@ -40,7 +34,7 @@ public class UpdateActivityTest {
 
   @Autowired private MockMvc mockMvc;
   @Autowired private ActivityRepository activityRepository;
-  @Autowired private JdbcTemplate jdbcTemplate;
+  @Autowired private UtilTest utilTest;
 
   @AfterAll
   static void afterAll() throws IOException {
@@ -65,78 +59,10 @@ public class UpdateActivityTest {
     }
   }
 
-  private Long insertClub() {
-    KeyHolder keyHolder = new GeneratedKeyHolder();
-
-    jdbcTemplate.update(
-        connection -> {
-          PreparedStatement ps =
-              connection.prepareStatement(
-                  """
-                                        INSERT INTO club (
-                                          name,
-                                          nif,
-                                          description,
-                                          logo,
-                                          url,
-                                          created_at,
-                                          created_by,
-                                          has_inicio,
-                                          has_secciones,
-                                          has_galeria,
-                                          has_enlaces,
-                                          has_contacto,
-                                          has_federarse,
-                                          has_tienda,
-                                          has_calendario,
-                                          has_conocenos,
-                                          has_noticias,
-                                          has_foro,
-                                          has_estatutos,
-                                          has_normas,
-                                          has_hazte_socio
-                                        ) VALUES (
-                                          ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
-                                          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-                                        )
-                                        """,
-                  Statement.RETURN_GENERATED_KEYS);
-
-          String suffix = UUID.randomUUID().toString().substring(0, 8);
-
-          ps.setString(1, "Club Test");
-          ps.setString(2, "G" + suffix); // nif único
-          ps.setString(3, "Club de prueba");
-          ps.setString(4, "logo.png");
-          ps.setString(5, "club-" + suffix + ".es"); // url única
-          ps.setLong(6, 1L); // created_by
-
-          ps.setBoolean(7, true); // has_inicio
-          ps.setBoolean(8, true); // has_secciones
-          ps.setBoolean(9, false);
-          ps.setBoolean(10, false);
-          ps.setBoolean(11, false);
-          ps.setBoolean(12, false);
-          ps.setBoolean(13, false);
-          ps.setBoolean(14, false);
-          ps.setBoolean(15, false);
-          ps.setBoolean(16, false);
-          ps.setBoolean(17, false);
-          ps.setBoolean(18, false);
-          ps.setBoolean(19, false);
-          ps.setBoolean(20, false);
-
-          return ps;
-        },
-        keyHolder);
-
-    return keyHolder.getKey().longValue();
-  }
-
   @Test
-  void updatePublication_happyPath_returns201() throws Exception {
+  void updateActivity_happyPath_returns201() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     Activity a1 = new Activity();
     a1.setClubId(clubId);
@@ -180,7 +106,7 @@ public class UpdateActivityTest {
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    UtilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubId);
 
     // when / then
     mockMvc

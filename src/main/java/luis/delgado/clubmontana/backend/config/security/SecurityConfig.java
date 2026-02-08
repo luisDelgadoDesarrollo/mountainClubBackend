@@ -26,14 +26,14 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers(
                         HttpMethod.GET,
-                        "/publications/{clubId}/**",
                         "/clubs/{clubId}/activities/**",
-                        "/us/{clubId}",
-                        "/doc/{clubId}",
-                        "/rules/{clubId}",
+                        "/clubs/{clubId}/articles/**",
+                        "/clubs/{clubId}/doc/**",
                         "/images/**",
+                        "/clubs/{clubId}/publications/**",
+                        "/clubs/{clubId}/rules/**",
                         "/test/**",
-                        "/clubs/{clubId}/articles/**")
+                        "/clubs/{clubId}/us/**")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/clubs/{clubId}/contact")
                     .permitAll()

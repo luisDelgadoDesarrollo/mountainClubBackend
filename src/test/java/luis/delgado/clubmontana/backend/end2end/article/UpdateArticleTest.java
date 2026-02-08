@@ -4,7 +4,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import jakarta.persistence.EntityManager;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -12,7 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import luis.delgado.clubmontana.backend.end2end.UtilTest;
-import luis.delgado.clubmontana.backend.infrastructure.entitys.ClubEntity;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 public class UpdateArticleTest {
 
-  @Autowired EntityManager entityManager;
+  @Autowired private UtilTest utilTest;
   @Autowired private MockMvc mockMvc;
 
   @AfterAll
@@ -57,36 +55,10 @@ public class UpdateArticleTest {
     }
   }
 
-  private Long insertClub() {
-    ClubEntity club =
-        ClubEntity.builder()
-            .name("Club test")
-            .nif("NIF-" + System.nanoTime())
-            .url("club-" + System.nanoTime() + ".es")
-            .hasInicio(true)
-            .hasSecciones(true)
-            .hasGaleria(true)
-            .hasEnlaces(true)
-            .hasContacto(true)
-            .hasFederarse(true)
-            .hasTienda(true)
-            .hasCalendario(true)
-            .hasConocenos(true)
-            .hasNoticias(true)
-            .hasForo(true)
-            .hasEstatutos(true)
-            .hasNormas(true)
-            .hasHazteSocio(true)
-            .build();
-
-    entityManager.persist(club);
-    entityManager.flush();
-    return club.getClubId();
-  }
 
   @Test
   void shouldUpdateArticleWithImagesAndVariants() throws Exception {
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     // ---------- CREATE ----------
     String createJson =
@@ -127,7 +99,7 @@ public class UpdateArticleTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    UtilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubId);
 
     String response =
         mockMvc

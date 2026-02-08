@@ -19,5 +19,5 @@ public class Activity {
   BigDecimal noAffiliatePrice;
   LocalDateTime startDate;
   LocalDateTime endDate;
-  List<ActivityImage> images;
+  List<Image> images;
 }

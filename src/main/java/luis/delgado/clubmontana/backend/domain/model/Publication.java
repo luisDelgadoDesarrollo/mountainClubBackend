@@ -14,7 +14,7 @@ public class Publication {
   Long clubId;
   String title;
   String text;
-  List<PublicationImage> images;
+  List<Image> images;
   List<PublicationLink> links;
   LocalDateTime createdAt;
 }

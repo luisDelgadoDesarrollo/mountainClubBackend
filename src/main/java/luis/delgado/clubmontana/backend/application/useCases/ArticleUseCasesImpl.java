@@ -6,9 +6,8 @@ import java.util.stream.Collectors;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.Article;
-import luis.delgado.clubmontana.backend.domain.model.ArticleImage;
 import luis.delgado.clubmontana.backend.domain.model.ArticleVariant;
-import luis.delgado.clubmontana.backend.domain.model.ArticleVariantImage;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
@@ -95,7 +94,7 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
       fileStorageService.store(
           filesFiltered,
           article.getImages().stream()
-              .collect(Collectors.toMap(ArticleImage::getImage, ArticleImage::getArticleImageId)),
+              .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
           article.getArticleId(),
           article.getClubId(),
           ImageType.ARTICLE);
@@ -119,10 +118,7 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
             fileStorageService.store(
                 filesFiltered,
                 articleVariant.getImages().stream()
-                    .collect(
-                        Collectors.toMap(
-                            ArticleVariantImage::getImage,
-                            ArticleVariantImage::getArticleVariantImageId)),
+                    .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
                 articleVariant.getArticleVariantId(),
                 clubId,
                 ImageType.ARTICLE_VARIANT);

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
-import luis.delgado.clubmontana.backend.domain.model.ActivityImage;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
@@ -38,7 +38,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
     fileStorageService.store(
         files,
         activitySaved.getImages().stream()
-            .collect(Collectors.toMap(ActivityImage::getImage, ActivityImage::getActivityImageId)),
+            .collect(Collectors.toMap(Image::getImage, Image::getImageId)),
         activitySaved.getActivityId(),
         clubId,
         ImageType.ACTIVITY);
@@ -58,7 +58,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
     fileStorageService.store(
         files,
         activitySaved.getImages().stream()
-            .collect(Collectors.toMap(ActivityImage::getImage, ActivityImage::getActivityImageId)),
+            .collect(Collectors.toMap(Image::getImage, Image::getImageId)),
         activitySaved.getActivityId(),
         clubId,
         ImageType.ACTIVITY);

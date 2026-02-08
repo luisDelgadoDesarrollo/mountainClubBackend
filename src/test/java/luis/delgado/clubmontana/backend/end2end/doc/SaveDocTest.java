@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 class SaveDocTest {
 
   @Autowired MockMvc mockMvc;
+  @Autowired UtilTest utilTest;
 
   @AfterAll
   static void afterAll() throws IOException {
@@ -54,10 +55,10 @@ class SaveDocTest {
 
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
-    UtilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubId);
     mockMvc
         .perform(
-            multipart("/doc/{clubId}?pdfType=BY_LAWS", clubId)
+            multipart("/clubs/{clubId}/doc?pdfType=BY_LAWS", clubId)
                 .file(file)
                 .with(
                     request -> {

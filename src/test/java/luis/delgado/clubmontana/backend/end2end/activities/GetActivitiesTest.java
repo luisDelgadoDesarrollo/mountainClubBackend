@@ -15,7 +15,7 @@ import java.util.List;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
-import luis.delgado.clubmontana.backend.infrastructure.entitys.ClubEntity;
+import luis.delgado.clubmontana.backend.end2end.UtilTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.MockMvc;
 public class GetActivitiesTest {
 
   @TempDir static Path tempDir;
+  @Autowired private UtilTest utilTest;
   @Autowired private MockMvc mockMvc;
   @Autowired private ActivityRepository activityRepository;
   @Autowired private EntityManager entityManager;
@@ -43,37 +44,10 @@ public class GetActivitiesTest {
     registry.add("storage.images.base-path", () -> tempDir.toString());
   }
 
-  private Long insertClub() {
-    ClubEntity club =
-        ClubEntity.builder()
-            .name("Club test")
-            .nif("NIF-" + System.nanoTime())
-            .url("club-" + System.nanoTime() + ".es")
-            .hasInicio(true)
-            .hasSecciones(true)
-            .hasGaleria(true)
-            .hasEnlaces(true)
-            .hasContacto(true)
-            .hasFederarse(true)
-            .hasTienda(true)
-            .hasCalendario(true)
-            .hasConocenos(true)
-            .hasNoticias(true)
-            .hasForo(true)
-            .hasEstatutos(true)
-            .hasNormas(true)
-            .hasHazteSocio(true)
-            .build();
-
-    entityManager.persist(club);
-    entityManager.flush();
-    return club.getClubId();
-  }
-
   @Test
   void getActivity_happyPath_returnsActivityWithImages() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     // publicación 1
     Activity a1 = new Activity();
@@ -121,7 +95,7 @@ public class GetActivitiesTest {
   @Test
   void getPublications_whenNoPublications_returnsEmptyList() throws Exception {
 
-    Long clubId = insertClub();
+    Long clubId = utilTest.insertClub();
 
     mockMvc
         .perform(get("/clubs/{clubId}/activities", clubId).param("page", "0").param("size", "10"))

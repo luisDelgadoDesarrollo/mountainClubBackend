@@ -16,13 +16,15 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 public class DeleteActivityTest {
 
+  @Autowired private UtilTest utilTest;
+
   @Autowired private MockMvc mockMvc;
 
   // todo los dos primeros test no hacen nada baseicamente
 
   @Test
   void deletePublication_existingPublication_returns204() throws Exception {
-    UtilTest.mockUserWithClub(1L);
+    utilTest.mockUserWithClub(1L);
     mockMvc
         .perform(delete("/clubs/{clubId}/activities/{activityId}", 1L, 1L))
         .andExpect(status().isNoContent());
@@ -30,7 +32,7 @@ public class DeleteActivityTest {
 
   @Test
   void deletePublication_notExistingPublication_returns204() throws Exception {
-    UtilTest.mockUserWithClub(999L);
+    utilTest.mockUserWithClub(999L);
     mockMvc
         .perform(delete("/clubs/{clubId}/activities/{activityId}", 999L, 999L))
         .andExpect(status().isNoContent());

@@ -14,5 +14,5 @@ public class ArticleVariant {
   String size;
   String color;
   Integer stock;
-  List<ArticleVariantImage> images;
+  List<Image> images;
 }

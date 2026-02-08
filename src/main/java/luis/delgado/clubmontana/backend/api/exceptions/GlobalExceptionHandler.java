@@ -45,4 +45,10 @@ public class GlobalExceptionHandler {
   public Map<String, String> handlePdfGetException(ImageNotFoundException ex) {
     return Map.of("error", "IMAGE_GET_EXCEPTION", "message", ex.getMessage());
   }
+
+  @ExceptionHandler(UsNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public Map<String, String> handlePdfGetException(UsNotFoundException ex) {
+    return Map.of("error", "US_GET_EXCEPTION", "message", ex.getMessage());
+  }
 }

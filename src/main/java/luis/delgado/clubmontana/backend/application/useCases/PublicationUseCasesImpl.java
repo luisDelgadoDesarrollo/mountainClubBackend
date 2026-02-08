@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
-import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
@@ -38,9 +38,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     fileStorageService.store(
         files,
         publicationSaved.getImages().stream()
-            .collect(
-                Collectors.toMap(
-                    PublicationImage::getImage, PublicationImage::getPublicationImageId)),
+            .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
         publicationSaved.getPublicationId(),
         clubId,
         ImageType.PUBLICATION);
@@ -63,9 +61,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     fileStorageService.store(
         files,
         publicationSaved.getImages().stream()
-            .collect(
-                Collectors.toMap(
-                    PublicationImage::getImage, PublicationImage::getPublicationImageId)),
+            .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
         publicationId,
         clubId,
         ImageType.PUBLICATION);

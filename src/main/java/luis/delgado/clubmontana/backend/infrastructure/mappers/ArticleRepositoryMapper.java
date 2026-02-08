@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import luis.delgado.clubmontana.backend.domain.model.Article;
-import luis.delgado.clubmontana.backend.domain.model.ArticleImage;
 import luis.delgado.clubmontana.backend.domain.model.ArticleVariant;
-import luis.delgado.clubmontana.backend.domain.model.ArticleVariantImage;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -40,11 +39,14 @@ public interface ArticleRepositoryMapper {
     return entity;
   }
 
+  @Mapping(target = "articleVariantImageId", source = "imageId")
+  @Mapping(target = "articleVariant.articleVariantId", source = "parentId")
   ArticleVariantImageEntity articleVariantImageToArticleVariantImageEntity(
-      ArticleVariantImage articleVariantImage);
+      Image articleVariantImage);
 
-  @Mapping(target = "articleVariantId", source = "articleVariant.articleVariantId")
-  ArticleVariantImage articleVariantImageEntityToArticleVariantImage(
+  @Mapping(target = "imageId", source = "articleVariantImageId")
+  @Mapping(target = "parentId", source = "articleVariant.articleVariantId")
+  Image articleVariantImageEntityToArticleVariantImage(
       ArticleVariantImageEntity articleVariantsImage);
 
   default ArticleEntity articleToArticleEntity(Article article) {
@@ -72,11 +74,17 @@ public interface ArticleRepositoryMapper {
     return articleEntity;
   }
 
-  ArticleImageEntity articleImageToArticleImageEntity(ArticleImage articleImage);
+  @Mapping(target = "articleImageId", source = "imageId")
+  @Mapping(target = "article.articleId", source = "parentId")
+  ArticleImageEntity articleImageToArticleImageEntity(Image articleImage);
 
   @Mapping(target = "clubId", source = "club.clubId")
   Article articleEntityToArticle(ArticleEntity articleEntity);
 
   @Mapping(target = "articleId", source = "article.articleId")
   ArticleVariant articleVariantEntityToArticleVariants(ArticleVariantEntity articleVariantEntity);
+
+  @Mapping(target = "imageId", source = "articleImageId")
+  @Mapping(target = "parentId", source = "article.articleId")
+  Image articleImageEntityToImage(ArticleImageEntity articleImageEntity);
 }

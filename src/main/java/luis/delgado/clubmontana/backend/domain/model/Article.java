@@ -13,6 +13,6 @@ public class Article {
   Long articleId;
   String title;
   String description;
-  List<ArticleImage> images;
+  List<Image> images;
   List<ArticleVariant> variants;
 }

@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @ActiveProfiles("test")
 public class GetDocTest {
   @Autowired MockMvc mockMvc;
+  @Autowired private UtilTest utilTest;
 
   @AfterAll
   static void afterAll() throws IOException {
@@ -56,11 +57,11 @@ public class GetDocTest {
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
 
-    UtilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubId);
     // Arrange → guardamos antes
     mockMvc
         .perform(
-            multipart("/doc/{clubId}?pdfType=BY_LAWS", clubId)
+            multipart("/clubs/{clubId}/doc?pdfType=BY_LAWS", clubId)
                 .file(file)
                 .with(
                     request -> {
@@ -71,7 +72,7 @@ public class GetDocTest {
 
     // Act + Assert → GET
     mockMvc
-        .perform(get("/doc/{clubId}?pdfType=BY_LAWS", clubId))
+        .perform(get("/clubs/{clubId}/doc?pdfType=BY_LAWS", clubId))
         .andExpect(status().isOk())
         .andExpect(header().string(HttpHeaders.CONTENT_TYPE, "application/pdf"))
         .andExpect(

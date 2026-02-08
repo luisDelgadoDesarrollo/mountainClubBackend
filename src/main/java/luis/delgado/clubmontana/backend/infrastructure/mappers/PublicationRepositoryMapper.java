@@ -1,7 +1,7 @@
 package luis.delgado.clubmontana.backend.infrastructure.mappers;
 
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
-import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
 import luis.delgado.clubmontana.backend.domain.model.PublicationLink;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.ClubEntity;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.PublicationEntity;
@@ -46,12 +46,13 @@ public interface PublicationRepositoryMapper {
 
   PublicationLinkEntity publicationLinkToPublicationLinkEntity(PublicationLink publicationLink);
 
-  PublicationImageEntity publicationImageToPublicationImageEntity(
-      PublicationImage publicationImage);
+  @Mapping(target = "publicationImageId", source = "imageId")
+  @Mapping(target = "publication.publicationId", source = "parentId")
+  PublicationImageEntity publicationImageToPublicationImageEntity(Image publicationImage);
 
-  @Mapping(target = "publicationId", source = "publication.publicationId")
-  PublicationImage publicationImageEntityToPublicationImage(
-      PublicationImageEntity publicationImageEntity);
+  @Mapping(target = "imageId", source = "publicationImageId")
+  @Mapping(target = "parentId", source = "publication.publicationId")
+  Image publicationImageEntityToPublicationImage(PublicationImageEntity publicationImageEntity);
 
   @Mapping(target = "publicationId", source = "publication.publicationId")
   PublicationLink publicationLinkEntityToPublicationLink(

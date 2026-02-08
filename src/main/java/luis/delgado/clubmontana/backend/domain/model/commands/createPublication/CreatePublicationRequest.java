@@ -2,7 +2,7 @@ package luis.delgado.clubmontana.backend.domain.model.commands.createPublication
 
 import java.util.List;
 import lombok.*;
-import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.PublicationLink;
 
 @Getter
@@ -13,6 +13,6 @@ import luis.delgado.clubmontana.backend.domain.model.PublicationLink;
 public class CreatePublicationRequest {
   String title;
   String text;
-  List<PublicationImage> images;
+  List<Image> images;
   List<PublicationLink> links;
 }

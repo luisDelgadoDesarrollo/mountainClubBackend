@@ -1,6 +1,7 @@
 package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
 import jakarta.transaction.Transactional;
+import luis.delgado.clubmontana.backend.api.exceptions.UsNotFoundException;
 import luis.delgado.clubmontana.backend.domain.model.Us;
 import luis.delgado.clubmontana.backend.domain.repository.UsRepository;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.ClubEntity;
@@ -60,6 +61,7 @@ public class UsRepositoryImpl implements UsRepository {
 
   @Override
   public Us get(Long clubId) {
-    return usRepositoryMapper.usEntityToUs(usEntityJpa.findByClub_ClubId(clubId).orElseThrow());
+    return usRepositoryMapper.usEntityToUs(
+        usEntityJpa.findByClub_ClubId(clubId).orElseThrow(() -> new UsNotFoundException(clubId)));
   }
 }

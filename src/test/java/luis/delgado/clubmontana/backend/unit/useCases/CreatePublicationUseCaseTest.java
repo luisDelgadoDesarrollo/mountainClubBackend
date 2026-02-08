@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.application.useCases.PublicationUseCasesImpl;
+import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
-import luis.delgado.clubmontana.backend.domain.model.PublicationImage;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
 import org.junit.jupiter.api.Test;
@@ -38,8 +38,8 @@ class CreatePublicationUseCaseTest {
     Publication publication = new Publication();
     publication.setImages(
         List.of(
-            PublicationImage.builder().image("img-1").publicationImageId(12L).build(),
-            PublicationImage.builder().image("img-2").publicationImageId(13L).build()));
+            Image.builder().image("img-1").imageId(12L).parentId(12L).build(),
+            Image.builder().image("img-2").imageId(13L).parentId(13L).build()));
 
     Publication saved = new Publication();
     saved.setPublicationId(publicationId);
@@ -76,8 +76,7 @@ class CreatePublicationUseCaseTest {
   void create_whenFilesAndImagesCountMismatch_shouldThrowException() {
     // given
     Publication publication = new Publication();
-    publication.setImages(
-        List.of(PublicationImage.builder().image("img-1").publicationImageId(1L).build()));
+    publication.setImages(List.of(Image.builder().image("img-1").imageId(1L).parentId(1L).build()));
 
     Map<String, MultipartFile> files =
         Map.of(

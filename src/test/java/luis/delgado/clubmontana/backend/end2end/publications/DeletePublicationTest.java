@@ -17,21 +17,21 @@ import org.springframework.test.web.servlet.MockMvc;
 class DeletePublicationTest {
 
   @Autowired private MockMvc mockMvc;
-
+  @Autowired private UtilTest utilTest;
 
   @Test
   void deletePublication_existingPublication_returns204() throws Exception {
-    UtilTest.mockUserWithClub(1L);
+    utilTest.mockUserWithClub(1L);
     mockMvc
-        .perform(delete("/publications/{clubId}/{publicationId}", 1L, 1L))
+        .perform(delete("/clubs/{clubId}/publications/{publicationId}", 1L, 1L))
         .andExpect(status().isNoContent());
   }
 
   @Test
   void deletePublication_notExistingPublication_returns204() throws Exception {
-    UtilTest.mockUserWithClub(999L);
+    utilTest.mockUserWithClub(999L);
     mockMvc
-        .perform(delete("/publications/{clubId}/{publicationId}", 999L, 999L))
+        .perform(delete("/clubs/{clubId}/publications/{publicationId}", 999L, 999L))
         .andExpect(status().isNoContent());
   }
 
@@ -39,7 +39,7 @@ class DeletePublicationTest {
   void deletePublication_withoutAuthentication_returnsForbidden() throws Exception {
 
     mockMvc
-        .perform(delete("/publications/{clubId}/{publicationId}", 1L, 1L))
+        .perform(delete("/clubs/{clubId}/publications/{publicationId}", 1L, 1L))
         .andExpect(status().isForbidden());
   }
 }
