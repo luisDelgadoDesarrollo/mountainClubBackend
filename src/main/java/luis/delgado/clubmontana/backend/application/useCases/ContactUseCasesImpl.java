@@ -1,5 +1,7 @@
 package luis.delgado.clubmontana.backend.application.useCases;
 
+import java.util.HashMap;
+import java.util.Map;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.mails.MailSender;
@@ -9,9 +11,6 @@ import luis.delgado.clubmontana.backend.domain.model.MailMessage;
 import luis.delgado.clubmontana.backend.domain.model.enums.MailType;
 import luis.delgado.clubmontana.backend.domain.repository.ClubRepository;
 import luis.delgado.clubmontana.backend.domain.userCases.ContactUseCases;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @UseCase
 public class ContactUseCasesImpl implements ContactUseCases {
@@ -34,6 +33,5 @@ public class ContactUseCasesImpl implements ContactUseCases {
         params.put("message", contactRequest.getMessage());
         params.put("phoneNumber", contactRequest.getPhoneNumber());
         mailSender.execute(new MailMessage(club.getContactEmail(), MailType.CONTACT_REQUEST, params));
-
     }
 }

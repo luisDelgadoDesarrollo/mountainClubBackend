@@ -1,15 +1,15 @@
-<!DOCTYPE html>email
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Solicitud de contacto</title>
 </head>
 <body>
-Nombre del usuario: <span th:text="${name}"/>
-Email al que responder: <span th:text="${email}"/>
-Numero de telefono: <span th:text="${phoneNumber}">No aportado</span>
+Nombre del usuario: <span th:text="${name}"/> <br>
+Email al que responder: <span th:text="${email}"/> <br>
+Numero de telefono: <span th:text="${phoneNumber}"/> <br>
 
-<h2>Mensaje: </h2><br>
+<h2>Mensaje: </h2>
 <span th:text="${message}"/>
 
 </body>
