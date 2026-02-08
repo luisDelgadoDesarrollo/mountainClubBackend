@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Plantilla de test pensada para probar cosas</title>
+</head>
+<body>
+
+<h1>¡Hola <span th:text="${username}">Usuario</span>!</h1>
+
+<p>
+    Gracias por hacer la prueba
+</p>
+
+<a
+        style="padding:10px 15px; background:#4CAF50; color:white; text-decoration:none;"
+        th:href="${activationUrl}"
+>
+    Activar cuenta
+</a>
+
+</body>
+</html>

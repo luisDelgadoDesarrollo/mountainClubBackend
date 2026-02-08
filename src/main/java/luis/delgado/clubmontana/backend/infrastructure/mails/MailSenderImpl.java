@@ -66,6 +66,7 @@ public class MailSenderImpl implements MailSender {
 
   private String resolveTemplate(MailType type) {
     return switch (type) {
+      case TEST -> "mail/test.html";
       case USER_CREATED -> "mail/user-created.html";
       case USER_REACTIVATED -> "mail/user-reactivated";
       case PASSWORD_RESET -> "mail/password-reset";
@@ -74,6 +75,7 @@ public class MailSenderImpl implements MailSender {
 
   private String resolveSubject(MailType type) {
     return switch (type) {
+      case TEST -> "test";
       case USER_CREATED -> "Verifica tu cuenta";
       case USER_REACTIVATED -> "Tu cuenta ha sido reactivada";
       case PASSWORD_RESET -> "Restablece tu contraseña";
