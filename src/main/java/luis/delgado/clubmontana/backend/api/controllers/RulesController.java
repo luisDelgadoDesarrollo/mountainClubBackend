@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/rules/{clubId}")
+@RequestMapping("/clubs/{clubId}/rules")
 public class RulesController {
   private final RulesUseCases rulesUseCases;
   private final RulesControllerMapper rulesControllerMapper;
