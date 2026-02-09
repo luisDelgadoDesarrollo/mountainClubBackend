@@ -28,7 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileSystemFileStorageService implements FileStorageService {
 
-  private static final Set<String> ALLOWED_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
+  private static final Set<String> ALLOWED_TYPES =
+      Set.of("image/jpeg", "image/png", "image/webp", "application/pdf");
 
   private final Path basePath;
   private final Tika tika = new Tika();
@@ -96,6 +97,7 @@ public class FileSystemFileStorageService implements FileStorageService {
       case "image/jpeg" -> "jpg";
       case "image/png" -> "png";
       case "image/webp" -> "webp";
+      case "application/pdf" -> "pdf";
       default -> throw new IllegalStateException("Unexpected mime: " + mime);
     };
   }
