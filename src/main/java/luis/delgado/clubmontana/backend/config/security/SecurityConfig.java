@@ -35,7 +35,7 @@ public class SecurityConfig {
                         "/test/**",
                         "/clubs/{clubId}/us/**")
                     .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/clubs/{clubId}/contact")
+                    .requestMatchers(HttpMethod.POST, "/clubs/{clubId}/contact/**")
                     .permitAll()
                     .requestMatchers("/auth/**", "/users/**")
                     .permitAll()

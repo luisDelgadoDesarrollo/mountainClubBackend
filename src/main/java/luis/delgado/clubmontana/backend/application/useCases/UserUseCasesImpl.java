@@ -34,7 +34,7 @@ public class UserUseCasesImpl implements UserUseCases {
       User execute = createUserService.execute(createUserRequest);
       CreateUserResponse createUserResponse = CreateUserResponse.fromUser(execute, "Creado");
       mailSender.execute(
-          new MailMessage(createUserResponse.getEmail(), MailType.USER_CREATED, Map.of()));
+          new MailMessage(createUserResponse.getEmail(), MailType.USER_CREATED, Map.of()), null);
       return createUserResponse;
     }
     User user = userOptional.get();
@@ -42,7 +42,7 @@ public class UserUseCasesImpl implements UserUseCases {
       CreateUserResponse createUserResponse =
           CreateUserResponse.fromUser(user, "Usuario no verificado");
       mailSender.execute(
-          new MailMessage(createUserResponse.getEmail(), MailType.USER_CREATED, Map.of()));
+          new MailMessage(createUserResponse.getEmail(), MailType.USER_CREATED, Map.of()), null);
       return createUserResponse;
     }
 

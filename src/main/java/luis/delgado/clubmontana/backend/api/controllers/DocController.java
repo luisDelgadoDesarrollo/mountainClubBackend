@@ -28,7 +28,7 @@ public class DocController {
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  @GetMapping
+  @GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
   public ResponseEntity<Resource> getUs(@PathVariable Long clubId, @RequestParam PdfType pdfType) {
     return ResponseEntity.ok(docUseCase.get(clubId, pdfType));
   }

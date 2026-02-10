@@ -3,10 +3,13 @@ package luis.delgado.clubmontana.backend.infrastructure.mails;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import lombok.extern.log4j.Log4j2;
 import luis.delgado.clubmontana.backend.domain.mails.MailSender;
+import luis.delgado.clubmontana.backend.domain.model.MailAttachment;
 import luis.delgado.clubmontana.backend.domain.model.MailMessage;
 import luis.delgado.clubmontana.backend.domain.model.enums.MailType;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -32,7 +35,7 @@ public class MailSenderImpl implements MailSender {
 
   @Override
   @Async
-  public void execute(MailMessage mailMessage) {
+  public void execute(MailMessage mailMessage, List<MailAttachment> files) {
     String template = resolveTemplate(mailMessage.type());
     String subject = resolveSubject(mailMessage.type());
 
@@ -52,6 +55,20 @@ public class MailSenderImpl implements MailSender {
       helper.setText(htmlBody, true);
       // todo cambiar la cuenta de correo desde la que se envian los correos
       helper.setFrom("misbarrancos@gmail.com");
+
+      if (files != null) {
+        files.forEach(
+            mailAttachment -> {
+              try {
+                helper.addAttachment(
+                    mailAttachment.fileName(),
+                    new ByteArrayResource(mailAttachment.content()),
+                    mailAttachment.contentType());
+              } catch (MessagingException e) {
+                throw new RuntimeException(e);
+              }
+            });
+      }
       log.info(mimeMessage.toString());
       javaMailSender.send(mimeMessage);
 
@@ -71,6 +88,7 @@ public class MailSenderImpl implements MailSender {
       case USER_CREATED -> "mail/user-created.html";
       case USER_REACTIVATED -> "mail/user-reactivated";
       case PASSWORD_RESET -> "mail/password-reset";
+      case MEMBERSHIP_SIGNUP -> "mail/membership_signup.html";
     };
   }
 
@@ -81,6 +99,7 @@ public class MailSenderImpl implements MailSender {
       case USER_CREATED -> "Verifica tu cuenta";
       case USER_REACTIVATED -> "Tu cuenta ha sido reactivada";
       case PASSWORD_RESET -> "Restablece tu contraseña";
+      case MEMBERSHIP_SIGNUP -> "Nuevo miembro del club";
     };
   }
 }

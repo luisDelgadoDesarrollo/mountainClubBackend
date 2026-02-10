@@ -26,6 +26,7 @@ public class TestController {
                 "username",
                 "Luis",
                 "activationUrl",
-                "https://misbarrancos.com/activate?token=abc123")));
+                "https://misbarrancos.com/activate?token=abc123")),
+        null);
   }
 }
