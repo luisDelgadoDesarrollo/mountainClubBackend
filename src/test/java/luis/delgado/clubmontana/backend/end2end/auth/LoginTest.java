@@ -140,6 +140,7 @@ class LoginTest {
 
     return ClubEntity.builder()
         .name("Club Montaña " + suffix)
+        .slug("club-montana-" + suffix)
         .nif("G" + suffix)
         .url("club-" + suffix + ".es")
         .description("Club de prueba")

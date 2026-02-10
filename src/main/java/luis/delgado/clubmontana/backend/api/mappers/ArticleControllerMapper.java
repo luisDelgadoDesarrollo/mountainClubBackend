@@ -52,6 +52,7 @@ public interface ArticleControllerMapper {
 
     return new ArticleDto(
         article.getClubId(),
+        article.getSlug(),
         article.getArticleId(),
         article.getTitle(),
         article.getDescription(),

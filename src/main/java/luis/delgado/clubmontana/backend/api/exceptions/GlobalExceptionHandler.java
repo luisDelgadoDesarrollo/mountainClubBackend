@@ -58,6 +58,12 @@ public class GlobalExceptionHandler {
     return Map.of("error", "US_GET_EXCEPTION", "message", ex.getMessage());
   }
 
+  @ExceptionHandler(SlugNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public Map<String, String> handlePdfGetException(SlugNotFoundException ex) {
+    return Map.of("error", "SLUG_NOT_FOUND_EXCEPTION", "message", ex.getMessage());
+  }
+
   @ExceptionHandler(BadDateActivity.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public Map<String, String> handlePdfGetException(BadDateActivity ex) {

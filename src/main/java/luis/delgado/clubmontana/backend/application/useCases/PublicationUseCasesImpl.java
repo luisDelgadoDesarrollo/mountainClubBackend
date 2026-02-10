@@ -11,6 +11,7 @@ import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
+import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
 import luis.delgado.clubmontana.backend.domain.userCases.PublicationUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,17 +23,22 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
 
   private final PublicationRepository publicationRepository;
   private final FileStorageService fileStorageService;
+  private final SlugFactory slugFactory;
 
   public PublicationUseCasesImpl(
-      PublicationRepository publicationRepository, FileStorageService fileStorageService) {
+      PublicationRepository publicationRepository,
+      FileStorageService fileStorageService,
+      SlugFactory slugFactory) {
     this.publicationRepository = publicationRepository;
     this.fileStorageService = fileStorageService;
+    this.slugFactory = slugFactory;
   }
 
   @Override
   public Publication create(
       Long clubId, Publication publication, Map<String, MultipartFile> files) {
     publication.setClubId(clubId);
+    publication.setSlug(slugFactory.makeSlug(publication.getTitle()));
     Publication publicationSaved = publicationRepository.savePublication(publication);
 
     fileStorageService.store(

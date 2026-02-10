@@ -12,6 +12,7 @@ import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
+import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
 import luis.delgado.clubmontana.backend.domain.userCases.ActivityUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,16 +23,21 @@ import org.springframework.web.multipart.MultipartFile;
 public class ActivityUseCasesImpl implements ActivityUseCases {
   private final ActivityRepository activityRepository;
   private final FileStorageService fileStorageService;
+  private final SlugFactory slugFactory;
 
   public ActivityUseCasesImpl(
-      ActivityRepository activityRepository, FileStorageService fileStorageService) {
+      ActivityRepository activityRepository,
+      FileStorageService fileStorageService,
+      SlugFactory slugFactory) {
     this.activityRepository = activityRepository;
     this.fileStorageService = fileStorageService;
+    this.slugFactory = slugFactory;
   }
 
   @Override
   public Activity createActivity(Long clubId, Activity activity, Map<String, MultipartFile> files) {
     activity.setClubId(clubId);
+    activity.setSlug(slugFactory.makeSlug(activity.getTitle()));
     Activity activitySaved = chekActivity(activity);
     fileStorageService.store(
         files,

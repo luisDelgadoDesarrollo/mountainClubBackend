@@ -55,6 +55,7 @@ public interface ArticleRepositoryMapper {
     ArticleEntity articleEntity = new ArticleEntity();
 
     articleEntity.setClub(ClubEntity.builder().clubId(article.getClubId()).build());
+    articleEntity.setSlug(article.getSlug());
     articleEntity.setArticleId(article.getArticleId());
     articleEntity.setTitle(article.getTitle());
     articleEntity.setDescription(article.getDescription());

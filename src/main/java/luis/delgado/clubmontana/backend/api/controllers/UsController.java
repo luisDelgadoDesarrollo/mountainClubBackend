@@ -5,6 +5,7 @@ import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.UsRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.UsResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.UsControllerMapper;
+import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.userCases.UsUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/clubs/{clubId}/us")
+@RequestMapping("/clubs/{club}/us")
 public class UsController {
 
   private final UsUseCases usUseCases;
@@ -26,7 +27,7 @@ public class UsController {
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> createUs(
-      @PathVariable Long clubId,
+      @ClubId Long clubId,
       @RequestPart("us") @Valid UsRequestDto us,
       @RequestParam Map<String, MultipartFile> files) {
     usUseCases.create(clubId, usControllerMapper.usRequestDroToUsRequest(us), files);
@@ -35,7 +36,7 @@ public class UsController {
 
   @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<Void> updateUs(
-      @PathVariable Long clubId,
+      @ClubId Long clubId,
       @RequestPart("us") @Valid UsRequestDto us,
       @RequestParam Map<String, MultipartFile> files) {
     usUseCases.update(clubId, usControllerMapper.usRequestDroToUsRequest(us), files);
@@ -43,7 +44,7 @@ public class UsController {
   }
 
   @GetMapping
-  public ResponseEntity<UsResponseDto> getUs(@PathVariable Long clubId) {
+  public ResponseEntity<UsResponseDto> getUs(@ClubId Long clubId) {
     return ResponseEntity.ok(usControllerMapper.useResponseToUsResponseDto(usUseCases.get(clubId)));
   }
 }

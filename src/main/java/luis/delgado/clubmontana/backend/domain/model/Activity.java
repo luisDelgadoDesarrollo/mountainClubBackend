@@ -12,6 +12,7 @@ import lombok.*;
 @Setter
 public class Activity {
   Long activityId;
+  String slug;
   Long clubId;
   String title;
   String description;

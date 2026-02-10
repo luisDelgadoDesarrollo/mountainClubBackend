@@ -48,7 +48,7 @@ public class GetDocTest extends AbstractWebIntegrationTest {
 
   @Test
   void getDoc_badType() throws Exception {
-    Long clubId = 1L;
+    Long clubId = utilTest.insertClub();
 
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());

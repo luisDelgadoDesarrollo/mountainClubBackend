@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 public class Article {
   Long clubId;
+  String slug;
   Long articleId;
   String title;
   String description;

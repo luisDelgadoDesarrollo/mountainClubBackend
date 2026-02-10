@@ -11,6 +11,7 @@ import lombok.*;
 @Setter
 public class Publication {
   Long publicationId;
+  String slug;
   Long clubId;
   String title;
   String text;

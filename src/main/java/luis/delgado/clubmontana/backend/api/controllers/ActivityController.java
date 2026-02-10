@@ -7,6 +7,8 @@ import luis.delgado.clubmontana.backend.api.dtos.ActivityDto;
 import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.SaveActivityDto;
 import luis.delgado.clubmontana.backend.api.mappers.ActivityControllerMapper;
+import luis.delgado.clubmontana.backend.core.annotations.ActivityId;
+import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
 import luis.delgado.clubmontana.backend.domain.userCases.ActivityUseCases;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/clubs/{clubId}/activities")
+@RequestMapping("/clubs/{club}/activities")
 public class ActivityController {
 
   private final ActivityControllerMapper activityControllerMapper;
@@ -31,7 +33,7 @@ public class ActivityController {
 
   @PostMapping
   public ResponseEntity<IdResponseDto> create(
-      @PathVariable Long clubId,
+      @ClubId Long clubId,
       @RequestPart("activity") @Valid SaveActivityDto saveActivityDto,
       @RequestParam Map<String, MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -43,10 +45,10 @@ public class ActivityController {
                     files)));
   }
 
-  @PutMapping("/{activityId}")
+  @PutMapping("/{activity}")
   public ResponseEntity<IdResponseDto> update(
-      @PathVariable Long clubId,
-      @PathVariable Long activityId,
+      @ClubId Long clubId,
+      @ActivityId Long activityId,
       @RequestPart("activity") @Valid SaveActivityDto saveActivityDto,
       @RequestParam Map<String, MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -59,14 +61,14 @@ public class ActivityController {
                     files)));
   }
 
-  @DeleteMapping("/{activityId}")
-  public ResponseEntity<Void> delete(@PathVariable Long clubId, @PathVariable Long activityId) {
+  @DeleteMapping("/{activity}")
+  public ResponseEntity<Void> delete(@ClubId Long clubId, @ActivityId Long activityId) {
     activityUseCases.deleteActivity(clubId, activityId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  @GetMapping("/{activityId}")
-  public ResponseEntity<ActivityDto> get(@PathVariable Long clubId, @PathVariable Long activityId) {
+  @GetMapping("/{activity}")
+  public ResponseEntity<ActivityDto> get(@ClubId Long clubId, @ActivityId Long activityId) {
     Pair<Activity, List<String>> activity = activityUseCases.getActivity(clubId, activityId);
     return ResponseEntity.ok(
         activityControllerMapper.activityWithPathToActivityDto(
@@ -74,7 +76,7 @@ public class ActivityController {
   }
 
   @GetMapping()
-  public ResponseEntity<List<ActivityDto>> getAll(@PathVariable Long clubId, Pageable pageable) {
+  public ResponseEntity<List<ActivityDto>> getAll(@ClubId Long clubId, Pageable pageable) {
     return ResponseEntity.ok(
         activityControllerMapper.activityWithPathToActivityDto(
             activityUseCases.getAllActivity(clubId, pageable)));

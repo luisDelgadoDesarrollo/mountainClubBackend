@@ -8,6 +8,7 @@ import java.util.List;
 
 public record ActivityDto(
     @NotBlank String title,
+    String slug,
     String description,
     @NotNull BigDecimal affiliatePrice,
     BigDecimal noAffiliatePrice,

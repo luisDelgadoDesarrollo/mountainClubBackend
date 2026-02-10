@@ -20,6 +20,7 @@ public interface PublicationRepositoryMapper {
     if (publication == null) return null;
     PublicationEntity publicationEntity = new PublicationEntity();
     publicationEntity.setPublicationId(publication.getPublicationId());
+    publicationEntity.setSlug(publication.getSlug());
     publicationEntity.setTitle(publication.getTitle());
     publicationEntity.setText(publication.getText());
     ClubEntity club = new ClubEntity();

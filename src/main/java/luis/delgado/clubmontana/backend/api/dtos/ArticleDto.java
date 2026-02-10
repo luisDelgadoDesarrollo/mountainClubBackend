@@ -4,6 +4,7 @@ import java.util.List;
 
 public record ArticleDto(
     Long clubId,
+    String slug,
     Long articleId,
     String title,
     String description,

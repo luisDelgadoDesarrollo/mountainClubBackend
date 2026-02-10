@@ -21,6 +21,9 @@ public class ActivityEntity {
   @Column(name = "activity_id")
   private Long activityId;
 
+  @Column(name = "slug", nullable = false, updatable = false, unique = true)
+  private String slug;
+
   @Column(nullable = false)
   private String title;
 

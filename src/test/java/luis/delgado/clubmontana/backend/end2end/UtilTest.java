@@ -57,6 +57,7 @@ public class UtilTest {
                   """
                                                                 INSERT INTO club (
                                                                   name,
+                                                                  slug,
                                                                   nif,
                                                                   description,
                                                                   logo,
@@ -79,7 +80,7 @@ public class UtilTest {
                                                                   has_hazte_socio,
                                                                 contact_email
                                                                 ) VALUES (
-                                                                  ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
+                                                                  ?,? ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
                                                                   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                                                                 )
                                                                 """,
@@ -88,15 +89,16 @@ public class UtilTest {
           String suffix = UUID.randomUUID().toString().substring(0, 8);
 
           ps.setString(1, "Club Test");
-          ps.setString(2, "G" + suffix); // nif único
-          ps.setString(3, "Club de prueba");
-          ps.setString(4, "logo.png");
-          ps.setString(5, "club-" + suffix + ".es"); // url única
-          ps.setLong(6, 1L); // created_by
+          ps.setString(2, "club-test-" + suffix);
 
-          ps.setBoolean(7, true); // has_inicio
-          ps.setBoolean(8, true); // has_secciones
-          ps.setBoolean(9, false);
+          ps.setString(3, "G" + suffix); // nif único
+          ps.setString(4, "Club de prueba");
+          ps.setString(5, "logo.png");
+          ps.setString(6, "club-" + suffix + ".es"); // url única
+          ps.setLong(7, 1L); // created_by
+
+          ps.setBoolean(8, true); // has_inicio
+          ps.setBoolean(9, true); // has_secciones
           ps.setBoolean(10, false);
           ps.setBoolean(11, false);
           ps.setBoolean(12, false);
@@ -108,7 +110,8 @@ public class UtilTest {
           ps.setBoolean(18, false);
           ps.setBoolean(19, false);
           ps.setBoolean(20, false);
-          ps.setString(21, "delgadofernandez.luis@gmail.com");
+          ps.setBoolean(21, false);
+          ps.setString(22, "delgadofernandez.luis@gmail.com");
 
           return ps;
         },

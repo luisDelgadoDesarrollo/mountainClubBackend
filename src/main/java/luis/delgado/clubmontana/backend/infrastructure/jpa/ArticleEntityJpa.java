@@ -33,4 +33,6 @@ public interface ArticleEntityJpa extends JpaRepository<ArticleEntity, Long> {
                 where a.club.clubId = :clubId
               """)
   Page<ArticleEntity> findByClub_ClubId(Long clubId, Pageable pageable);
+
+  Optional<ArticleEntity> findBySlug(String articleSlug);
 }

@@ -7,6 +7,8 @@ import luis.delgado.clubmontana.backend.api.dtos.ArticleDto;
 import luis.delgado.clubmontana.backend.api.dtos.CreateArticleDto;
 import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.ArticleControllerMapper;
+import luis.delgado.clubmontana.backend.core.annotations.ArticleId;
+import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.model.Article;
 import luis.delgado.clubmontana.backend.domain.userCases.ArticleUseCases;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/clubs/{clubId}/articles")
+@RequestMapping("/clubs/{club}/articles")
 public class ArticleController {
 
   private final ArticleControllerMapper articleControllerMapper;
@@ -31,7 +33,7 @@ public class ArticleController {
 
   @PostMapping
   public ResponseEntity<IdResponseDto> post(
-      @PathVariable Long clubId,
+      @ClubId Long clubId,
       @RequestPart("article") @Valid CreateArticleDto createArticleDto,
       @RequestParam Map<String, MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -43,10 +45,10 @@ public class ArticleController {
                     files)));
   }
 
-  @PutMapping("/{articleId}")
+  @PutMapping("/{article}")
   public ResponseEntity<IdResponseDto> put(
-      @PathVariable Long clubId,
-      @PathVariable Long articleId,
+      @ClubId Long clubId,
+      @ArticleId Long articleId,
       @RequestPart("article") @Valid CreateArticleDto createArticleDto,
       @RequestParam Map<String, MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -59,20 +61,20 @@ public class ArticleController {
                     files)));
   }
 
-  @DeleteMapping("/{articleId}")
-  public ResponseEntity<Void> delete(@PathVariable Long clubId, @PathVariable Long articleId) {
+  @DeleteMapping("/{article}")
+  public ResponseEntity<Void> delete(@ClubId Long clubId, @ArticleId Long articleId) {
     articleUseCases.delete(clubId, articleId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  @GetMapping("/{articleId}")
-  public ResponseEntity<ArticleDto> get(@PathVariable Long clubId, @PathVariable Long articleId) {
+  @GetMapping("/{article}")
+  public ResponseEntity<ArticleDto> get(@ClubId Long clubId, @ArticleId Long articleId) {
     Pair<Article, List<String>> articleListPair = articleUseCases.get(clubId, articleId);
     return ResponseEntity.ok(articleControllerMapper.articleToArticleDto(articleListPair));
   }
 
   @GetMapping
-  public ResponseEntity<List<ArticleDto>> getAll(@PathVariable Long clubId, Pageable pageable) {
+  public ResponseEntity<List<ArticleDto>> getAll(@ClubId Long clubId, Pageable pageable) {
     return ResponseEntity.ok(
         articleControllerMapper.articleListToArticleDtoList(
             articleUseCases.getAll(clubId, pageable)));

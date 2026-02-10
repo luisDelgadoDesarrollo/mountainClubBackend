@@ -11,6 +11,7 @@ import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
+import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
 import luis.delgado.clubmontana.backend.domain.userCases.ArticleUseCases;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
@@ -21,16 +22,21 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
 
   private final ArticleRepository articleRepository;
   private final FileStorageService fileStorageService;
+  private final SlugFactory slugFactory;
 
   public ArticleUseCasesImpl(
-      ArticleRepository articleRepository, FileStorageService fileStorageService) {
+      ArticleRepository articleRepository,
+      FileStorageService fileStorageService,
+      SlugFactory slugFactory) {
     this.articleRepository = articleRepository;
     this.fileStorageService = fileStorageService;
+    this.slugFactory = slugFactory;
   }
 
   @Override
   public Article create(Long clubId, Article article, Map<String, MultipartFile> files) {
     article.setClubId(clubId);
+    article.setSlug(slugFactory.makeSlug(article.getTitle()));
     Article articleSaved = articleRepository.save(article);
     saveArticleImages(articleSaved, files);
     saveArticleVariantsImages(articleSaved.getVariants(), files, clubId);
@@ -134,11 +140,13 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
         .getVariants()
         .forEach(
             variant -> {
-              images.addAll(
-                  fileStorageService.getImages(
-                      article.getClubId(),
-                      variant.getArticleVariantId(),
-                      ImageType.ARTICLE_VARIANT));
+              if (!variant.getImages().isEmpty()) {
+                images.addAll(
+                    fileStorageService.getImages(
+                        article.getClubId(),
+                        variant.getArticleVariantId(),
+                        ImageType.ARTICLE_VARIANT));
+              }
             });
 
     return Pair.of(article, images);

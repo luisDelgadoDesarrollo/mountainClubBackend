@@ -15,6 +15,7 @@ public interface ActivityRepositoryMapper {
     if (activity == null) return null;
     ActivityEntity activityEntity = new ActivityEntity();
     activityEntity.setActivityId(activity.getActivityId());
+    activityEntity.setSlug(activity.getSlug());
     activityEntity.setTitle(activity.getTitle());
     activityEntity.setDescription(activity.getDescription());
     ClubEntity club = new ClubEntity();

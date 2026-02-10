@@ -7,6 +7,8 @@ import luis.delgado.clubmontana.backend.api.dtos.CreatePublicationRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.PublicationResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.PublicationControllerMapper;
+import luis.delgado.clubmontana.backend.core.annotations.ClubId;
+import luis.delgado.clubmontana.backend.core.annotations.PublicationId;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.userCases.PublicationUseCases;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/clubs/{clubId}/publications")
+@RequestMapping("/clubs/{club}/publications")
 public class PublicationController {
 
   private final PublicationControllerMapper publicationControllerMapper;
@@ -33,7 +35,7 @@ public class PublicationController {
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<IdResponseDto> createPublication(
-      @PathVariable Long clubId,
+      @ClubId Long clubId,
       @RequestPart("data") @Valid CreatePublicationRequestDto request,
       @RequestParam Map<String, MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -46,17 +48,17 @@ public class PublicationController {
                     files)));
   }
 
-  @DeleteMapping("/{publicationId}")
+  @DeleteMapping("/{publication}")
   public ResponseEntity<Void> deletePublication(
-      @PathVariable Long clubId, @PathVariable Long publicationId) {
+      @ClubId Long clubId, @PublicationId Long publicationId) {
     publicationUseCases.delete(clubId, publicationId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
-  @PutMapping("/{publicationId}")
+  @PutMapping("/{publication}")
   public ResponseEntity<IdResponseDto> updatePublication(
-      @PathVariable Long clubId,
-      @PathVariable Long publicationId,
+      @ClubId Long clubId,
+      @PublicationId Long publicationId,
       @RequestPart("data") @Valid CreatePublicationRequestDto request,
       @RequestParam Map<String, MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -70,9 +72,9 @@ public class PublicationController {
                     files)));
   }
 
-  @GetMapping("/{publicationId}")
+  @GetMapping("/{publication}")
   public ResponseEntity<PublicationResponseDto> getPublication(
-      @PathVariable Long clubId, @PathVariable Long publicationId) {
+      @ClubId Long clubId, @PublicationId Long publicationId) {
     Pair<Publication, List<String>> publicationResponse =
         publicationUseCases.getPublication(clubId, publicationId);
     return ResponseEntity.ok(
@@ -82,7 +84,7 @@ public class PublicationController {
 
   @GetMapping
   public ResponseEntity<List<PublicationResponseDto>> getPublications(
-      @PathVariable Long clubId, Pageable pageable) {
+      @ClubId Long clubId, Pageable pageable) {
     return ResponseEntity.ok(
         publicationControllerMapper.publicationsWithPathToPublicationResponseDtoList(
             publicationUseCases.getPublications(clubId, pageable)));

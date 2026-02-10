@@ -20,6 +20,9 @@ public class PublicationEntity {
   @Column(name = "publication_id")
   private Long publicationId;
 
+  @Column(name = "slug", nullable = false, updatable = false, unique = true)
+  private String slug;
+
   @Column(nullable = false)
   private String title;
 

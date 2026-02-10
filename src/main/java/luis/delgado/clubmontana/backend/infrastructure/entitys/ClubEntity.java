@@ -18,6 +18,9 @@ public class ClubEntity {
   @Column(name = "club_id")
   private Long clubId;
 
+  @Column(name = "slug", nullable = false, updatable = false, unique = true)
+  private String slug;
+
   @Column(nullable = false, length = 255)
   private String name;
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -141,7 +142,7 @@ public class FileSystemFileStorageService implements FileStorageService {
     }
 
     if (!Files.exists(publicationDir)) {
-      return List.of();
+      return new ArrayList<>();
     }
 
     try (var stream = Files.list(publicationDir)) {

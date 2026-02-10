@@ -18,6 +18,9 @@ public class ArticleEntity {
   @Column(name = "article_id")
   private Long articleId;
 
+  @Column(name = "slug", nullable = false, updatable = false, unique = true)
+  private String slug;
+
   @Column(nullable = false)
   private String title;
 
