@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
@@ -40,6 +41,7 @@ public class UpdateActivityUseCaseTest {
     Activity activity = new Activity();
     activity.setImages(
         List.of(Image.builder().imageId(100L).parentId(1L).image("image-1").build()));
+    activity.setStartDate(LocalDateTime.now());
 
     Activity saved = new Activity();
     saved.setActivityId(activityId);

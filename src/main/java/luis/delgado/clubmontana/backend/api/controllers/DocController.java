@@ -3,7 +3,6 @@ package luis.delgado.clubmontana.backend.api.controllers;
 import luis.delgado.clubmontana.backend.domain.model.enums.PdfType;
 import luis.delgado.clubmontana.backend.domain.userCases.DocUseCase;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +30,6 @@ public class DocController {
 
   @GetMapping
   public ResponseEntity<Resource> getUs(@PathVariable Long clubId, @RequestParam PdfType pdfType) {
-    return ResponseEntity.ok()
-        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
-        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=estatutos.pdf")
-        .body(docUseCase.get(clubId, pdfType));
+    return ResponseEntity.ok(docUseCase.get(clubId, pdfType));
   }
 }

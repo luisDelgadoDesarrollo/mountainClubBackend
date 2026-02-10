@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.*;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
-import luis.delgado.clubmontana.backend.end2end.UtilTest;
+import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,13 +34,12 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class UpdateUsTest {
+class UpdateUsTest extends AbstractWebIntegrationTest {
   private static final Path IMAGES_DIR =
       Paths.get("D:/Proyectos/ClubMontaña/backend/data/test/images");
   @TempDir Path tempDir;
   FileSystemFileStorageService service;
   @Autowired private MockMvc mockMvc;
-  @Autowired private UtilTest utilTest;
   @Autowired private JdbcTemplate jdbcTemplate;
 
   @AfterAll

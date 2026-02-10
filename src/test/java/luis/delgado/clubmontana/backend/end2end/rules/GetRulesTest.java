@@ -5,7 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import luis.delgado.clubmontana.backend.end2end.UtilTest;
+import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,9 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-class GetRulesTest {
+class GetRulesTest extends AbstractWebIntegrationTest {
   @Autowired MockMvc mockMvc;
-  @Autowired UtilTest utilTest;
 
   @Test
   void getRules_happyPath() throws Exception {
@@ -51,5 +50,13 @@ class GetRulesTest {
         .andExpect(jsonPath("$[0].rule").value("No tirar basura"))
         .andExpect(jsonPath("$[1].ruleId").value(2))
         .andExpect(jsonPath("$[1].rule").value("Respetar el entorno"));
+  }
+
+  @Test
+  void getRules_noFound() throws Exception {
+    Long clubId = utilTest.insertClub();
+
+    // Act + Assert
+    mockMvc.perform(get("/clubs/{clubId}/rules", clubId)).andExpect(status().isOk());
   }
 }

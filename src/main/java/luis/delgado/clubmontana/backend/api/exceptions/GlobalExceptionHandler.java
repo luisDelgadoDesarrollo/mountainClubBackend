@@ -28,6 +28,12 @@ public class GlobalExceptionHandler {
     return Map.of("error", "ACTIVITY_NOT_FOUND", "message", ex.getMessage());
   }
 
+  @ExceptionHandler(ArticleNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public Map<String, String> handlePublicationNotFound(ArticleNotFoundException ex) {
+    return Map.of("error", "ARTICLE_NOT_FOUND", "message", ex.getMessage());
+  }
+
   @ExceptionHandler(PdfStorageException.class)
   @ResponseStatus(HttpStatus.CONFLICT)
   public Map<String, String> handlePdfStorageException(PdfStorageException ex) {
@@ -50,5 +56,11 @@ public class GlobalExceptionHandler {
   @ResponseStatus(HttpStatus.NOT_FOUND)
   public Map<String, String> handlePdfGetException(UsNotFoundException ex) {
     return Map.of("error", "US_GET_EXCEPTION", "message", ex.getMessage());
+  }
+
+  @ExceptionHandler(BadDateActivity.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Map<String, String> handlePdfGetException(BadDateActivity ex) {
+    return Map.of("error", "ACTIVITY_DATE_EXCEPTION", "message", ex.getMessage());
   }
 }

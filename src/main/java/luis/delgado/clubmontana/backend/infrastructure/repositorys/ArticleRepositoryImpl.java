@@ -1,6 +1,7 @@
 package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
 import jakarta.transaction.Transactional;
+import luis.delgado.clubmontana.backend.api.exceptions.ArticleNotFoundException;
 import luis.delgado.clubmontana.backend.domain.model.Article;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.ArticleEntityJpa;
@@ -31,7 +32,9 @@ public class ArticleRepositoryImpl implements ArticleRepository {
   @Override
   public Article getArticle(Long clubId, Long articleId) {
     return articleRepositoryMapper.articleEntityToArticle(
-        articleEntityJpa.findByClubAndId(clubId, articleId).orElseThrow());
+        articleEntityJpa
+            .findByClubAndId(clubId, articleId)
+            .orElseThrow(() -> new ArticleNotFoundException(clubId, articleId)));
   }
 
   @Override

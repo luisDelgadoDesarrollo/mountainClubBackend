@@ -1,10 +1,9 @@
-package luis.delgado.clubmontana.backend.end2end.activities;
+package luis.delgado.clubmontana.backend.end2end.article;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import jakarta.transaction.Transactional;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,35 +16,34 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Transactional
-public class GetActivitiesTest extends AbstractWebIntegrationTest {
+public class GetArticlesTest extends AbstractWebIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
 
   @Test
-  void getActivity_happyPath_returnsActivityWithImages() throws Exception {
+  void getArticle_happyPath_returnsArticleWithImages() throws Exception {
 
     Long clubId = utilTest.insertClub();
 
-    Long activity1 = utilTest.createActivity(clubId);
-    Long activity2 = utilTest.createActivity(clubId);
+    Long article1 = utilTest.createArticle(clubId);
+    Long article2 = utilTest.createArticle(clubId);
 
-    utilTest.createImage(activity1, clubId, "1.jpg");
-    utilTest.createImage(activity2, clubId, "2.jpg");
+    utilTest.createImage(article1, clubId, "1.jpg");
+    utilTest.createImage(article2, clubId, "2.jpg");
 
     mockMvc
         .perform(
-            get("/clubs/{clubId}/activities", clubId)
+            get("/clubs/{clubId}/articles", clubId)
                 .param("page", "0")
                 .param("size", "10")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(2))
-        .andExpect(jsonPath("$[0].imagesPath").isArray())
-        .andExpect(jsonPath("$[0].imagesPath.length()").value(1))
-        .andExpect(jsonPath("$[1].imagesPath").isArray())
-        .andExpect(jsonPath("$[1].imagesPath.length()").value(1));
+        .andExpect(jsonPath("$[0].imagePath").isArray())
+        .andExpect(jsonPath("$[0].imagePath.length()").value(2))
+        .andExpect(jsonPath("$[1].imagePath").isArray())
+        .andExpect(jsonPath("$[1].imagePath.length()").value(2));
   }
 
   @Test
@@ -54,7 +52,7 @@ public class GetActivitiesTest extends AbstractWebIntegrationTest {
     Long clubId = utilTest.insertClub();
 
     mockMvc
-        .perform(get("/clubs/{clubId}/activities", clubId).param("page", "0").param("size", "10"))
+        .perform(get("/clubs/{clubId}/articles", clubId).param("page", "0").param("size", "10"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(0));

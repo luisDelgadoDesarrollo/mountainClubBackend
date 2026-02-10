@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import luis.delgado.clubmontana.backend.api.exceptions.BadDateActivity;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
@@ -31,10 +32,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
   @Override
   public Activity createActivity(Long clubId, Activity activity, Map<String, MultipartFile> files) {
     activity.setClubId(clubId);
-    if (activity.getNoAffiliatePrice() == null)
-      activity.setNoAffiliatePrice(activity.getAffiliatePrice());
-    if (activity.getEndDate() == null) activity.setEndDate(activity.getStartDate());
-    Activity activitySaved = activityRepository.saveActivity(activity);
+    Activity activitySaved = chekActivity(activity);
     fileStorageService.store(
         files,
         activitySaved.getImages().stream()
@@ -50,10 +48,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
       Long clubId, Long activityId, Activity activity, Map<String, MultipartFile> files) {
     activity.setClubId(clubId);
     activity.setActivityId(activityId);
-    if (activity.getNoAffiliatePrice() == null)
-      activity.setNoAffiliatePrice(activity.getAffiliatePrice());
-    if (activity.getEndDate() == null) activity.setEndDate(activity.getStartDate());
-    Activity activitySaved = activityRepository.saveActivity(activity);
+    Activity activitySaved = chekActivity(activity);
     fileStorageService.deleteImages(clubId, ImageType.ACTIVITY, activityId);
     fileStorageService.store(
         files,
@@ -92,5 +87,14 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
                     fileStorageService.getImages(
                         clubId, activity.getActivityId(), ImageType.ACTIVITY))));
     return activitiesWithPath;
+  }
+
+  private Activity chekActivity(Activity activity) throws BadDateActivity {
+    if (activity.getNoAffiliatePrice() == null)
+      activity.setNoAffiliatePrice(activity.getAffiliatePrice());
+    if (activity.getEndDate() == null) activity.setEndDate(activity.getStartDate());
+    if (activity.getEndDate().isBefore(activity.getStartDate()))
+      throw new BadDateActivity("La fecha de final es anterior a la fecha de fin");
+    return activityRepository.saveActivity(activity);
   }
 }

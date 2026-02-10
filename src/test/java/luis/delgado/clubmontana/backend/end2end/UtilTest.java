@@ -1,22 +1,42 @@
 package luis.delgado.clubmontana.backend.end2end;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.jayway.jsonpath.JsonPath;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.UUID;
 import luis.delgado.clubmontana.backend.domain.model.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
+import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
-@Component
 public class UtilTest {
 
-  @Autowired private JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
+  private final MockMvc mockMvc;
+  private final Path tempDir;
+
+  public UtilTest(JdbcTemplate jdbcTemplate, MockMvc mockMvc, Path tempDir) {
+    this.jdbcTemplate = jdbcTemplate;
+    this.mockMvc = mockMvc;
+    this.tempDir = tempDir;
+  }
 
   public void mockUserWithClub(Long clubId) {
     CustomUserDetails user = new CustomUserDetails("email@test", 1L, clubId);
@@ -95,5 +115,140 @@ public class UtilTest {
         keyHolder);
 
     return keyHolder.getKey().longValue();
+  }
+
+  public Long createActivity(Long clubId) throws Exception {
+
+    String json =
+        """
+                             {
+                               "title": "Ruta guiada al Pico del Águila",
+                               "description": "Actividad de montaña de nivel medio con guía titulado.",
+                               "affiliatePrice": 25.00,
+                               "startDate": "2026-03-15T08:30:00",
+                               "images": [
+                                 {
+                                   "image": "image-1",
+                                   "description": "Salida desde el refugio"
+                                 }
+                               ]
+                             }
+                              """;
+
+    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+    MockMultipartFile image =
+        new MockMultipartFile(
+            "image-1",
+            "photo.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    mockUserWithClub(clubId);
+    MvcResult mvcResult =
+        mockMvc
+            .perform(multipart("/clubs/{clubId}/activities", clubId).part(data).file(image))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andReturn();
+    Integer id = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
+    return Long.valueOf(id);
+  }
+
+  public void createImage(Long ownerId, Long clubId, String filename) throws IOException {
+    Path dir =
+        tempDir
+            .resolve("club_" + clubId)
+            .resolve(ImageType.ACTIVITY.name())
+            .resolve("activity_" + ownerId);
+
+    Files.createDirectories(dir);
+    Files.createFile(dir.resolve(filename));
+  }
+
+  public Long createArticle(Long clubId) throws Exception {
+    String articleJson =
+        """
+                  {
+                    "title": "Artículo integración",
+                    "description": "Descripción test",
+                    "images": [
+                      { "image": "image-1" }
+                    ],
+                    "variants": [
+                      {
+                        "size": "M",
+                        "color": "Rojo",
+                        "stock": 5,
+                        "images": [
+                          { "image": "image-2" }
+                        ]
+                      }
+                    ]
+                  }
+                  """;
+
+    MockPart data = new MockPart("article", articleJson.getBytes(StandardCharsets.UTF_8));
+    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+    MockMultipartFile image1 =
+        new MockMultipartFile(
+            "image-1",
+            "image-1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    MockMultipartFile image2 =
+        new MockMultipartFile(
+            "image-2",
+            "image-2.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    mockUserWithClub(clubId);
+    MvcResult mvcResult =
+        mockMvc
+            .perform(
+                multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andReturn();
+    Integer id = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
+    return Long.valueOf(id);
+  }
+
+  public Long createPublication(Long clubId) throws Exception {
+    String json =
+        """
+                  {
+                    "title": "Mi publicación",
+                    "text": "Texto",
+                    "images": [
+                      { "image": "img-1", "description": "foto 1" }
+                    ],
+                    "links": []
+                  }
+                  """;
+
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
+    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+    MockMultipartFile image =
+        new MockMultipartFile(
+            "img-1",
+            "photo.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    mockUserWithClub(clubId);
+    MvcResult mvcResult =
+        mockMvc
+            .perform(multipart("/clubs/{clubId}/publications", clubId).part(data).file(image))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andReturn();
+    Integer id = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
+    return Long.valueOf(id);
   }
 }

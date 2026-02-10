@@ -4,14 +4,8 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
-import luis.delgado.clubmontana.backend.end2end.UtilTest;
-import org.junit.jupiter.api.AfterAll;
+import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,33 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
-class CreateArticleTest {
+class CreateArticleTest extends AbstractWebIntegrationTest {
 
   @Autowired private MockMvc mockMvc;
-  @Autowired private UtilTest utilTest;
-
-  @AfterAll
-  static void afterAll() throws IOException {
-    Path dir = Paths.get("D:/Proyectos/ClubMontaña/backend/data/test/images");
-
-    if (Files.exists(dir)) {
-      // Borrar primero los archivos hijos
-      Files.walk(dir)
-          .sorted(Comparator.reverseOrder())
-          .forEach(
-              path -> {
-                try {
-                  Files.delete(path);
-                } catch (IOException e) {
-                  throw new RuntimeException("Error borrando " + path, e);
-                }
-              });
-
-      System.out.println("🧹 Carpeta de imágenes de test borrada");
-    } else {
-      System.out.println("ℹ️ La carpeta no existe, nada que borrar");
-    }
-  }
 
   @Test
   void shouldCreateArticleWithImagesAndVariants() throws Exception {
@@ -101,5 +71,85 @@ class CreateArticleTest {
         .perform(multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").exists());
+  }
+
+  @Test
+  void createArticle_withoutAuthentication() throws Exception {
+    Long clubId = utilTest.insertClub();
+    String articleJson =
+        """
+                {
+                  "title": "Artículo integración",
+                  "description": "Descripción test",
+                  "images": [
+                    { "image": "image-1" }
+                  ],
+                  "variants": [
+                    {
+                      "size": "M",
+                      "color": "Rojo",
+                      "stock": 5,
+                      "images": [
+                        { "image": "image-2" }
+                      ]
+                    }
+                  ]
+                }
+                """;
+
+    MockPart data = new MockPart("article", articleJson.getBytes(StandardCharsets.UTF_8));
+    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+    MockMultipartFile image1 =
+        new MockMultipartFile(
+            "image-1",
+            "image-1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    MockMultipartFile image2 =
+        new MockMultipartFile(
+            "image-2",
+            "image-2.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    mockMvc
+        .perform(multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
+        .andExpect(status().is4xxClientError());
+  }
+
+  @Test
+  void createArticle_badPayload() throws Exception {
+    Long clubId = utilTest.insertClub();
+    String articleJson =
+        """
+                    {
+                      "text": "json incorrecto"
+                    }
+                    """;
+
+    MockPart data = new MockPart("article", articleJson.getBytes(StandardCharsets.UTF_8));
+    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+    MockMultipartFile image1 =
+        new MockMultipartFile(
+            "image-1",
+            "image-1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    MockMultipartFile image2 =
+        new MockMultipartFile(
+            "image-2",
+            "image-2.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    utilTest.mockUserWithClub(clubId);
+
+    mockMvc
+        .perform(multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
+        .andExpect(status().is4xxClientError());
   }
 }

@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doThrow;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
@@ -42,6 +43,7 @@ public class CreateActivityUseCaseTest {
         List.of(
             Image.builder().image("img-1").imageId(14L).parentId(1L).build(),
             Image.builder().image("img-2").imageId(15L).parentId(1L).build()));
+    activity.setStartDate(LocalDateTime.now());
 
     Activity saved = new Activity();
     saved.setActivityId(activityId);
@@ -79,6 +81,7 @@ public class CreateActivityUseCaseTest {
     // given
     Activity activity = new Activity();
     activity.setImages(List.of(Image.builder().image("img-1").imageId(1L).build()));
+    activity.setStartDate(LocalDateTime.now());
 
     Map<String, MultipartFile> files =
         Map.of(
