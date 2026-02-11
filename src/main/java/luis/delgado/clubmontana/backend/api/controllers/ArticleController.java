@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.ArticleDto;
 import luis.delgado.clubmontana.backend.api.dtos.CreateArticleDto;
-import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
+import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.ArticleControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ArticleId;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
@@ -32,7 +32,7 @@ public class ArticleController {
   }
 
   @PostMapping
-  public ResponseEntity<IdResponseDto> post(
+  public ResponseEntity<ResponseDto> post(
       @ClubId Long clubId,
       @RequestPart("article") @Valid CreateArticleDto createArticleDto,
       @RequestParam Map<String, MultipartFile> files) {
@@ -46,7 +46,7 @@ public class ArticleController {
   }
 
   @PutMapping("/{article}")
-  public ResponseEntity<IdResponseDto> put(
+  public ResponseEntity<ResponseDto> put(
       @ClubId Long clubId,
       @ArticleId Long articleId,
       @RequestPart("article") @Valid CreateArticleDto createArticleDto,

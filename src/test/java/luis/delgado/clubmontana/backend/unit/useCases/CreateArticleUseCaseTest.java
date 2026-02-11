@@ -13,6 +13,7 @@ import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
+import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class CreateArticleUseCaseTest {
 
   @Mock private ArticleRepository articleRepository;
+
+  @Mock private SlugFactory slugFactory;
 
   @Mock private FileStorageService fileStorageService;
 
@@ -48,6 +51,8 @@ public class CreateArticleUseCaseTest {
             .build();
 
     when(articleRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+    when(slugFactory.makeSlug(any(), any())).thenReturn("dummySlug");
 
     Map<String, MultipartFile> files =
         Map.of(
@@ -81,11 +86,9 @@ public class CreateArticleUseCaseTest {
   @Test
   void create_shouldNotCallStorageWhenNoImages() {
     Article article = Article.builder().images(List.of()).variants(List.of()).build();
-
+    when(slugFactory.makeSlug(any(), any())).thenReturn("dummySlug");
     when(articleRepository.save(any())).thenReturn(article);
-
     articleUseCases.create(1L, article, Map.of());
-
     verify(fileStorageService, never()).store(any(), any(), any(), any(), any());
   }
 }

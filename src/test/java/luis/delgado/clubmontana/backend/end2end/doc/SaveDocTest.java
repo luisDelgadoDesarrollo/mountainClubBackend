@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,14 +23,14 @@ class SaveDocTest extends AbstractWebIntegrationTest {
 
   @Test
   void saveDoc_happyPath() throws Exception {
-    Long clubId = 1L;
+    ClubInserted club = utilTest.insertClub();
 
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     mockMvc
         .perform(
-            multipart(HttpMethod.PUT, "/clubs/{clubId}/doc?pdfType=BY_LAWS", clubId).file(file))
+            multipart(HttpMethod.PUT, "/clubs/{club}/doc?pdfType=BY_LAWS", club.slug()).file(file))
         .andExpect(status().isNoContent());
   }
 }

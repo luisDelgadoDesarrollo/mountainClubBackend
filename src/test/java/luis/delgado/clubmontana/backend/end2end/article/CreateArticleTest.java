@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +28,7 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
 
   @Test
   void shouldCreateArticleWithImagesAndVariants() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
     String articleJson =
         """
             {
@@ -66,16 +67,17 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     mockMvc
-        .perform(multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
+        .perform(
+            multipart("/clubs/{club}/articles", club.slug()).part(data).file(image1).file(image2))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").exists());
   }
 
   @Test
   void createArticle_withoutAuthentication() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
     String articleJson =
         """
                 {
@@ -115,13 +117,14 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     mockMvc
-        .perform(multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
+        .perform(
+            multipart("/clubs/{club}/articles", club.slug()).part(data).file(image1).file(image2))
         .andExpect(status().is4xxClientError());
   }
 
   @Test
   void createArticle_badPayload() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
     String articleJson =
         """
                     {
@@ -146,10 +149,11 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
 
     mockMvc
-        .perform(multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
+        .perform(
+            multipart("/clubs/{club}/articles", club.slug()).part(data).file(image1).file(image2))
         .andExpect(status().is4xxClientError());
   }
 }

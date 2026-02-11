@@ -36,7 +36,8 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
   @Override
   public Article create(Long clubId, Article article, Map<String, MultipartFile> files) {
     article.setClubId(clubId);
-    article.setSlug(slugFactory.makeSlug(article.getTitle()));
+    article.setSlug(
+        slugFactory.makeSlug(article.getTitle(), s -> articleRepository.existsBySlug(s)));
     Article articleSaved = articleRepository.save(article);
     saveArticleImages(articleSaved, files);
     saveArticleVariantsImages(articleSaved.getVariants(), files, clubId);

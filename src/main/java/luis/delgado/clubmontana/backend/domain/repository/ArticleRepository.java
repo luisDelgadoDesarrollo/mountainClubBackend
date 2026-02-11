@@ -12,4 +12,6 @@ public interface ArticleRepository {
   void delete(Long clubId, Long articleId);
 
   Page<Article> getArticles(Long clubId, Pageable pageable);
+
+  Boolean existsBySlug(String s);
 }

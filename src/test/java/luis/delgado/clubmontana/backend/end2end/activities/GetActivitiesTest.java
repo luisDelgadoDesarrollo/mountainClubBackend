@@ -6,10 +6,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import jakarta.transaction.Transactional;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,17 +27,17 @@ public class GetActivitiesTest extends AbstractWebIntegrationTest {
   @Test
   void getActivity_happyPath_returnsActivityWithImages() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
-    Long activity1 = utilTest.createActivity(clubId);
-    Long activity2 = utilTest.createActivity(clubId);
+    Pair<Long, String> activity = utilTest.createActivity(club);
+    Pair<Long, String> activity2 = utilTest.createActivity(club);
 
-    utilTest.createImage(activity1, clubId, "1.jpg");
-    utilTest.createImage(activity2, clubId, "2.jpg");
+    utilTest.createImage(activity.getFirst(), club.id(), "1.jpg");
+    utilTest.createImage(activity2.getFirst(), club.id(), "2.jpg");
 
     mockMvc
         .perform(
-            get("/clubs/{clubId}/activities", clubId)
+            get("/clubs/{club}/activities", club.slug())
                 .param("page", "0")
                 .param("size", "10")
                 .accept(MediaType.APPLICATION_JSON))
@@ -51,10 +53,11 @@ public class GetActivitiesTest extends AbstractWebIntegrationTest {
   @Test
   void getPublications_whenNoPublications_returnsEmptyList() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     mockMvc
-        .perform(get("/clubs/{clubId}/activities", clubId).param("page", "0").param("size", "10"))
+        .perform(
+            get("/clubs/{club}/activities", club.slug()).param("page", "0").param("size", "10"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(0));

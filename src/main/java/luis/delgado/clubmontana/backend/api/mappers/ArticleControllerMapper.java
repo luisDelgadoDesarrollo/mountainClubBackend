@@ -4,7 +4,7 @@ import java.util.List;
 import luis.delgado.clubmontana.backend.api.dtos.ArticleDto;
 import luis.delgado.clubmontana.backend.api.dtos.ArticleVariantDto;
 import luis.delgado.clubmontana.backend.api.dtos.CreateArticleDto;
-import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
+import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
 import luis.delgado.clubmontana.backend.domain.model.Article;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import org.mapstruct.Mapper;
@@ -16,7 +16,7 @@ public interface ArticleControllerMapper {
   Article createArticleDtoToArticle(CreateArticleDto createArticleDto);
 
   @Mapping(target = "id", source = "articleId")
-  IdResponseDto articleToIdResponseDto(Article article);
+  ResponseDto articleToIdResponseDto(Article article);
 
   default ArticleDto articleToArticleDto(Pair<Article, List<String>> articleListPair) {
     if (articleListPair == null) return null;

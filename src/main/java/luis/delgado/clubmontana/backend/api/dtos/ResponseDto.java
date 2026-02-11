@@ -1,3 +1,3 @@
 package luis.delgado.clubmontana.backend.api.dtos;
 
-public record IdResponseDto(Long id) {}
+public record ResponseDto(Long id, String slug) {}

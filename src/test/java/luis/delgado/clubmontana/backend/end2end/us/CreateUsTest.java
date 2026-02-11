@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import luis.delgado.clubmontana.backend.application.services.FileSystemFileStorageService;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.UsEntity;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.UsEntityJpa;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class CreateUsTest extends AbstractWebIntegrationTest {
 
   @Test
   void shouldCreateUsWithImagesAndFiles() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     // ---------- multipart files ----------
     MockMultipartFile file1 =
@@ -57,20 +58,20 @@ class CreateUsTest extends AbstractWebIntegrationTest {
     MockPart data = new MockPart("us", usRequestJson.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
 
     mockMvc
         .perform(
-            multipart("/clubs/{clubId}/us", clubId)
+            multipart("/clubs/{club}/us", club.slug())
                 .part(data)
                 .file(file1)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isCreated());
 
-    Optional<UsEntity> usEntityOptional = usEntityJpa.findById(clubId);
+    Optional<UsEntity> usEntityOptional = usEntityJpa.findById(club.id());
     assertThat(usEntityOptional.isPresent()).isTrue();
     UsEntity usEntity = usEntityOptional.get();
-    assertThat(usEntity.getClubId()).isEqualTo(clubId);
+    assertThat(usEntity.getClubId()).isEqualTo(club.id());
     assertThat(usEntity.getText()).isEqualTo("Texto de prueba");
 
     Optional<UsEntity> images = usEntityJpa.findById(usEntity.getClubId());
@@ -80,7 +81,7 @@ class CreateUsTest extends AbstractWebIntegrationTest {
 
   @Test
   void createUs_withoutAuthorization() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     // ---------- multipart files ----------
     MockMultipartFile file1 =
@@ -106,7 +107,7 @@ class CreateUsTest extends AbstractWebIntegrationTest {
 
     mockMvc
         .perform(
-            multipart("/clubs/{clubId}/us", clubId)
+            multipart("/clubs/{club}/us", club.slug())
                 .part(data)
                 .file(file1)
                 .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -115,7 +116,7 @@ class CreateUsTest extends AbstractWebIntegrationTest {
 
   @Test
   void createUs_badPayload() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     MockMultipartFile file1 =
         new MockMultipartFile(
@@ -134,10 +135,10 @@ class CreateUsTest extends AbstractWebIntegrationTest {
     MockPart data = new MockPart("us", usRequestJson.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     mockMvc
         .perform(
-            multipart("/clubs/{clubId}/us", clubId)
+            multipart("/clubs/{club}/us", club.slug())
                 .part(data)
                 .file(file1)
                 .contentType(MediaType.MULTIPART_FORM_DATA))

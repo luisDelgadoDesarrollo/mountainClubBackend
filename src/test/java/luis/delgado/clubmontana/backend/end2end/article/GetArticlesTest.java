@@ -5,10 +5,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,17 +25,17 @@ public class GetArticlesTest extends AbstractWebIntegrationTest {
   @Test
   void getArticle_happyPath_returnsArticleWithImages() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
-    Long article1 = utilTest.createArticle(clubId);
-    Long article2 = utilTest.createArticle(clubId);
+    Pair<Long, String> article = utilTest.createArticle(club);
+    Pair<Long, String> article2 = utilTest.createArticle(club);
 
-    utilTest.createImage(article1, clubId, "1.jpg");
-    utilTest.createImage(article2, clubId, "2.jpg");
+    utilTest.createImage(article.getFirst(), club.id(), "1.jpg");
+    utilTest.createImage(article2.getFirst(), club.id(), "2.jpg");
 
     mockMvc
         .perform(
-            get("/clubs/{clubId}/articles", clubId)
+            get("/clubs/{club}/articles", club.slug())
                 .param("page", "0")
                 .param("size", "10")
                 .accept(MediaType.APPLICATION_JSON))
@@ -49,10 +51,10 @@ public class GetArticlesTest extends AbstractWebIntegrationTest {
   @Test
   void getPublications_whenNoPublications_returnsEmptyList() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     mockMvc
-        .perform(get("/clubs/{clubId}/articles", clubId).param("page", "0").param("size", "10"))
+        .perform(get("/clubs/{club}/articles", club.slug()).param("page", "0").param("size", "10"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(0));

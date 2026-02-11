@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,7 @@ class GetRulesTest extends AbstractWebIntegrationTest {
 
   @Test
   void getRules_happyPath() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     String body =
         """
@@ -32,18 +33,18 @@ class GetRulesTest extends AbstractWebIntegrationTest {
                 ]
                 """;
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
 
     mockMvc
         .perform(
-            put("/clubs/{clubId}/rules", clubId)
+            put("/clubs/{club}/rules", club.slug())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
         .andExpect(status().isNoContent());
 
     // Act + Assert
     mockMvc
-        .perform(get("/clubs/{clubId}/rules", clubId))
+        .perform(get("/clubs/{club}/rules", club.slug()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(2)))
         .andExpect(jsonPath("$[0].ruleId").value(1))
@@ -54,9 +55,9 @@ class GetRulesTest extends AbstractWebIntegrationTest {
 
   @Test
   void getRules_noFound() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     // Act + Assert
-    mockMvc.perform(get("/clubs/{clubId}/rules", clubId)).andExpect(status().isOk());
+    mockMvc.perform(get("/clubs/{club}/rules", club.slug())).andExpect(status().isOk());
   }
 }

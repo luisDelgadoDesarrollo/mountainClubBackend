@@ -16,6 +16,7 @@ import luis.delgado.clubmontana.backend.domain.model.Activity;
 import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
+import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,7 @@ public class CreateActivityUseCaseTest {
   @Mock private ActivityRepository activityRepository;
 
   @Mock private FileSystemFileStorageService fileSystemImageStorageService;
+  @Mock private SlugFactory slugFactory;
 
   @InjectMocks private ActivityUseCasesImpl activityUserCase;
 
@@ -55,6 +57,7 @@ public class CreateActivityUseCaseTest {
             "img-2", mock(MultipartFile.class));
 
     when(activityRepository.saveActivity(any())).thenReturn(saved);
+    when(slugFactory.makeSlug(any(), any())).thenReturn("dummy-slug");
 
     // when
     Activity result = activityUserCase.createActivity(clubId, activity, files);
@@ -93,12 +96,12 @@ public class CreateActivityUseCaseTest {
     saved.setImages(activity.getImages());
 
     when(activityRepository.saveActivity(any())).thenReturn(saved);
+    when(slugFactory.makeSlug(any(), any())).thenReturn("dummy-slug");
 
     doThrow(new IllegalArgumentException())
         .when(fileSystemImageStorageService)
         .store(any(), any(), any(), any(), any());
 
-    // when / then
     assertThatThrownBy(() -> activityUserCase.createActivity(1L, activity, files))
         .isInstanceOf(IllegalArgumentException.class);
   }

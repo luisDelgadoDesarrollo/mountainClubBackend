@@ -13,6 +13,7 @@ import luis.delgado.clubmontana.backend.domain.model.Image;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
+import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ class CreatePublicationUseCaseTest {
   @Mock private PublicationRepository publicationRepository;
 
   @Mock private FileSystemFileStorageService fileSystemImageStorageService;
+  @Mock private SlugFactory slugFactory;
 
   @InjectMocks private PublicationUseCasesImpl publicationUseCases;
 
@@ -51,6 +53,7 @@ class CreatePublicationUseCaseTest {
             "img-2", mock(MultipartFile.class));
 
     when(publicationRepository.savePublication(any())).thenReturn(saved);
+    when(slugFactory.makeSlug(any(), any())).thenReturn("dummy-slug");
 
     // when
     Publication result = publicationUseCases.create(clubId, publication, files);
@@ -88,6 +91,7 @@ class CreatePublicationUseCaseTest {
     saved.setImages(publication.getImages());
 
     when(publicationRepository.savePublication(any())).thenReturn(saved);
+    when(slugFactory.makeSlug(any(), any())).thenReturn("dummy-slug");
 
     doThrow(new IllegalArgumentException())
         .when(fileSystemImageStorageService)

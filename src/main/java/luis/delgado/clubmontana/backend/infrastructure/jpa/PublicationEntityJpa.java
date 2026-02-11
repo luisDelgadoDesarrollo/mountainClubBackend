@@ -34,4 +34,6 @@ public interface PublicationEntityJpa extends JpaRepository<PublicationEntity, L
   Page<PublicationEntity> findByClub_ClubId(Long clubId, Pageable pageable);
 
   Optional<PublicationEntity> findBySlug(String slug);
+
+  Boolean existsBySlug(String s);
 }

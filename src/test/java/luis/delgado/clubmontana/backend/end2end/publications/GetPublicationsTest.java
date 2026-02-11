@@ -6,10 +6,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import jakarta.transaction.Transactional;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,17 +27,17 @@ class GetPublicationsTest extends AbstractWebIntegrationTest {
   @Test
   void getPublications_happyPath_returnsPublicationsWithImages() throws Exception {
 
-    Long clubId = utilTest.insertClub();
-    Long publication1 = utilTest.createPublication(clubId);
-    Long publication2 = utilTest.createPublication(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> publication = utilTest.createPublication(club);
+    Pair<Long, String> publication1 = utilTest.createPublication(club);
 
     // filesystem
-    utilTest.createImage(publication1, clubId, "1.jpg");
-    utilTest.createImage(publication2, clubId, "2.jpg");
+    utilTest.createImage(publication.getFirst(), club.id(), "1.jpg");
+    utilTest.createImage(publication1.getFirst(), club.id(), "2.jpg");
 
     mockMvc
         .perform(
-            get("/clubs/{clubId}/publications", clubId)
+            get("/clubs/{club}/publications", club.slug())
                 .param("page", "0")
                 .param("size", "10")
                 .accept(MediaType.APPLICATION_JSON))
@@ -51,10 +53,11 @@ class GetPublicationsTest extends AbstractWebIntegrationTest {
   @Test
   void getPublications_whenNoPublications_returnsEmptyList() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     mockMvc
-        .perform(get("/clubs/{clubId}/publications", clubId).param("page", "0").param("size", "10"))
+        .perform(
+            get("/clubs/{club}/publications", club.slug()).param("page", "0").param("size", "10"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$").isArray())
         .andExpect(jsonPath("$.length()").value(0));

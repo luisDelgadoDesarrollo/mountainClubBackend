@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,14 +20,16 @@ class GetUsTest extends AbstractWebIntegrationTest {
 
   @Test
   void shouldGetUsByClubId() throws Exception {
-    //    Long clubId = 1L;
-    //
-    //    mockMvc
-    //        .perform(get("/clubs/{clubId}/us", clubId).contentType(MediaType.APPLICATION_JSON))
-    //        .andExpect(status().isOk())
-    //        .andExpect(jsonPath("$.clubId").value(clubId))
-    //        .andExpect(jsonPath("$.text").isNotEmpty())
-    //        .andExpect(jsonPath("$.images").isArray());
+    ClubInserted club = utilTest.insertClub();
+
+    utilTest.createUs(club);
+
+    mockMvc
+        .perform(get("/clubs/{club}/us", club.slug()).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.clubId").value(club.id()))
+        .andExpect(jsonPath("$.text").isNotEmpty())
+        .andExpect(jsonPath("$.images").isArray());
   }
 
   @Test
@@ -34,7 +37,7 @@ class GetUsTest extends AbstractWebIntegrationTest {
     Long clubId = 9999L;
 
     mockMvc
-        .perform(get("/clubs/{clubId}/us", clubId).contentType(MediaType.APPLICATION_JSON))
+        .perform(get("/clubs/{club}/us", clubId).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().is4xxClientError());
   }
 }

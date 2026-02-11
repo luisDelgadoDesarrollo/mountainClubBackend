@@ -9,6 +9,7 @@ import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.ActivityEntity;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.ActivityEntityJpa;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
   @Test
   void createActivity_happyPath_returns201() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted clubInserted = utilTest.insertClub();
     String json =
         """
                    {
@@ -62,10 +63,11 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubInserted.id());
     MvcResult mvcResult =
         mockMvc
-            .perform(multipart("/clubs/{clubId}/activities", clubId).part(data).file(image))
+            .perform(
+                multipart("/clubs/{club}/activities", clubInserted.slug()).part(data).file(image))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").isNumber())
             .andReturn();
@@ -85,7 +87,7 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
   @Test
   void createActivity_badDate() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted clubInserted = utilTest.insertClub();
     String json =
         """
                        {
@@ -114,15 +116,15 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubInserted.id());
     mockMvc
-        .perform(multipart("/clubs/{clubId}/activities", clubId).part(data).file(image))
+        .perform(multipart("/clubs/{club}/activities", clubInserted.slug()).part(data).file(image))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   void createActivity_withoutAuthentication_returns401() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted clubInserted = utilTest.insertClub();
     MockPart data =
         new MockPart(
             "data",
@@ -146,13 +148,13 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     mockMvc
-        .perform(multipart("/clubs/{clubId}/activities", clubId).part(data))
+        .perform(multipart("/clubs/{club}/activities", clubInserted.slug()).part(data))
         .andExpect(status().is4xxClientError());
   }
 
   @Test
   void createActivity_invalidPayload_returns400() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted clubInserted = utilTest.insertClub();
     String invalidJson =
         """
                     {
@@ -163,17 +165,17 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
     MockPart data = new MockPart("data", invalidJson.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubInserted.id());
 
     mockMvc
-        .perform(multipart("/clubs/{clubId}/activities", clubId).part(data))
+        .perform(multipart("/clubs/{club}/activities", clubInserted.slug()).part(data))
         .andExpect(status().isBadRequest());
   }
 
   @Test
   void createActivity_happyPath_noAffiliatePrice_and_noEndDate_returns201() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted clubInserted = utilTest.insertClub();
     String json =
         """
                        {
@@ -200,10 +202,11 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubInserted.id());
     MvcResult mvcResult =
         mockMvc
-            .perform(multipart("/clubs/{clubId}/activities", clubId).part(data).file(image))
+            .perform(
+                multipart("/clubs/{club}/activities", clubInserted.slug()).part(data).file(image))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").isNumber())
             .andReturn();

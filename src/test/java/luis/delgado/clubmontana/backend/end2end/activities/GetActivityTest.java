@@ -9,11 +9,13 @@ import java.nio.file.Path;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.util.Pair;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,17 +32,17 @@ public class GetActivityTest extends AbstractWebIntegrationTest {
   @Test
   void getActivities_happyPath_returnsArticleWithImages() throws Exception {
 
-    Long clubId = utilTest.insertClub();
-    Long activityId = utilTest.createActivity(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> activity = utilTest.createActivity(club);
 
     Path imagesDir =
         tempDir
-            .resolve("club_" + clubId)
+            .resolve("club_" + club.id())
             .resolve(ImageType.ACTIVITY.name())
-            .resolve("activity_" + activityId);
+            .resolve("activity_" + activity.getFirst());
 
     mockMvc
-        .perform(get("/clubs/{clubId}/activities/{activityId}", clubId, activityId))
+        .perform(get("/clubs/{club}/activities/{activity}", club.slug(), activity.getSecond()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.imagesPath").isArray())
         .andExpect(jsonPath("$.imagesPath.length()").value(1));
@@ -48,21 +50,21 @@ public class GetActivityTest extends AbstractWebIntegrationTest {
 
   @Test
   void getArticle_whenArticleDoesNotExist_returns404() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long activityId = utilTest.createActivity(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> activity = utilTest.createActivity(club);
     mockMvc
-        .perform(get("/clubs/{clubId}/activities/{activityId}", clubId, activityId + 1))
+        .perform(get("/clubs/{club}/activities/{activity}", club.slug(), activity.getSecond() + 1))
         .andExpect(status().isNotFound());
   }
 
   @Test
   void getArticle_whenClubDoesNotMatch_returns404() throws Exception {
 
-    Long clubId = utilTest.insertClub();
-    Long activityId = utilTest.createActivity(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> activity = utilTest.createActivity(club);
 
     mockMvc
-        .perform(get("/clubs/{clubId}/activities/{activityId}", clubId + 1, activityId))
+        .perform(get("/clubs/{club}/activities/{activity}", club.id() + 1, activity.getSecond()))
         .andExpect(status().isNotFound());
   }
 }

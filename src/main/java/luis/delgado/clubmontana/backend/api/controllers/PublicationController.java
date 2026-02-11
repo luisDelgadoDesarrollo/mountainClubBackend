@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.CreatePublicationRequestDto;
-import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.PublicationResponseDto;
+import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.PublicationControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.core.annotations.PublicationId;
@@ -34,7 +34,7 @@ public class PublicationController {
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<IdResponseDto> createPublication(
+  public ResponseEntity<ResponseDto> createPublication(
       @ClubId Long clubId,
       @RequestPart("data") @Valid CreatePublicationRequestDto request,
       @RequestParam Map<String, MultipartFile> files) {
@@ -56,7 +56,7 @@ public class PublicationController {
   }
 
   @PutMapping("/{publication}")
-  public ResponseEntity<IdResponseDto> updatePublication(
+  public ResponseEntity<ResponseDto> updatePublication(
       @ClubId Long clubId,
       @PublicationId Long publicationId,
       @RequestPart("data") @Valid CreatePublicationRequestDto request,

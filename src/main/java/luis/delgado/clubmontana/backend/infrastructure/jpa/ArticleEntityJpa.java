@@ -35,4 +35,6 @@ public interface ArticleEntityJpa extends JpaRepository<ArticleEntity, Long> {
   Page<ArticleEntity> findByClub_ClubId(Long clubId, Pageable pageable);
 
   Optional<ArticleEntity> findBySlug(String articleSlug);
+
+  Boolean existsBySlug(String s);
 }

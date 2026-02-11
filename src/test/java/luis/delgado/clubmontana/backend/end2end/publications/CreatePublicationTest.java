@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,7 +26,7 @@ class CreatePublicationTest extends AbstractWebIntegrationTest {
   @Test
   void createPublication_happyPath_returns201() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
     String json =
         """
             {
@@ -48,15 +49,15 @@ class CreatePublicationTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     mockMvc
-        .perform(multipart("/clubs/{clubId}/publications", clubId).part(data).file(image))
+        .perform(multipart("/clubs/{club}/publications", club.slug()).part(data).file(image))
         .andExpect(status().isCreated());
   }
 
   @Test
   void createPublication_withoutAuthentication_returns401() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
     MockPart data =
         new MockPart(
             "data",
@@ -74,13 +75,13 @@ class CreatePublicationTest extends AbstractWebIntegrationTest {
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     mockMvc
-        .perform(multipart("/clubs/{clubId}/publications", clubId).part(data))
+        .perform(multipart("/clubs/{club}/publications", club.slug()).part(data))
         .andExpect(status().is4xxClientError());
   }
 
   @Test
   void createPublication_invalidPayload_returns400() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
     String invalidJson =
         """
             {
@@ -91,10 +92,10 @@ class CreatePublicationTest extends AbstractWebIntegrationTest {
     MockPart data = new MockPart("data", invalidJson.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
 
     mockMvc
-        .perform(multipart("/clubs/{clubId}/publications", clubId).part(data))
+        .perform(multipart("/clubs/{club}/publications", club.slug()).part(data))
         .andExpect(status().isBadRequest());
   }
 }

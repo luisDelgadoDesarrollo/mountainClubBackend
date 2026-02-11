@@ -4,9 +4,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.util.Pair;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -17,35 +19,35 @@ public class DeleteArticleTest extends AbstractWebIntegrationTest {
 
   @Test
   void deleteArticle_happyPath() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long articleId = utilTest.createArticle(clubId);
-    utilTest.mockUserWithClub(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> article = utilTest.createArticle(club);
+    utilTest.mockUserWithClub(club.id());
 
     mockMvc
-        .perform(delete("/clubs/{clubId}/articles/{articleId}", clubId, articleId))
+        .perform(delete("/clubs/{club}/articles/{article}", club.slug(), article.getSecond()))
         .andExpect(status().isNoContent());
   }
 
   @Test
   void deleteArticle_withoutAuthentication_returnsForbidden() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long articleId = utilTest.createArticle(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> article = utilTest.createArticle(club);
 
     mockMvc
         .perform(
-            delete("/clubs/{clubId}/articles/{articleId}", clubId, articleId)
+            delete("/clubs/{club}/articles/{article}", club.id(), article.getSecond())
                 .with(SecurityMockMvcRequestPostProcessors.anonymous()))
         .andExpect(status().isForbidden());
   }
 
   @Test
   void deleteArticle_activityDoesNotExists() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long articleId = utilTest.createArticle(clubId);
-    utilTest.mockUserWithClub(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> article = utilTest.createArticle(club);
+    utilTest.mockUserWithClub(club.id());
 
     mockMvc
-        .perform(delete("/clubs/{clubId}/articles/{articleId}", clubId, articleId + 1))
+        .perform(delete("/clubs/{club}/articles/{article}", club.slug(), article.getSecond() + 1))
         .andExpect(status().isNotFound());
   }
 }

@@ -12,4 +12,6 @@ public interface PublicationRepository {
   Publication getPublication(Long clubId, Long publicationId);
 
   Page<Publication> getPublications(Long clubId, Pageable pageable);
+
+  Boolean existsBySlug(String s);
 }

@@ -37,7 +37,8 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
   @Override
   public Activity createActivity(Long clubId, Activity activity, Map<String, MultipartFile> files) {
     activity.setClubId(clubId);
-    activity.setSlug(slugFactory.makeSlug(activity.getTitle()));
+    activity.setSlug(
+        slugFactory.makeSlug(activity.getTitle(), s -> activityRepository.existBySlug(s)));
     Activity activitySaved = chekActivity(activity);
     fileStorageService.store(
         files,

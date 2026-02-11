@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.ActivityDto;
-import luis.delgado.clubmontana.backend.api.dtos.IdResponseDto;
+import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.SaveActivityDto;
 import luis.delgado.clubmontana.backend.api.mappers.ActivityControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ActivityId;
@@ -32,7 +32,7 @@ public class ActivityController {
   }
 
   @PostMapping
-  public ResponseEntity<IdResponseDto> create(
+  public ResponseEntity<ResponseDto> create(
       @ClubId Long clubId,
       @RequestPart("activity") @Valid SaveActivityDto saveActivityDto,
       @RequestParam Map<String, MultipartFile> files) {
@@ -46,7 +46,7 @@ public class ActivityController {
   }
 
   @PutMapping("/{activity}")
-  public ResponseEntity<IdResponseDto> update(
+  public ResponseEntity<ResponseDto> update(
       @ClubId Long clubId,
       @ActivityId Long activityId,
       @RequestPart("activity") @Valid SaveActivityDto saveActivityDto,

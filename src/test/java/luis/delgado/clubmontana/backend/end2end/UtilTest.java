@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.UUID;
 import luis.delgado.clubmontana.backend.domain.model.CustomUserDetails;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
+import org.springframework.data.util.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -47,58 +48,37 @@ public class UtilTest {
     SecurityContextHolder.getContext().setAuthentication(auth);
   }
 
-  public Long insertClub() {
+  public ClubInserted insertClub() {
     KeyHolder keyHolder = new GeneratedKeyHolder();
-
+    String suffix = UUID.randomUUID().toString().substring(0, 8);
+    String slug = "club-test-" + suffix;
     jdbcTemplate.update(
         connection -> {
           PreparedStatement ps =
               connection.prepareStatement(
                   """
-                                                                INSERT INTO club (
-                                                                  name,
-                                                                  slug,
-                                                                  nif,
-                                                                  description,
-                                                                  logo,
-                                                                  url,
-                                                                  created_at,
-                                                                  created_by,
-                                                                  has_inicio,
-                                                                  has_secciones,
-                                                                  has_galeria,
-                                                                  has_enlaces,
-                                                                  has_contacto,
-                                                                  has_federarse,
-                                                                  has_tienda,
-                                                                  has_calendario,
-                                                                  has_conocenos,
-                                                                  has_noticias,
-                                                                  has_foro,
-                                                                  has_estatutos,
-                                                                  has_normas,
-                                                                  has_hazte_socio,
-                                                                contact_email
-                                                                ) VALUES (
-                                                                  ?,? ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
-                                                                  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-                                                                )
-                                                                """,
+                                    INSERT INTO club (
+                                      name, slug, nif, description, logo, url,
+                                      created_at, created_by,
+                                      has_inicio, has_secciones, has_galeria, has_enlaces,
+                                      has_contacto, has_federarse, has_tienda, has_calendario,
+                                      has_conocenos, has_noticias, has_foro, has_estatutos,
+                                      has_normas, has_hazte_socio, contact_email
+                                    ) VALUES (
+                                      ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
+                                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                                    )
+                                    """,
                   Statement.RETURN_GENERATED_KEYS);
-
-          String suffix = UUID.randomUUID().toString().substring(0, 8);
-
           ps.setString(1, "Club Test");
-          ps.setString(2, "club-test-" + suffix);
-
-          ps.setString(3, "G" + suffix); // nif único
+          ps.setString(2, slug);
+          ps.setString(3, "G" + suffix);
           ps.setString(4, "Club de prueba");
           ps.setString(5, "logo.png");
-          ps.setString(6, "club-" + suffix + ".es"); // url única
-          ps.setLong(7, 1L); // created_by
-
-          ps.setBoolean(8, true); // has_inicio
-          ps.setBoolean(9, true); // has_secciones
+          ps.setString(6, "club-" + suffix + ".es");
+          ps.setLong(7, 1L);
+          ps.setBoolean(8, true);
+          ps.setBoolean(9, true);
           ps.setBoolean(10, false);
           ps.setBoolean(11, false);
           ps.setBoolean(12, false);
@@ -112,15 +92,13 @@ public class UtilTest {
           ps.setBoolean(20, false);
           ps.setBoolean(21, false);
           ps.setString(22, "delgadofernandez.luis@gmail.com");
-
           return ps;
         },
         keyHolder);
-
-    return keyHolder.getKey().longValue();
+    return new ClubInserted(keyHolder.getKey().longValue(), slug);
   }
 
-  public Long createActivity(Long clubId) throws Exception {
+  public Pair<Long, String> createActivity(ClubInserted club) throws Exception {
 
     String json =
         """
@@ -148,15 +126,16 @@ public class UtilTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    mockUserWithClub(clubId);
+    mockUserWithClub(club.id());
     MvcResult mvcResult =
         mockMvc
-            .perform(multipart("/clubs/{clubId}/activities", clubId).part(data).file(image))
+            .perform(multipart("/clubs/{club}/activities", club.slug()).part(data).file(image))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").isNumber())
             .andReturn();
     Integer id = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
-    return Long.valueOf(id);
+    String slug = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.slug");
+    return Pair.of(Long.valueOf(id), slug);
   }
 
   public void createImage(Long ownerId, Long clubId, String filename) throws IOException {
@@ -170,7 +149,7 @@ public class UtilTest {
     Files.createFile(dir.resolve(filename));
   }
 
-  public Long createArticle(Long clubId) throws Exception {
+  public Pair<Long, String> createArticle(ClubInserted club) throws Exception {
     String articleJson =
         """
                   {
@@ -209,19 +188,23 @@ public class UtilTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    mockUserWithClub(clubId);
+    mockUserWithClub(club.id());
     MvcResult mvcResult =
         mockMvc
             .perform(
-                multipart("/clubs/{clubId}/articles", clubId).part(data).file(image1).file(image2))
+                multipart("/clubs/{club}/articles", club.slug())
+                    .part(data)
+                    .file(image1)
+                    .file(image2))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").isNumber())
             .andReturn();
     Integer id = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
-    return Long.valueOf(id);
+    String slug = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.slug");
+    return Pair.of(Long.valueOf(id), slug);
   }
 
-  public Long createPublication(Long clubId) throws Exception {
+  public Pair<Long, String> createPublication(ClubInserted club) throws Exception {
     String json =
         """
                   {
@@ -244,14 +227,48 @@ public class UtilTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    mockUserWithClub(clubId);
+    mockUserWithClub(club.id());
     MvcResult mvcResult =
         mockMvc
-            .perform(multipart("/clubs/{clubId}/publications", clubId).part(data).file(image))
+            .perform(multipart("/clubs/{club}/publications", club.slug()).part(data).file(image))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.id").isNumber())
             .andReturn();
     Integer id = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
-    return Long.valueOf(id);
+    String slug = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.slug");
+    return Pair.of(Long.valueOf(id), slug);
+  }
+
+  public void createUs(ClubInserted club) throws Exception {
+
+    // ---------- multipart files ----------
+    MockMultipartFile file1 =
+        new MockMultipartFile(
+            "files",
+            "image1.jpg",
+            MediaType.IMAGE_JPEG_VALUE,
+            new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
+
+    // ---------- UsRequestDto como JSON ----------
+    String usRequestJson =
+        """
+              {
+                "text": "Texto de prueba",
+                "images": [
+                  { "image": "image1.jpg" }
+                ]
+              }
+              """;
+
+    MockPart data = new MockPart("us", usRequestJson.getBytes(StandardCharsets.UTF_8));
+    data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+
+    mockUserWithClub(club.id());
+
+    mockMvc.perform(
+        multipart("/clubs/{club}/us", club.slug())
+            .part(data)
+            .file(file1)
+            .contentType(MediaType.MULTIPART_FORM_DATA));
   }
 }

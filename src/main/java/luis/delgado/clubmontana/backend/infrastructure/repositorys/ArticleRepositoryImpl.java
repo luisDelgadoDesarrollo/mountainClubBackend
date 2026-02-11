@@ -48,4 +48,9 @@ public class ArticleRepositoryImpl implements ArticleRepository {
         .findByClub_ClubId(clubId, pageable)
         .map(articleRepositoryMapper::articleEntityToArticle);
   }
+
+  @Override
+  public Boolean existsBySlug(String s) {
+    return articleEntityJpa.existsBySlug(s);
+  }
 }

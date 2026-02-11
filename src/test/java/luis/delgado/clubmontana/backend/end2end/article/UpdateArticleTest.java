@@ -6,10 +6,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.nio.charset.StandardCharsets;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -29,8 +31,8 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
 
   @Test
   void shouldUpdateArticleWithImagesAndVariants() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long articleId = utilTest.createArticle(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> article = utilTest.createArticle(club);
     // ---------- UPDATE ----------
     String updateJson =
         """
@@ -72,7 +74,7 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
 
     mockMvc
         .perform(
-            multipart("/clubs/{clubId}/articles/{articleId}", clubId, articleId)
+            multipart("/clubs/{club}/articles/{article}", club.slug(), article.getSecond())
                 .part(updatePart)
                 .file(updateImage1)
                 .file(updateImage2)
@@ -83,13 +85,13 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
                       return request;
                     }))
         .andExpect(status().isCreated())
-        .andExpect(jsonPath("$.id").value(articleId));
+        .andExpect(jsonPath("$.id").value(article.getFirst()));
   }
 
   @Test
   void updateArticle_withoutAuthentication() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long articleId = utilTest.createArticle(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> article = utilTest.createArticle(club);
     // ---------- UPDATE ----------
     String updateJson =
         """
@@ -131,7 +133,11 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
 
     mockMvc
         .perform(
-            multipart(HttpMethod.PUT, "/clubs/{clubId}/articles/{articleId}", clubId, articleId)
+            multipart(
+                    HttpMethod.PUT,
+                    "/clubs/{club}/articles/{article}",
+                    club.slug(),
+                    article.getSecond())
                 .part(updatePart)
                 .file(updateImage1)
                 .file(updateImage2)
@@ -141,8 +147,8 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
 
   @Test
   void updateArticle_badPayload() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long articleId = utilTest.createArticle(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> article = utilTest.createArticle(club);
 
     String updateJson =
         """
@@ -168,10 +174,10 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     mockMvc
         .perform(
-            multipart("/clubs/{clubId}/articles/{articleId}", clubId, articleId)
+            multipart("/clubs/{club}/articles/{article}", club.slug(), article.getSecond())
                 .part(updatePart)
                 .file(updateImage1)
                 .file(updateImage2))

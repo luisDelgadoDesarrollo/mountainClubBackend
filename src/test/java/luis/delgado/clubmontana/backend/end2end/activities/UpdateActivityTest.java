@@ -9,12 +9,14 @@ import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.ActivityEntity;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.ActivityEntityJpa;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -35,9 +37,9 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
   @Test
   void updateActivity_happyPath_returns201() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
-    Long activityId = utilTest.createActivity(clubId);
+    Pair<Long, String> activity = utilTest.createActivity(club);
 
     String json =
         """
@@ -68,7 +70,7 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
 
     // when / then
     MvcResult mvcResult =
@@ -76,9 +78,9 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
             .perform(
                 multipart(
                         HttpMethod.PUT,
-                        "/clubs/{clubId}/activities/{activityId}",
-                        clubId,
-                        activityId)
+                        "/clubs/{club}/activities/{activity}",
+                        club.slug(),
+                        activity.getSecond())
                     .part(data)
                     .file(image))
             .andExpect(status().isCreated())
@@ -89,20 +91,20 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
 
     assertThat(activityOptional).isPresent();
 
-    ActivityEntity activity = activityOptional.get();
+    ActivityEntity activityGetted = activityOptional.get();
 
-    assertThat(activity.getNoAffiliatePrice()).isEqualByComparingTo("50.00");
-    assertThat(activity.getAffiliatePrice()).isEqualByComparingTo("30.00");
-    assertThat(activity.getStartDate()).isEqualTo("2026-04-15T08:30:00");
-    assertThat(activity.getEndDate()).isEqualTo("2026-05-15T17:00:00");
+    assertThat(activityGetted.getNoAffiliatePrice()).isEqualByComparingTo("50.00");
+    assertThat(activityGetted.getAffiliatePrice()).isEqualByComparingTo("30.00");
+    assertThat(activityGetted.getStartDate()).isEqualTo("2026-04-15T08:30:00");
+    assertThat(activityGetted.getEndDate()).isEqualTo("2026-05-15T17:00:00");
   }
 
   @Test
   void updateActivity_badDate() throws Exception {
 
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
-    Long activityId = utilTest.createActivity(clubId);
+    Pair<Long, String> activity = utilTest.createActivity(club);
 
     String json =
         """
@@ -133,11 +135,15 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
 
     mockMvc
         .perform(
-            multipart(HttpMethod.PUT, "/clubs/{clubId}/activities/{activityId}", clubId, activityId)
+            multipart(
+                    HttpMethod.PUT,
+                    "/clubs/{club}/activities/{activity}",
+                    club.slug(),
+                    activity.getSecond())
                 .part(data)
                 .file(image))
         .andExpect(status().isBadRequest());
@@ -145,8 +151,8 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
 
   @Test
   void updateActivity_withoutAuthentication_returns401() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long activityId = utilTest.createActivity(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> activity = utilTest.createActivity(club);
 
     String json =
         """
@@ -179,7 +185,11 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
 
     mockMvc
         .perform(
-            multipart(HttpMethod.PUT, "/clubs/{clubId}/activities/{activityId}", clubId, activityId)
+            multipart(
+                    HttpMethod.PUT,
+                    "/clubs/{club}/activities/{activity}",
+                    club.id(),
+                    activity.getSecond())
                 .part(data)
                 .file(image)
                 .with(SecurityMockMvcRequestPostProcessors.anonymous()))
@@ -188,9 +198,9 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
 
   @Test
   void updateActivity_invalidPayload_returns400() throws Exception {
-    Long clubId = utilTest.insertClub();
-    Long activityId = utilTest.createActivity(clubId);
-    utilTest.mockUserWithClub(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> activity = utilTest.createActivity(club);
+    utilTest.mockUserWithClub(club.id());
     String json =
         """
                              {
@@ -211,7 +221,11 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
 
     mockMvc
         .perform(
-            multipart(HttpMethod.PUT, "/clubs/{clubId}/activities/{activityId}", clubId, activityId)
+            multipart(
+                    HttpMethod.PUT,
+                    "/clubs/{club}/activities/{activity}",
+                    club.slug(),
+                    activity.getSecond())
                 .part(data)
                 .file(image))
         .andExpect(status().is4xxClientError());
@@ -220,8 +234,8 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
   @Test
   void createActivity_happyPath_noAffiliatePrice_and_noEndDate_returns201() throws Exception {
 
-    Long clubId = utilTest.insertClub();
-    Long activityId = utilTest.createActivity(clubId);
+    ClubInserted club = utilTest.insertClub();
+    Pair<Long, String> activity1 = utilTest.createActivity(club);
     String json =
         """
                            {
@@ -248,15 +262,15 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     MvcResult mvcResult =
         mockMvc
             .perform(
                 multipart(
                         HttpMethod.PUT,
-                        "/clubs/{clubId}/activities/{activityId}",
-                        clubId,
-                        activityId)
+                        "/clubs/{club}/activities/{activity}",
+                        club.slug(),
+                        activity1.getSecond())
                     .part(data)
                     .file(image))
             .andExpect(status().isCreated())

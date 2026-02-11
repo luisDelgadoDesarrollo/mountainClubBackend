@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,16 +22,16 @@ public class GetDocTest extends AbstractWebIntegrationTest {
 
   @Test
   void getDoc_happyPath() throws Exception {
-    Long clubId = 1L;
+    ClubInserted clubInserted = utilTest.insertClub();
 
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubInserted.id());
     // Arrange → guardamos antes
     mockMvc
         .perform(
-            multipart("/clubs/{clubId}/doc?pdfType=BY_LAWS", clubId)
+            multipart("/clubs/{club}/doc?pdfType=BY_LAWS", clubInserted.slug())
                 .file(file)
                 .with(
                     request -> {
@@ -41,23 +42,23 @@ public class GetDocTest extends AbstractWebIntegrationTest {
 
     // Act + Assert → GET
     mockMvc
-        .perform(get("/clubs/{clubId}/doc?pdfType=BY_LAWS", clubId))
+        .perform(get("/clubs/{club}/doc?pdfType=BY_LAWS", clubInserted.slug()))
         .andExpect(status().isOk())
         .andExpect(content().bytes("PDF content".getBytes()));
   }
 
   @Test
   void getDoc_badType() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted clubInserted = utilTest.insertClub();
 
     MockMultipartFile file =
         new MockMultipartFile("file", "estatutos.pdf", "application/pdf", "PDF content".getBytes());
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(clubInserted.id());
     // Arrange → guardamos antes
     mockMvc
         .perform(
-            multipart("/clubs/{clubId}/doc?pdfType=BY_LAWS", clubId)
+            multipart("/clubs/{club}/doc?pdfType=BY_LAWS", clubInserted.slug())
                 .file(file)
                 .with(
                     request -> {
@@ -67,7 +68,7 @@ public class GetDocTest extends AbstractWebIntegrationTest {
         .andExpect(status().isNoContent());
 
     mockMvc
-        .perform(get("/clubs/{clubId}/doc?pdfType=BAD_TYPE", clubId))
+        .perform(get("/clubs/{club}/doc?pdfType=BAD_TYPE", clubInserted.slug()))
         .andExpect(status().isBadRequest());
   }
 }

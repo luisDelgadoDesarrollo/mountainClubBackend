@@ -48,4 +48,9 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         .findByClub_ClubId(clubId, pageable)
         .map(activityRepositoryMapper::activityEntityToActivity);
   }
+
+  @Override
+  public Boolean existBySlug(String s) {
+    return activityEntityJpa.existsBySlug(s);
+  }
 }

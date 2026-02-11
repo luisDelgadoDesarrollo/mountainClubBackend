@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
+import luis.delgado.clubmontana.backend.end2end.ClubInserted;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,7 @@ class SaveRulesTest extends AbstractWebIntegrationTest {
 
   @Test
   void saveRules_happyPath() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     String body =
         """
@@ -34,10 +35,10 @@ class SaveRulesTest extends AbstractWebIntegrationTest {
                 ]
                 """;
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     mockMvc
         .perform(
-            put("/clubs/{clubId}/rules", clubId)
+            put("/clubs/{club}/rules", club.slug())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
         .andExpect(status().isNoContent());
@@ -45,7 +46,7 @@ class SaveRulesTest extends AbstractWebIntegrationTest {
 
   @Test
   void updateRules_happyPath() throws Exception {
-    Long clubId = utilTest.insertClub();
+    ClubInserted club = utilTest.insertClub();
 
     String body =
         """
@@ -57,10 +58,10 @@ class SaveRulesTest extends AbstractWebIntegrationTest {
                     ]
                     """;
 
-    utilTest.mockUserWithClub(clubId);
+    utilTest.mockUserWithClub(club.id());
     mockMvc
         .perform(
-            put("/clubs/{clubId}/rules", clubId)
+            put("/clubs/{club}/rules", club.slug())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
         .andExpect(status().isNoContent());
@@ -76,13 +77,13 @@ class SaveRulesTest extends AbstractWebIntegrationTest {
 
     mockMvc
         .perform(
-            put("/clubs/{clubId}/rules", clubId)
+            put("/clubs/{club}/rules", club.slug())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body2))
         .andExpect(status().isNoContent());
 
     mockMvc
-        .perform(get("/clubs/{clubId}/rules", clubId))
+        .perform(get("/clubs/{club}/rules", club.slug()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(3)));
   }

@@ -38,7 +38,8 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
   public Publication create(
       Long clubId, Publication publication, Map<String, MultipartFile> files) {
     publication.setClubId(clubId);
-    publication.setSlug(slugFactory.makeSlug(publication.getTitle()));
+    publication.setSlug(
+        slugFactory.makeSlug(publication.getTitle(), s -> publicationRepository.existsBySlug(s)));
     Publication publicationSaved = publicationRepository.savePublication(publication);
 
     fileStorageService.store(

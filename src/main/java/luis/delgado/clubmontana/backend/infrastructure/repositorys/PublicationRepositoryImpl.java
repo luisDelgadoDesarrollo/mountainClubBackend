@@ -50,4 +50,9 @@ public class PublicationRepositoryImpl implements PublicationRepository {
         .findByClub_ClubId(clubId, pageable)
         .map(publicationRepositoryMapper::publicationEntityToPublication);
   }
+
+  @Override
+  public Boolean existsBySlug(String s) {
+    return publicationEntityJpa.existsBySlug(s);
+  }
 }
