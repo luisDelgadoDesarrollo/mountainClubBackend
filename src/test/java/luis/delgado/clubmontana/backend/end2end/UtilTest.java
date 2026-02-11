@@ -106,7 +106,7 @@ public class UtilTest {
                                "title": "Ruta guiada al Pico del Águila",
                                "description": "Actividad de montaña de nivel medio con guía titulado.",
                                "affiliatePrice": 25.00,
-                               "startDate": "2026-03-15T08:30:00",
+                               "startDate": "2026-01-15T08:30:00",
                                "images": [
                                  {
                                    "image": "image-1",

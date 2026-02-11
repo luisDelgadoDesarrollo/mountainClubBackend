@@ -1,5 +1,7 @@
 package luis.delgado.clubmontana.backend.infrastructure.jpa;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import luis.delgado.clubmontana.backend.infrastructure.entitys.ActivityEntity;
 import org.springframework.data.domain.Page;
@@ -34,4 +36,15 @@ public interface ActivityEntityJpa extends JpaRepository<ActivityEntity, Long> {
   Optional<ActivityEntity> findBySlug(String slug);
 
   Boolean existsBySlug(String s);
+
+  @Query(
+"""
+    select distinct a
+    from ActivityEntity a
+    left join fetch a.images
+    where a.club.clubId = :clubId
+      and a.endDate < :now
+    order by a.endDate desc
+""")
+  List<ActivityEntity> findLastPastActivity(Long clubId, LocalDateTime now, Pageable pageable);
 }

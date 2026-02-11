@@ -36,4 +36,14 @@ public interface PublicationEntityJpa extends JpaRepository<PublicationEntity, L
   Optional<PublicationEntity> findBySlug(String slug);
 
   Boolean existsBySlug(String s);
+
+  @Query(
+      """
+              select distinct p
+              from PublicationEntity p
+              left join fetch p.images
+              where p.club.clubId = :clubId
+              order by p.createdAt desc
+          """)
+  Page<PublicationEntity> findLastPastPublication(Long clubId, Pageable pageable);
 }

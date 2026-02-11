@@ -2,6 +2,7 @@ package luis.delgado.clubmontana.backend.domain.userCases;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
@@ -18,4 +19,6 @@ public interface ActivityUseCases {
   Pair<Activity, List<String>> getActivity(Long clubId, Long activityId);
 
   List<Pair<Activity, List<String>>> getAllActivity(Long clubId, Pageable pageable);
+
+  Optional<Pair<Activity, List<String>>> getLastActivity(Long clubId);
 }

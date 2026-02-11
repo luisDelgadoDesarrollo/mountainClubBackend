@@ -1,12 +1,14 @@
 package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import luis.delgado.clubmontana.backend.api.exceptions.ActivityNotFoundException;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.ActivityEntityJpa;
 import luis.delgado.clubmontana.backend.infrastructure.mappers.ActivityRepositoryMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -52,5 +54,15 @@ public class ActivityRepositoryImpl implements ActivityRepository {
   @Override
   public Boolean existBySlug(String s) {
     return activityEntityJpa.existsBySlug(s);
+  }
+
+  @Override
+  public Activity getLastActivity(Long clubId) {
+    return activityEntityJpa
+        .findLastPastActivity(clubId, LocalDateTime.now(), PageRequest.of(0, 1))
+        .stream()
+        .findFirst()
+        .map(activityRepositoryMapper::activityEntityToActivity)
+        .orElse(null);
   }
 }

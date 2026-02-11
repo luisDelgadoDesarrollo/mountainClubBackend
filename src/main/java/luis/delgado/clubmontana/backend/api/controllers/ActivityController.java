@@ -75,6 +75,21 @@ public class ActivityController {
             activity.getFirst(), activity.getSecond()));
   }
 
+  @GetMapping("/last")
+  public ResponseEntity<ActivityDto> getLast(@ClubId Long clubId) {
+    return activityUseCases.getLastActivity(clubId)
+            .map(pair -> {
+              ActivityDto dto =
+                      activityControllerMapper
+                              .activityWithPathToActivityDto(
+                                      pair.getFirst(),
+                                      pair.getSecond()
+                              );
+              return ResponseEntity.ok(dto);
+            })
+            .orElseGet(() -> ResponseEntity.noContent().build());
+  }
+
   @GetMapping()
   public ResponseEntity<List<ActivityDto>> getAll(@ClubId Long clubId, Pageable pageable) {
     return ResponseEntity.ok(

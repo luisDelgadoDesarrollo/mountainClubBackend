@@ -7,6 +7,7 @@ import luis.delgado.clubmontana.backend.domain.repository.PublicationRepository;
 import luis.delgado.clubmontana.backend.infrastructure.jpa.PublicationEntityJpa;
 import luis.delgado.clubmontana.backend.infrastructure.mappers.PublicationRepositoryMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -54,5 +55,15 @@ public class PublicationRepositoryImpl implements PublicationRepository {
   @Override
   public Boolean existsBySlug(String s) {
     return publicationEntityJpa.existsBySlug(s);
+  }
+
+  @Override
+  public Publication getLastPublication(Long clubId) {
+    return publicationEntityJpa
+        .findLastPastPublication(clubId, PageRequest.of(0, 1))
+        .stream()
+        .findFirst()
+        .map(publicationRepositoryMapper::publicationEntityToPublication)
+        .orElse(null);
   }
 }

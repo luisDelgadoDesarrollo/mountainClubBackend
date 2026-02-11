@@ -3,6 +3,7 @@ package luis.delgado.clubmontana.backend.application.useCases;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import luis.delgado.clubmontana.backend.api.exceptions.BadDateActivity;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
@@ -37,8 +38,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
   @Override
   public Activity createActivity(Long clubId, Activity activity, Map<String, MultipartFile> files) {
     activity.setClubId(clubId);
-    activity.setSlug(
-        slugFactory.makeSlug(activity.getTitle(), s -> activityRepository.existBySlug(s)));
+    activity.setSlug(slugFactory.makeSlug(activity.getTitle(), activityRepository::existBySlug));
     Activity activitySaved = chekActivity(activity);
     fileStorageService.store(
         files,
@@ -94,6 +94,17 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
                     fileStorageService.getImages(
                         clubId, activity.getActivityId(), ImageType.ACTIVITY))));
     return activitiesWithPath;
+  }
+
+  @NoAuthenticationNeeded
+  @Override
+  public Optional<Pair<Activity, List<String>>> getLastActivity(Long clubId) {
+    Activity activity = activityRepository.getLastActivity(clubId);
+    if (activity == null) return Optional.empty();
+
+    List<String> imagesPath =
+        fileStorageService.getImages(clubId, activity.getActivityId(), ImageType.ACTIVITY);
+    return Optional.of(Pair.of(activity, imagesPath));
   }
 
   private Activity chekActivity(Activity activity) throws BadDateActivity {

@@ -82,6 +82,18 @@ public class PublicationController {
             publicationResponse.getFirst(), publicationResponse.getSecond()));
   }
 
+  @GetMapping("/last")
+  public ResponseEntity<PublicationResponseDto> getLastPublication(@ClubId Long clubId) {
+    return publicationUseCases
+        .getLastPublication(clubId)
+        .map(
+            pair ->
+                ResponseEntity.ok(
+                    publicationControllerMapper.publicationResponseToPublicationResponseDto(
+                        pair.getFirst(), pair.getSecond())))
+        .orElseGet(() -> ResponseEntity.noContent().build());
+  }
+
   @GetMapping
   public ResponseEntity<List<PublicationResponseDto>> getPublications(
       @ClubId Long clubId, Pageable pageable) {

@@ -3,6 +3,7 @@ package luis.delgado.clubmontana.backend.application.useCases;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
@@ -39,7 +40,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
       Long clubId, Publication publication, Map<String, MultipartFile> files) {
     publication.setClubId(clubId);
     publication.setSlug(
-        slugFactory.makeSlug(publication.getTitle(), s -> publicationRepository.existsBySlug(s)));
+        slugFactory.makeSlug(publication.getTitle(), publicationRepository::existsBySlug));
     Publication publicationSaved = publicationRepository.savePublication(publication);
 
     fileStorageService.store(
@@ -100,5 +101,16 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
         });
 
     return publicationsWithPath;
+  }
+
+  @NoAuthenticationNeeded
+  @Override
+  public Optional<Pair<Publication, List<String>>> getLastPublication(Long clubId) {
+    Publication publication = publicationRepository.getLastPublication(clubId);
+    if (publication == null) return Optional.empty();
+    List<String> images =
+        fileStorageService.getImages(
+            publication.getClubId(), publication.getPublicationId(), ImageType.PUBLICATION);
+    return Optional.of(Pair.of(publication, images));
   }
 }

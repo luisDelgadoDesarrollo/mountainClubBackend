@@ -14,4 +14,6 @@ public interface ActivityRepository {
   Page<Activity> getActivities(Long clubId, Pageable pageable);
 
   Boolean existBySlug(String s);
+
+  Activity getLastActivity(Long clubId);
 }
