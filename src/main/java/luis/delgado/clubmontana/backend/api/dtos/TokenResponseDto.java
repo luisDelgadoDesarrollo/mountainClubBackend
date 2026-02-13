@@ -6,6 +6,4 @@ import jakarta.validation.constraints.NotNull;
 
 public record TokenResponseDto(
     @NotBlank @Schema(example = "jwt-token") String accessToken,
-    @NotBlank @Schema(example = "Bearer") String tokenType,
-    @NotNull @Schema(example = "3600") Long expiresIn,
-    @NotBlank @Schema(example = "tokenRandom") String refreshToken) {}
+    @NotNull @Schema(example = "3600") Long expiresIn) {}

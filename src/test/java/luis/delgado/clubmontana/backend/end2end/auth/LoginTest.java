@@ -56,8 +56,6 @@ class LoginTest {
         .perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(body))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.accessToken").exists())
-        .andExpect(jsonPath("$.refreshToken").exists())
-        .andExpect(jsonPath("$.tokenType").value("Bearer"))
         .andExpect(jsonPath("$.expiresIn").isNumber());
   }
 

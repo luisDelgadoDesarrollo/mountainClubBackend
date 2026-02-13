@@ -1,16 +1,17 @@
 package luis.delgado.clubmontana.backend.api.controllers;
 
 import jakarta.validation.Valid;
+import java.time.Duration;
 import luis.delgado.clubmontana.backend.api.dtos.LoginRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.TokenResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.AuthControllerMapper;
+import luis.delgado.clubmontana.backend.domain.model.commands.auth.TokenResponse;
 import luis.delgado.clubmontana.backend.domain.userCases.AuthUseCases;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -27,18 +28,39 @@ public class AuthController {
   @PostMapping("/login")
   public ResponseEntity<TokenResponseDto> login(
       @Valid @RequestBody LoginRequestDto loginRequestDto) {
+
+    TokenResponse login =
+        authUseCases.login(userControllerMapper.loginRequestDtoToLoginCommand(loginRequestDto));
+
+    // Crear cookie refresh
+    ResponseCookie refreshCookie =
+        ResponseCookie.from("refresh_token", login.getRefreshToken())
+            .httpOnly(true)
+            .secure(false)
+            .path("/")
+            .maxAge(Duration.ofDays(7))
+            .sameSite("Lax")
+            .build();
+
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(
-            userControllerMapper.tokenResponseToTokenResponseDto(
-                authUseCases.login(
-                    userControllerMapper.loginRequestDtoToLoginCommand(loginRequestDto))));
+        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+        .body(userControllerMapper.tokenResponseToTokenResponseDto(login));
   }
 
   @PostMapping("/refresh")
-  public ResponseEntity<TokenResponseDto> refresh(@Valid @RequestBody String refreshToken) {
+  public ResponseEntity<TokenResponseDto> refresh(
+      @CookieValue(name = "refresh_token") String refreshToken) {
+    TokenResponse tokenDto = authUseCases.refreshToken(refreshToken);
+    ResponseCookie refreshCookie =
+        ResponseCookie.from("refresh_token", tokenDto.getRefreshToken())
+            .httpOnly(true)
+            .secure(false)
+            .path("/")
+            .maxAge(Duration.ofDays(7))
+            .sameSite("Lax")
+            .build();
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(
-            userControllerMapper.tokenResponseToTokenResponseDto(
-                authUseCases.refreshToken(refreshToken)));
+        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+        .body(userControllerMapper.tokenResponseToTokenResponseDto(tokenDto));
   }
 }

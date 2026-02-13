@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import luis.delgado.clubmontana.backend.domain.model.TokenRefresh;
@@ -14,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,12 +44,10 @@ class RefreshTokenTest {
     String refreshToken = initial.getRefreshToken();
 
     mockMvc
-        .perform(
-            post("/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(refreshToken))
+        .perform(post("/auth/refresh").cookie(new Cookie("refresh_token", refreshToken)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.accessToken").exists())
-        .andExpect(jsonPath("$.refreshToken").exists())
-        .andExpect(jsonPath("$.tokenType").value("Bearer"));
+        .andExpect(jsonPath("$.expiresIn").exists());
   }
 
   // =====================================================
@@ -61,8 +59,7 @@ class RefreshTokenTest {
     String fakeRefreshToken = UUID.randomUUID().toString();
 
     mockMvc
-        .perform(
-            post("/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(fakeRefreshToken))
+        .perform(post("/auth/refresh").cookie(new Cookie("refresh_token", fakeRefreshToken)))
         .andExpect(status().isUnauthorized());
   }
 
@@ -87,7 +84,7 @@ class RefreshTokenTest {
             email));
 
     mockMvc
-        .perform(post("/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(rawToken))
+        .perform(post("/auth/refresh").cookie(new Cookie("refresh_token", rawToken)))
         .andExpect(status().isUnauthorized());
   }
 
@@ -115,7 +112,7 @@ class RefreshTokenTest {
     authRepository.saveTokenRefresh(token);
 
     mockMvc
-        .perform(post("/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(rawToken))
+        .perform(post("/auth/refresh").cookie(new Cookie("refresh_token", rawToken)))
         .andExpect(status().isUnauthorized());
   }
 
@@ -135,14 +132,12 @@ class RefreshTokenTest {
 
     // Primera vez → OK
     mockMvc
-        .perform(
-            post("/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(refreshToken))
+        .perform(post("/auth/refresh").cookie(new Cookie("refresh_token", refreshToken)))
         .andExpect(status().isCreated());
 
     // Segunda vez → FAIL
     mockMvc
-        .perform(
-            post("/auth/refresh").contentType(MediaType.APPLICATION_JSON).content(refreshToken))
+        .perform(post("/auth/refresh").cookie(new Cookie("refresh_token", refreshToken)))
         .andExpect(status().isUnauthorized());
   }
 }
