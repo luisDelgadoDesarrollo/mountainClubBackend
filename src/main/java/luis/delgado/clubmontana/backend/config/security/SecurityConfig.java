@@ -19,7 +19,8 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(
       HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
-    return http.csrf(AbstractHttpConfigurer::disable)
+    return http.cors(cors -> {})
+        .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthenticationFilter, AnonymousAuthenticationFilter.class)
         .authorizeHttpRequests(
@@ -35,9 +36,9 @@ public class SecurityConfig {
                         "/test/**",
                         "/clubs/{club}/us/**")
                     .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/clubs/{club}/contact/**")
+                    .requestMatchers(HttpMethod.POST, "/auth/**", "/clubs/{club}/contact/**")
                     .permitAll()
-                    .requestMatchers("/auth/**", "/users/**")
+                    .requestMatchers("/users/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
