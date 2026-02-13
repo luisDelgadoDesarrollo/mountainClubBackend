@@ -26,7 +26,8 @@ public class PublicationEntity {
   @Column(nullable = false)
   private String title;
 
-  @Column private String text;
+  @Column(columnDefinition = "TEXT")
+  private String text;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "club_id", nullable = false)

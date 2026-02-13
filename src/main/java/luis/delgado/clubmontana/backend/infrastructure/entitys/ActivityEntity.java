@@ -27,7 +27,8 @@ public class ActivityEntity {
   @Column(nullable = false)
   private String title;
 
-  @Column private String description;
+  @Column(columnDefinition = "TEXT")
+  private String description;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "club_id", nullable = false)

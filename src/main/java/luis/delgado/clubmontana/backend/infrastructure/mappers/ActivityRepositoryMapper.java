@@ -38,9 +38,9 @@ public interface ActivityRepositoryMapper {
   @Mapping(target = "clubId", source = "club.clubId")
   Activity activityEntityToActivity(ActivityEntity activityEntity);
 
-  @Mapping(target = "imageId", source = "activity.activityId")
+  @Mapping(target = "imageId", source = "activityImageId")
   Image activityImageEntityToActivityImage(ActivityImageEntity activityImageEntity);
 
-  @Mapping(target = "activity.activityId", source = "imageId")
+  @Mapping(target = "activityImageId", source = "imageId")
   ActivityImageEntity activityImageToActivityImageEntity(Image image);
 }

@@ -46,7 +46,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     fileStorageService.store(
         files,
         publicationSaved.getImages().stream()
-            .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
+            .collect(Collectors.toMap(Image::getImage, Image::getImageId)),
         publicationSaved.getPublicationId(),
         clubId,
         ImageType.PUBLICATION);
@@ -69,7 +69,7 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
     fileStorageService.store(
         files,
         publicationSaved.getImages().stream()
-            .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
+            .collect(Collectors.toMap(Image::getImage, Image::getImageId)),
         publicationId,
         clubId,
         ImageType.PUBLICATION);
