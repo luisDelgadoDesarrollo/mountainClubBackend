@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +19,7 @@ public interface PublicationUseCases {
 
   Pair<Publication, List<String>> getPublication(Long clubId, Long publicationId);
 
-  List<Pair<Publication, List<String>>> getPublications(Long clubId, Pageable pageable);
+  Page<Pair<Publication, List<String>>> getPublications(Long clubId, Pageable pageable);
 
   Optional<Pair<Publication, List<String>>> getLastPublication(Long clubId);
 }

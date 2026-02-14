@@ -42,16 +42,23 @@ class GetPublicationsTest extends AbstractWebIntegrationTest {
                 .param("size", "10")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$.length()").value(2))
-        .andExpect(jsonPath("$[0].imagesPath").isArray())
-        .andExpect(jsonPath("$[0].imagesPath.length()").value(1))
-        .andExpect(jsonPath("$[1].imagesPath").isArray())
-        .andExpect(jsonPath("$[1].imagesPath.length()").value(1));
+
+        // Ahora comprobamos el objeto Page
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content.length()").value(2))
+        .andExpect(jsonPath("$.totalElements").value(2))
+        .andExpect(jsonPath("$.totalPages").value(1))
+        .andExpect(jsonPath("$.number").value(0))
+
+        // Comprobamos imágenes
+        .andExpect(jsonPath("$.content[0].imagesPath").isArray())
+        .andExpect(jsonPath("$.content[0].imagesPath.length()").value(1))
+        .andExpect(jsonPath("$.content[1].imagesPath").isArray())
+        .andExpect(jsonPath("$.content[1].imagesPath.length()").value(1));
   }
 
   @Test
-  void getPublications_whenNoPublications_returnsEmptyList() throws Exception {
+  void getPublications_whenNoPublications_returnsEmptyPage() throws Exception {
 
     ClubInserted club = utilTest.insertClub();
 
@@ -59,7 +66,10 @@ class GetPublicationsTest extends AbstractWebIntegrationTest {
         .perform(
             get("/clubs/{club}/publications", club.slug()).param("page", "0").param("size", "10"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$.length()").value(0));
+        .andExpect(jsonPath("$.content").isArray())
+        .andExpect(jsonPath("$.content.length()").value(0))
+        .andExpect(jsonPath("$.totalElements").value(0))
+        .andExpect(jsonPath("$.totalPages").value(0))
+        .andExpect(jsonPath("$.number").value(0));
   }
 }

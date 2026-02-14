@@ -11,6 +11,7 @@ import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.core.annotations.PublicationId;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.userCases.PublicationUseCases;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -95,10 +96,14 @@ public class PublicationController {
   }
 
   @GetMapping
-  public ResponseEntity<List<PublicationResponseDto>> getPublications(
+  public ResponseEntity<Page<PublicationResponseDto>> getPublications(
       @ClubId Long clubId, Pageable pageable) {
     return ResponseEntity.ok(
-        publicationControllerMapper.publicationsWithPathToPublicationResponseDtoList(
-            publicationUseCases.getPublications(clubId, pageable)));
+        publicationUseCases
+            .getPublications(clubId, pageable)
+            .map(
+                pair ->
+                    publicationControllerMapper.publicationResponseToPublicationResponseDto(
+                        pair.getFirst(), pair.getSecond())));
   }
 }

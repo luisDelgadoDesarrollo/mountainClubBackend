@@ -1,6 +1,5 @@
 package luis.delgado.clubmontana.backend.application.useCases;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,18 +88,16 @@ public class PublicationUseCasesImpl implements PublicationUseCases {
 
   @NoAuthenticationNeeded
   @Override
-  public List<Pair<Publication, List<String>>> getPublications(Long clubId, Pageable pageable) {
-    List<Pair<Publication, List<String>>> publicationsWithPath = new ArrayList<>();
+  public Page<Pair<Publication, List<String>>> getPublications(Long clubId, Pageable pageable) {
     Page<Publication> publications = publicationRepository.getPublications(clubId, pageable);
-    publications.forEach(
+    return publications.map(
         publication -> {
           List<String> images =
               fileStorageService.getImages(
                   publication.getClubId(), publication.getPublicationId(), ImageType.PUBLICATION);
-          publicationsWithPath.add(Pair.of(publication, images));
-        });
 
-    return publicationsWithPath;
+          return Pair.of(publication, images);
+        });
   }
 
   @NoAuthenticationNeeded
