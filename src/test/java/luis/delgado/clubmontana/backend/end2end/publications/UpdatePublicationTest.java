@@ -38,7 +38,7 @@ class UpdatePublicationTest extends AbstractWebIntegrationTest {
               "title": "Updated title",
               "text": "Updated text",
               "images": [
-                { "image": "image-1", "description": "desc" }
+                { "image": "photo.jpg", "description": "desc" }
               ],
               "links": []
             }
@@ -50,7 +50,7 @@ class UpdatePublicationTest extends AbstractWebIntegrationTest {
     // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
-            "image-1",
+            "files",
             "photo.jpg",
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
@@ -82,7 +82,7 @@ class UpdatePublicationTest extends AbstractWebIntegrationTest {
                   "title": "Updated title",
                   "text": "Updated text",
                   "images": [
-                    { "image": "image-1", "description": "desc" }
+                    { "image": "photo.jpg", "description": "desc" }
                   ],
                   "links": []
                 }
@@ -94,7 +94,7 @@ class UpdatePublicationTest extends AbstractWebIntegrationTest {
     // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
-            "image-1",
+            "files",
             "photo.jpg",
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
@@ -132,7 +132,7 @@ class UpdatePublicationTest extends AbstractWebIntegrationTest {
     // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
-            "image-1",
+            "files",
             "photo.jpg",
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});

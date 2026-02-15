@@ -211,7 +211,7 @@ public class UtilTest {
                     "title": "Mi publicación",
                     "text": "Texto",
                     "images": [
-                      { "image": "img-1", "description": "foto 1" }
+                      { "image": "photo.jpg", "description": "foto 1" }
                     ],
                     "links": []
                   }
@@ -222,7 +222,7 @@ public class UtilTest {
 
     MockMultipartFile image =
         new MockMultipartFile(
-            "img-1",
+            "files",
             "photo.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
