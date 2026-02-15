@@ -5,7 +5,11 @@ import luis.delgado.clubmontana.backend.infrastructure.resolvers.ActivityIDArgum
 import luis.delgado.clubmontana.backend.infrastructure.resolvers.ArticleIdArgumentResolver;
 import luis.delgado.clubmontana.backend.infrastructure.resolvers.ClubIdArgumentResolver;
 import luis.delgado.clubmontana.backend.infrastructure.resolvers.PublicationIdArgumentResolver;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -34,5 +38,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     resolvers.add(articleIdArgumentResolver);
     resolvers.add(publicationIdArgumentResolver);
     resolvers.add(activityIDArgumentResolver);
+  }
+
+  @Bean
+  public PageableHandlerMethodArgumentResolverCustomizer pageableCustomizer() {
+    return resolver ->
+        resolver.setFallbackPageable(PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "id")));
   }
 }
