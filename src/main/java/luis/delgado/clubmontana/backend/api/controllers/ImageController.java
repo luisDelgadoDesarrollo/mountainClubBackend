@@ -31,7 +31,9 @@ public class ImageController {
     return ResponseEntity.ok()
         .contentType(
             MediaTypeFactory.getMediaType(relativePath).orElse(MediaType.APPLICATION_OCTET_STREAM))
-        .header(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000")
+        .header(HttpHeaders.CACHE_CONTROL, "no-store, max-age=0")
+        .header(HttpHeaders.PRAGMA, "no-cache")
+        .header(HttpHeaders.EXPIRES, "0")
         .body(image);
   }
 }

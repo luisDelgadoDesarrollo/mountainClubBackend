@@ -1,4 +1,4 @@
-package luis.delgado.clubmontana.backend.api.controllers;
+package luis.delgado.clubmontana.backend.application.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
@@ -10,22 +10,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import luis.delgado.clubmontana.backend.domain.services.RequestPartUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-@Component
-public class RequestPartUtils {
+@Service
+public class RequestPartUtilsImpl implements RequestPartUtils {
 
   private final ObjectMapper objectMapper;
   private final Validator validator;
 
-  public RequestPartUtils(ObjectMapper objectMapper, Validator validator) {
+  public RequestPartUtilsImpl(ObjectMapper objectMapper, Validator validator) {
     this.objectMapper = objectMapper;
     this.validator = validator;
   }
 
+  @Override
   public <T> T parseAndValidate(String data, Class<T> clazz) {
     T request;
     try {
@@ -40,6 +42,7 @@ public class RequestPartUtils {
     return request;
   }
 
+  @Override
   public Map<String, MultipartFile> toFileMap(List<MultipartFile> files) {
     if (files == null || files.isEmpty()) {
       return Map.of();
