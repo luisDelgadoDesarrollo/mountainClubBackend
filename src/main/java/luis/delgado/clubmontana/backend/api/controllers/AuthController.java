@@ -63,4 +63,20 @@ public class AuthController {
         .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
         .body(userControllerMapper.tokenResponseToTokenResponseDto(tokenDto));
   }
+
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(
+      @CookieValue(name = "refresh_token", required = false) String refreshToken) {
+    ResponseCookie refreshCookie =
+        ResponseCookie.from("refresh_token", "")
+            .httpOnly(true)
+            .secure(false)
+            .path("/")
+            .maxAge(Duration.ZERO)
+            .sameSite("Lax")
+            .build();
+    return ResponseEntity.status(HttpStatus.NO_CONTENT)
+        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+        .build();
+  }
 }
