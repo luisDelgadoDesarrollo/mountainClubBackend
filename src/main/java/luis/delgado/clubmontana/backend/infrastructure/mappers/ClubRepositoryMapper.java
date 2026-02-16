@@ -6,5 +6,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ClubRepositoryMapper {
-    Club clubEntityToClub(ClubEntity clubEntity);
+  Club clubEntityToClub(ClubEntity clubEntity);
+
+  ClubEntity clubToClubEntity(Club club);
 }

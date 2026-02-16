@@ -158,6 +158,7 @@ class LoginTest {
         .hasNormas(true)
         .hasHazteSocio(true)
         .contactEmail("delgadofernandez.luis@gmail.com")
+        .phone("+34600123123")
         .build();
   }
 

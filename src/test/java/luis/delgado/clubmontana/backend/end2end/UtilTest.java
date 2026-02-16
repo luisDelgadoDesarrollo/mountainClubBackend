@@ -63,10 +63,10 @@ public class UtilTest {
                                       has_inicio, has_secciones, has_galeria, has_enlaces,
                                       has_contacto, has_federarse, has_tienda, has_calendario,
                                       has_conocenos, has_noticias, has_foro, has_estatutos,
-                                      has_normas, has_hazte_socio, contact_email
+                                      has_normas, has_hazte_socio, contact_email, phone
                                     ) VALUES (
                                       ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, ?,
-                                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                                      ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
                                     )
                                     """,
                   Statement.RETURN_GENERATED_KEYS);
@@ -92,6 +92,7 @@ public class UtilTest {
           ps.setBoolean(20, false);
           ps.setBoolean(21, false);
           ps.setString(22, "delgadofernandez.luis@gmail.com");
+          ps.setString(23, "+34600123123");
           return ps;
         },
         keyHolder);

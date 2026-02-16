@@ -5,5 +5,8 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class CreateClubRequest {}
+public class CreateClubRequest {
+  String phone;
+}

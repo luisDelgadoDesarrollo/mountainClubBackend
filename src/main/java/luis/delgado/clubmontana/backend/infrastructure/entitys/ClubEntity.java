@@ -39,6 +39,9 @@ public class ClubEntity {
   @Column(name = "contact_email", nullable = false)
   private String contactEmail;
 
+  @Column(name = "phone", length = 255)
+  private String phone;
+
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 

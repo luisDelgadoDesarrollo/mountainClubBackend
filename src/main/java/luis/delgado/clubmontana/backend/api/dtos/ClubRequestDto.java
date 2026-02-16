@@ -5,7 +5,12 @@ import jakarta.validation.constraints.*;
 public record ClubRequestDto(
     @NotBlank @Size(max = 255) String name,
     @NotBlank @Size(max = 50) String nif,
-    @NotBlank @Email @Size(max = 255) String email,
+    @NotBlank @Email @Size(max = 255) String contactEmail,
+    @Pattern(
+            regexp = "^(?:$|\\+?[1-9]\\d{7,14}(?:\\s?(?:ext\\.?|x|#)\\s?\\d{1,5})?)$",
+            message =
+                "El teléfono debe ser válido y la extensión (si existe) debe tener 1 a 5 dígitos")
+        String phone,
     @NotBlank
         @Size(max = 255)
         @Pattern(regexp = "^(https?://).+", message = "La URL debe empezar por http:// o https://")

@@ -34,7 +34,8 @@ public class SecurityConfig {
                         "/clubs/{club}/publications/**",
                         "/clubs/{club}/rules/**",
                         "/test/**",
-                        "/clubs/{club}/us/**")
+                        "/clubs/{club}/us/**",
+                        "/clubs/{club}/contactInfo")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/auth/**", "/clubs/{club}/contact/**")
                     .permitAll()

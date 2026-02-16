@@ -1,16 +1,15 @@
 package luis.delgado.clubmontana.backend.api.controllers;
 
 import jakarta.validation.Valid;
+import luis.delgado.clubmontana.backend.api.dtos.ClubContactDto;
 import luis.delgado.clubmontana.backend.api.dtos.ClubRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.ClubResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.ClubControllerMapper;
+import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.userCases.ClubUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/clubs")
@@ -32,5 +31,18 @@ public class ClubController {
             clubControllerMapper.createCLubResponseToClubResponseDto(
                 clubUseCases.createClub(
                     clubControllerMapper.clubRequestDtoToCreateCLubCommand(clubRequestDto))));
+  }
+
+  @GetMapping("/{club}/contactInfo")
+  public ResponseEntity<ClubContactDto> getClubContact(@ClubId Long clubId) {
+    return ResponseEntity.ok(
+        clubControllerMapper.clubToClubContactDto(clubUseCases.getClub(clubId)));
+  }
+
+  @PutMapping("/{club}/contactInfo")
+  public ResponseEntity<ClubContactDto> updateClubContact(
+      @ClubId Long clubId, @Valid @RequestBody ClubContactDto clubContactDto) {
+    clubUseCases.updateContact(clubId, clubContactDto.phone(), clubContactDto.contactEmail());
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
