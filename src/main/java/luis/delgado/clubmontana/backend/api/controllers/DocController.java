@@ -21,7 +21,7 @@ public class DocController {
   }
 
   @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<Void> saveBylaws(
+  public ResponseEntity<Void> saveDoc(
       @ClubId Long clubId,
       @RequestParam("file") MultipartFile file,
       @RequestParam PdfType pdfType) {
@@ -30,7 +30,7 @@ public class DocController {
   }
 
   @GetMapping(produces = MediaType.APPLICATION_PDF_VALUE)
-  public ResponseEntity<Resource> getUs(@ClubId Long clubId, @RequestParam PdfType pdfType) {
+  public ResponseEntity<Resource> getDoc(@ClubId Long clubId, @RequestParam PdfType pdfType) {
     return ResponseEntity.ok(docUseCase.get(clubId, pdfType));
   }
 }
