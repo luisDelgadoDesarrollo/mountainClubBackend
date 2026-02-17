@@ -1,14 +1,15 @@
 package luis.delgado.clubmontana.backend.api.controllers;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import luis.delgado.clubmontana.backend.api.dtos.CreatePublicationRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.PublicationResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.PublicationControllerMapper;
-import luis.delgado.clubmontana.backend.application.services.RequestPartUtilsImpl;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.core.annotations.PublicationId;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
+import luis.delgado.clubmontana.backend.domain.services.RequestPartUtils;
 import luis.delgado.clubmontana.backend.domain.userCases.PublicationUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,32 +26,30 @@ public class PublicationController {
 
   private final PublicationControllerMapper publicationControllerMapper;
   private final PublicationUseCases publicationUseCases;
-  private final RequestPartUtilsImpl requestPartUtilsImpl;
+  private final RequestPartUtils requestPartUtils;
 
   public PublicationController(
       PublicationControllerMapper publicationControllerMapper,
       PublicationUseCases publicationUseCases,
-      RequestPartUtilsImpl requestPartUtilsImpl) {
+      RequestPartUtils requestPartUtils) {
     this.publicationControllerMapper = publicationControllerMapper;
     this.publicationUseCases = publicationUseCases;
-    this.requestPartUtilsImpl = requestPartUtilsImpl;
+    this.requestPartUtils = requestPartUtils;
   }
 
   @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<ResponseDto> createPublication(
       @ClubId Long clubId,
-      @RequestPart("data") String data,
+      @RequestPart("data") @Valid CreatePublicationRequestDto createPublicationRequestDto,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    CreatePublicationRequestDto request =
-        requestPartUtilsImpl.parseAndValidate(data, CreatePublicationRequestDto.class);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(
             publicationControllerMapper.publicationToPublicationResponseDto(
                 publicationUseCases.create(
                     clubId,
                     publicationControllerMapper.publicationRequestDtoToCreatePublicationCommand(
-                        request),
-                    requestPartUtilsImpl.toFileMap(files))));
+                        createPublicationRequestDto),
+                    requestPartUtils.toFileMap(files))));
   }
 
   @DeleteMapping("/{publication}")
@@ -64,10 +63,8 @@ public class PublicationController {
   public ResponseEntity<ResponseDto> updatePublication(
       @ClubId Long clubId,
       @PublicationId Long publicationId,
-      @RequestPart("data") String data,
+      @RequestPart("data") @Valid CreatePublicationRequestDto createPublicationRequestDto,
       @RequestPart(value = "files", required = false) List<MultipartFile> files) {
-    CreatePublicationRequestDto request =
-        requestPartUtilsImpl.parseAndValidate(data, CreatePublicationRequestDto.class);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(
             publicationControllerMapper.publicationToPublicationResponseDto(
@@ -75,8 +72,8 @@ public class PublicationController {
                     clubId,
                     publicationId,
                     publicationControllerMapper.publicationRequestDtoToCreatePublicationCommand(
-                        request),
-                    requestPartUtilsImpl.toFileMap(files))));
+                        createPublicationRequestDto),
+                    requestPartUtils.toFileMap(files))));
   }
 
   @GetMapping("/{publication}")

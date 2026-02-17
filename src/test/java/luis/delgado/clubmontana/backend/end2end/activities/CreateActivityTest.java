@@ -53,13 +53,13 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
                    }
                     """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
@@ -106,13 +106,13 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
                        }
                         """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
@@ -192,13 +192,13 @@ public class CreateActivityTest extends AbstractWebIntegrationTest {
                        }
                         """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 

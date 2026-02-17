@@ -59,14 +59,14 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
                    }
                     """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
@@ -124,14 +124,14 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
                        }
                         """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
@@ -172,14 +172,14 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
                        }
                         """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
@@ -208,14 +208,14 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
                            }
                             """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     // JPEG mínimo válido para Apache Tika
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             "image/jpeg",
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
@@ -232,7 +232,7 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
   }
 
   @Test
-  void createActivity_happyPath_noAffiliatePrice_and_noEndDate_returns201() throws Exception {
+  void updateActivity_happyPath_noAffiliatePrice_and_noEndDate_returns201() throws Exception {
 
     ClubInserted club = utilTest.insertClub();
     Pair<Long, String> activity1 = utilTest.createActivity(club);
@@ -252,13 +252,13 @@ public class UpdateActivityTest extends AbstractWebIntegrationTest {
                            }
                             """;
 
-    MockPart data = new MockPart("activity", json.getBytes(StandardCharsets.UTF_8));
+    MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
     MockMultipartFile image =
         new MockMultipartFile(
+            "files",
             "image-1",
-            "photo.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 

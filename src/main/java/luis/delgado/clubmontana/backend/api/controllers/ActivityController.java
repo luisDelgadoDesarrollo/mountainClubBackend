@@ -2,7 +2,6 @@ package luis.delgado.clubmontana.backend.api.controllers;
 
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.ActivityDto;
 import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
 import luis.delgado.clubmontana.backend.api.dtos.SaveActivityDto;
@@ -10,6 +9,7 @@ import luis.delgado.clubmontana.backend.api.mappers.ActivityControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ActivityId;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
+import luis.delgado.clubmontana.backend.domain.services.RequestPartUtils;
 import luis.delgado.clubmontana.backend.domain.userCases.ActivityUseCases;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
@@ -24,33 +24,37 @@ public class ActivityController {
 
   private final ActivityControllerMapper activityControllerMapper;
   private final ActivityUseCases activityUseCases;
+  private final RequestPartUtils requestPartUtils;
 
   public ActivityController(
-      ActivityControllerMapper activityControllerMapper, ActivityUseCases activityUseCases) {
+      ActivityControllerMapper activityControllerMapper,
+      ActivityUseCases activityUseCases,
+      RequestPartUtils requestPartUtils) {
     this.activityControllerMapper = activityControllerMapper;
     this.activityUseCases = activityUseCases;
+    this.requestPartUtils = requestPartUtils;
   }
 
   @PostMapping
   public ResponseEntity<ResponseDto> create(
       @ClubId Long clubId,
-      @RequestPart("activity") @Valid SaveActivityDto saveActivityDto,
-      @RequestParam Map<String, MultipartFile> files) {
+      @RequestPart("data") @Valid SaveActivityDto saveActivityDto,
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(
             activityControllerMapper.activityToIdResponseDto(
                 activityUseCases.createActivity(
                     clubId,
                     activityControllerMapper.saveActivityDtoToActivity(saveActivityDto),
-                    files)));
+                    requestPartUtils.toFileMap(files))));
   }
 
   @PutMapping("/{activity}")
   public ResponseEntity<ResponseDto> update(
       @ClubId Long clubId,
       @ActivityId Long activityId,
-      @RequestPart("activity") @Valid SaveActivityDto saveActivityDto,
-      @RequestParam Map<String, MultipartFile> files) {
+      @RequestPart("data") @Valid SaveActivityDto saveActivityDto,
+      @RequestPart(value = "files", required = false) List<MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(
             activityControllerMapper.activityToIdResponseDto(
@@ -58,7 +62,7 @@ public class ActivityController {
                     clubId,
                     activityId,
                     activityControllerMapper.saveActivityDtoToActivity(saveActivityDto),
-                    files)));
+                    requestPartUtils.toFileMap(files))));
   }
 
   @DeleteMapping("/{activity}")
@@ -77,17 +81,16 @@ public class ActivityController {
 
   @GetMapping("/last")
   public ResponseEntity<ActivityDto> getLast(@ClubId Long clubId) {
-    return activityUseCases.getLastActivity(clubId)
-            .map(pair -> {
+    return activityUseCases
+        .getLastActivity(clubId)
+        .map(
+            pair -> {
               ActivityDto dto =
-                      activityControllerMapper
-                              .activityWithPathToActivityDto(
-                                      pair.getFirst(),
-                                      pair.getSecond()
-                              );
+                  activityControllerMapper.activityWithPathToActivityDto(
+                      pair.getFirst(), pair.getSecond());
               return ResponseEntity.ok(dto);
             })
-            .orElseGet(() -> ResponseEntity.noContent().build());
+        .orElseGet(() -> ResponseEntity.noContent().build());
   }
 
   @GetMapping()

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class SlugFactoryImpl implements SlugFactory {
 
-  // todo hacer las llamadas que correspondan para comprobar que el slug es unico
   @Override
   public String makeSlug(String text, Function<String, Boolean> existsSlug) {
     String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
