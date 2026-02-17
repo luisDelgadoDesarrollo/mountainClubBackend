@@ -21,4 +21,8 @@ public interface ActivityUseCases {
   List<Pair<Activity, List<String>>> getAllActivity(Long clubId, Pageable pageable);
 
   Optional<Pair<Activity, List<String>>> getLastActivity(Long clubId);
+
+  List<Pair<Activity, List<String>>> getAllByYearActivity(Long clubId, Integer year);
+
+  List<Integer> getYears(Long clubId);
 }

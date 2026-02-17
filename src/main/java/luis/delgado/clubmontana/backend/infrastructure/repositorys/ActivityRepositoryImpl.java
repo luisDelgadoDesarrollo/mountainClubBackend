@@ -2,6 +2,7 @@ package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 import luis.delgado.clubmontana.backend.api.exceptions.ActivityNotFoundException;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
@@ -64,5 +65,17 @@ public class ActivityRepositoryImpl implements ActivityRepository {
         .findFirst()
         .map(activityRepositoryMapper::activityEntityToActivity)
         .orElse(null);
+  }
+
+  @Override
+  public List<Activity> getActivitiesByYear(Long clubId, Integer year) {
+    return activityEntityJpa.findAllByYear(clubId, year).stream()
+        .map(activityRepositoryMapper::activityEntityToActivity)
+        .toList();
+  }
+
+  @Override
+  public List<Integer> getYearsActivity(Long clubId) {
+    return activityEntityJpa.getYears(clubId);
   }
 }

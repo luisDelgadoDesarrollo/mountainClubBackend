@@ -1,5 +1,6 @@
 package luis.delgado.clubmontana.backend.domain.repository;
 
+import java.util.List;
 import luis.delgado.clubmontana.backend.domain.model.Activity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,4 +17,8 @@ public interface ActivityRepository {
   Boolean existBySlug(String s);
 
   Activity getLastActivity(Long clubId);
+
+  List<Activity> getActivitiesByYear(Long clubId, Integer year);
+
+  List<Integer> getYearsActivity(Long clubId);
 }

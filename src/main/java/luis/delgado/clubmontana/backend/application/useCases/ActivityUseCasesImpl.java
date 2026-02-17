@@ -107,6 +107,27 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
     return Optional.of(Pair.of(activity, imagesPath));
   }
 
+  @NoAuthenticationNeeded
+  @Override
+  public List<Pair<Activity, List<String>>> getAllByYearActivity(Long clubId, Integer year) {
+    List<Pair<Activity, List<String>>> activitiesWithPath = new ArrayList<>();
+    List<Activity> activities = activityRepository.getActivitiesByYear(clubId, year);
+    activities.forEach(
+        activity ->
+            activitiesWithPath.add(
+                Pair.of(
+                    activity,
+                    fileStorageService.getImages(
+                        clubId, activity.getActivityId(), ImageType.ACTIVITY))));
+    return activitiesWithPath;
+  }
+
+  @NoAuthenticationNeeded
+  @Override
+  public List<Integer> getYears(Long clubId) {
+    return activityRepository.getYearsActivity(clubId);
+  }
+
   private Activity chekActivity(Activity activity) throws BadDateActivity {
     if (activity.getNoAffiliatePrice() == null)
       activity.setNoAffiliatePrice(activity.getAffiliatePrice());

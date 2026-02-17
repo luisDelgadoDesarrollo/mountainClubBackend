@@ -99,4 +99,17 @@ public class ActivityController {
         activityControllerMapper.activityWithPathToActivityDto(
             activityUseCases.getAllActivity(clubId, pageable)));
   }
+
+  @GetMapping("/years/{year}")
+  public ResponseEntity<List<ActivityDto>> getAllByYear(
+      @ClubId Long clubId, @PathVariable Integer year) {
+    return ResponseEntity.ok(
+        activityControllerMapper.activityWithPathToActivityDto(
+            activityUseCases.getAllByYearActivity(clubId, year)));
+  }
+
+  @GetMapping("/years")
+  public ResponseEntity<List<Integer>> getYears(@ClubId Long clubId) {
+    return ResponseEntity.ok(activityUseCases.getYears(clubId));
+  }
 }
