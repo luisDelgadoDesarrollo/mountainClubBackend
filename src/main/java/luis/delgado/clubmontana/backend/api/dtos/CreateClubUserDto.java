@@ -1,16 +1,19 @@
 package luis.delgado.clubmontana.backend.api.dtos;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public record CreateClubUserDto(
-    String nif,
-    String name,
+    @NotBlank String nif,
+    @NotBlank String name,
     String surname,
-    String email,
-    LocalDate birthDate,
-    String address,
-    String city,
-    String state,
-    String postalCode,
-    String phone,
+    @Email @NotBlank String email,
+    @NotNull LocalDate birthDate,
+    @NotBlank String address,
+    @NotBlank String city,
+    @NotBlank String state,
+    @NotBlank String postalCode,
+    @NotBlank String phone,
     String homePhone) {}

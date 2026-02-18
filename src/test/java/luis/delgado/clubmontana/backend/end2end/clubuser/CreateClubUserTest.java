@@ -43,7 +43,7 @@ class CreateClubUserTest extends AbstractWebIntegrationTest {
                 .content(json))
         .andExpect(status().isCreated());
 
-    ClubUserIdEntity id = new ClubUserIdEntity(club.id(), "12345678A");
+    ClubUserIdEntity id = new ClubUserIdEntity(club.id(), "luis@test.com");
     ClubUserEntity saved = clubUserEntityJpa.findById(id).orElse(null);
 
     assertThat(saved).isNotNull();
@@ -92,5 +92,34 @@ class CreateClubUserTest extends AbstractWebIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(invalidJson))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void createClubUser_whenAlreadyExists_fails() throws Exception {
+    ClubInserted club = utilTest.insertClub();
+    String json =
+        """
+        {
+          "nif": "12345678A",
+          "name": "Luis Delgado",
+          "email": "luis@test.com"
+        }
+        """;
+
+    utilTest.mockUserWithClub(club.id());
+    mockMvc
+        .perform(
+            post("/clubs/{club}/users", club.slug())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+        .andExpect(status().isCreated());
+
+    utilTest.mockUserWithClub(club.id());
+    mockMvc
+        .perform(
+            post("/clubs/{club}/users", club.slug())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+        .andExpect(status().isConflict());
   }
 }

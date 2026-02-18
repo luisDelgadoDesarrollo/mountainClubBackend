@@ -75,4 +75,11 @@ public class GlobalExceptionHandler {
   public Map<String, String> handleClubUserNotFoundException(ClubUserNotFoundException ex) {
     return Map.of("error", "CLUB_USER_NOT_FOUND", "message", ex.getMessage());
   }
+
+  @ExceptionHandler(ClubUserAlreadyExisteException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public Map<String, String> handleClubUserAlreadyExistsException(
+      ClubUserAlreadyExisteException ex) {
+    return Map.of("error", "CLUB_USER_ALREADY_EXISTS", "message", ex.getMessage());
+  }
 }

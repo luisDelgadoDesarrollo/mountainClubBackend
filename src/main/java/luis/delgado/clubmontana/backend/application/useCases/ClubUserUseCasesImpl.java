@@ -1,5 +1,7 @@
 package luis.delgado.clubmontana.backend.application.useCases;
 
+import luis.delgado.clubmontana.backend.api.exceptions.ClubUserAlreadyExisteException;
+import luis.delgado.clubmontana.backend.api.exceptions.ClubUserNotFoundException;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.ClubUser;
@@ -19,8 +21,21 @@ public class ClubUserUseCasesImpl implements ClubUserUseCases {
 
   @Override
   public ClubUser create(Long clubId, ClubUser clubUser) {
+    if (exist(clubId, clubUser.getEmail())) {
+      throw new ClubUserAlreadyExisteException(clubId, clubUser.getEmail());
+    }
+
     clubUser.setClubId(clubId);
     return clubUserRepository.save(clubUser);
+  }
+
+  private boolean exist(Long clubId, String email) {
+    try {
+      get(clubId, email);
+      return true;
+    } catch (ClubUserNotFoundException e) {
+      return false;
+    }
   }
 
   @NoAuthenticationNeeded

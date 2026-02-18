@@ -8,6 +8,8 @@ import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.userCases.ClubUserUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +61,9 @@ public class ClubUserController {
   }
 
   @GetMapping()
-  public ResponseEntity<Page<ClubUserDto>> getAll(@ClubId Long clubId, Pageable pageable) {
+  public ResponseEntity<Page<ClubUserDto>> getAll(
+      @ClubId Long clubId,
+      @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
     return ResponseEntity.ok(
         clubUserUseCases
             .getAll(clubId, pageable)

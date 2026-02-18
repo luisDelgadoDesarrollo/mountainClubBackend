@@ -77,7 +77,7 @@ class UpdateClubUserTest extends AbstractWebIntegrationTest {
         .andExpect(status().isAccepted());
 
     ClubUserEntity saved =
-        clubUserEntityJpa.findById(new ClubUserIdEntity(club.id(), "12345678A")).orElse(null);
+        clubUserEntityJpa.findById(new ClubUserIdEntity(club.id(), "luis@test.com")).orElse(null);
 
     assertThat(saved).isNotNull();
     assertThat(saved.getEmail()).isEqualTo("luis@test.com");

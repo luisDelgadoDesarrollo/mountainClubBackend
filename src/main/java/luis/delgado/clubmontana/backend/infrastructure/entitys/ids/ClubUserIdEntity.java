@@ -10,5 +10,5 @@ import lombok.*;
 @EqualsAndHashCode
 public class ClubUserIdEntity implements Serializable {
   private Long clubId;
-  private String nif;
+  private String email;
 }

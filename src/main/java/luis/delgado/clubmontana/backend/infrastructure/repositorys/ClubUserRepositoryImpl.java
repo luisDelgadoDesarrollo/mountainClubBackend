@@ -1,5 +1,6 @@
 package luis.delgado.clubmontana.backend.infrastructure.repositorys;
 
+import jakarta.transaction.Transactional;
 import luis.delgado.clubmontana.backend.api.exceptions.ClubUserNotFoundException;
 import luis.delgado.clubmontana.backend.domain.model.ClubUser;
 import luis.delgado.clubmontana.backend.domain.repository.ClubUserRepository;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Transactional
 public class ClubUserRepositoryImpl implements ClubUserRepository {
 
   private final ClubUserEntityJpa clubUserEntityJpa;
