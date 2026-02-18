@@ -69,4 +69,10 @@ public class GlobalExceptionHandler {
   public Map<String, String> handlePdfGetException(BadDateActivity ex) {
     return Map.of("error", "ACTIVITY_DATE_EXCEPTION", "message", ex.getMessage());
   }
+
+  @ExceptionHandler(ClubUserNotFoundException.class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public Map<String, String> handleClubUserNotFoundException(ClubUserNotFoundException ex) {
+    return Map.of("error", "CLUB_USER_NOT_FOUND", "message", ex.getMessage());
+  }
 }
