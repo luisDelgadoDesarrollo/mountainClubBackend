@@ -39,4 +39,11 @@ public class ContactController {
     contactUseCases.memberShipSingup(clubId, signUp, receipt);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
+
+  @PostMapping("/federation")
+  public ResponseEntity<Void> federation(
+      @ClubId Long clubId, @RequestParam("signUp") MultipartFile dataResponsibility) {
+    contactUseCases.federation(clubId, dataResponsibility);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
 }

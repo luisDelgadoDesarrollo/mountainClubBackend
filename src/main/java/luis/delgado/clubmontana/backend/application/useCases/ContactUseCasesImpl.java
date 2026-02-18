@@ -56,4 +56,22 @@ public class ContactUseCasesImpl implements ContactUseCases {
         new MailMessage(club.getContactEmail(), MailType.MEMBERSHIP_SIGNUP, Map.of()),
         mailAttachments);
   }
+
+  @Override
+  public void federation(Long clubId, MultipartFile dataResponsibility) {
+    Club club = clubRepository.getById(clubId);
+    List<MailAttachment> mailAttachments;
+    try {
+      mailAttachments =
+          List.of(
+              new MailAttachment(
+                  dataResponsibility.getName(),
+                  dataResponsibility.getBytes(),
+                  dataResponsibility.getContentType()));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    mailSender.execute(
+        new MailMessage(club.getContactEmail(), MailType.FEDERATION, Map.of()), mailAttachments);
+  }
 }

@@ -7,4 +7,6 @@ public interface ContactUseCases {
   void contact(Long clubId, ContactRequest contactRequest);
 
   void memberShipSingup(Long clubId, MultipartFile signUp, MultipartFile receipt);
+
+  void federation(Long clubId, MultipartFile dataResponsibility);
 }
