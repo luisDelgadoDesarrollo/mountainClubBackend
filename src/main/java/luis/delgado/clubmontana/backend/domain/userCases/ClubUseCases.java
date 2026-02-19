@@ -10,4 +10,6 @@ public interface ClubUseCases {
   Club getClub(Long clubId);
 
   void updateContact(Long clubId, String phone, String contactEmail);
+
+  String getIban(Long clubId);
 }

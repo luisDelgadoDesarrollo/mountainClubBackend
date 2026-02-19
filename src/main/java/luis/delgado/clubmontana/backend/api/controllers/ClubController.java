@@ -45,4 +45,9 @@ public class ClubController {
     clubUseCases.updateContact(clubId, clubContactDto.phone(), clubContactDto.contactEmail());
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
+
+  @GetMapping("/{club}/iban")
+  public ResponseEntity<String> getIban(@ClubId Long clubId) {
+    return ResponseEntity.ok(clubUseCases.getIban(clubId));
+  }
 }

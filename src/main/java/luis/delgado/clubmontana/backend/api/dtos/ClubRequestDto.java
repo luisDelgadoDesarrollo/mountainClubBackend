@@ -17,6 +17,10 @@ public record ClubRequestDto(
         String url,
     String description,
     @Size(max = 255) String logo,
+    @Pattern(
+            regexp = "^(?:$|[A-Z]{2}\\d{2}(?: ?[A-Z0-9]){11,30})$",
+            message = "El IBAN no es válido")
+        String iban,
     @NotNull Boolean hasInicio,
     @NotNull Boolean hasSecciones,
     @NotNull Boolean hasGaleria,

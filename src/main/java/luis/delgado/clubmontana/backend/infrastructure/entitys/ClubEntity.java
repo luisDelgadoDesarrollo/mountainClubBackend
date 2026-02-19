@@ -42,6 +42,9 @@ public class ClubEntity {
   @Column(name = "phone", length = 255)
   private String phone;
 
+  @Column(name = "iban", length = 34)
+  private String iban;
+
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 

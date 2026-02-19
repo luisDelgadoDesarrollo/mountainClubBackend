@@ -17,6 +17,7 @@ public class Club {
   private String url;
   private String contactEmail;
   private String phone;
+  private String iban;
   private LocalDateTime createdAt;
   private Long createdBy;
   private boolean hasInicio;

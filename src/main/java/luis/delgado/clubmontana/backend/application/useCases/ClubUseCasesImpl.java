@@ -35,4 +35,10 @@ public class ClubUseCasesImpl implements ClubUseCases {
     club.setPhone(phone);
     clubRepository.save(club);
   }
+
+  @NoAuthenticationNeeded
+  @Override
+  public String getIban(Long clubId) {
+    return clubRepository.getById(clubId).getIban();
+  }
 }
