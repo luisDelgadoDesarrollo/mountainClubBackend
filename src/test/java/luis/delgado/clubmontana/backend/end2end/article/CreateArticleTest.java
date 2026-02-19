@@ -1,8 +1,8 @@
 package luis.delgado.clubmontana.backend.end2end.article;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.StandardCharsets;
 import luis.delgado.clubmontana.backend.end2end.AbstractWebIntegrationTest;
@@ -32,10 +32,10 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
     String articleJson =
         """
             {
-              "title": "Artículo integración",
-              "description": "Descripción test",
+              "title": "Articulo integracion",
+              "description": "Descripcion test",
               "images": [
-                { "image": "image-1" }
+                { "image": "image-1.jpg" }
               ],
               "variants": [
                 {
@@ -43,7 +43,7 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
                   "color": "Rojo",
                   "stock": 5,
                   "images": [
-                    { "image": "image-2" }
+                    { "image": "image-2.jpg" }
                   ]
                 }
               ]
@@ -55,14 +55,14 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
 
     MockMultipartFile image1 =
         new MockMultipartFile(
-            "image-1",
+            "files",
             "image-1.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     MockMultipartFile image2 =
         new MockMultipartFile(
-            "image-2",
+            "files",
             "image-2.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
@@ -81,10 +81,10 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
     String articleJson =
         """
                 {
-                  "title": "Artículo integración",
-                  "description": "Descripción test",
+                  "title": "Articulo integracion",
+                  "description": "Descripcion test",
                   "images": [
-                    { "image": "image-1" }
+                    { "image": "image-1.jpg" }
                   ],
                   "variants": [
                     {
@@ -92,7 +92,7 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
                       "color": "Rojo",
                       "stock": 5,
                       "images": [
-                        { "image": "image-2" }
+                        { "image": "image-2.jpg" }
                       ]
                     }
                   ]
@@ -104,14 +104,14 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
 
     MockMultipartFile image1 =
         new MockMultipartFile(
-            "image-1",
+            "files",
             "image-1.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     MockMultipartFile image2 =
         new MockMultipartFile(
-            "image-2",
+            "files",
             "image-2.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
@@ -137,20 +137,19 @@ class CreateArticleTest extends AbstractWebIntegrationTest {
 
     MockMultipartFile image1 =
         new MockMultipartFile(
-            "image-1",
+            "files",
             "image-1.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     MockMultipartFile image2 =
         new MockMultipartFile(
-            "image-2",
+            "files",
             "image-2.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     utilTest.mockUserWithClub(club.id());
-
     mockMvc
         .perform(
             multipart("/clubs/{club}/articles", club.slug()).part(data).file(image1).file(image2))

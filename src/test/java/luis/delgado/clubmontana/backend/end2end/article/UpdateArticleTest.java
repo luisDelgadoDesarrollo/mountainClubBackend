@@ -33,14 +33,14 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
   void shouldUpdateArticleWithImagesAndVariants() throws Exception {
     ClubInserted club = utilTest.insertClub();
     Pair<Long, String> article = utilTest.createArticle(club);
-    // ---------- UPDATE ----------
+
     String updateJson =
         """
                     {
-                      "title": "Artículo actualizado",
-                      "description": "Descripción actualizada",
+                      "title": "Articulo actualizado",
+                      "description": "Descripcion actualizada",
                       "images": [
-                        { "image": "image-3" }
+                        { "image": "image-3.jpg" }
                       ],
                       "variants": [
                         {
@@ -48,7 +48,7 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
                           "color": "Azul",
                           "stock": 10,
                           "images": [
-                            { "image": "image-4" }
+                            { "image": "image-4.jpg" }
                           ]
                         }
                       ]
@@ -60,30 +60,28 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
 
     MockMultipartFile updateImage1 =
         new MockMultipartFile(
-            "image-3",
+            "files",
             "image-3.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     MockMultipartFile updateImage2 =
         new MockMultipartFile(
-            "image-4",
+            "files",
             "image-4.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     mockMvc
         .perform(
-            multipart("/clubs/{club}/articles/{article}", club.slug(), article.getSecond())
+            multipart(
+                    HttpMethod.PUT,
+                    "/clubs/{club}/articles/{article}",
+                    club.slug(),
+                    article.getSecond())
                 .part(updatePart)
                 .file(updateImage1)
-                .file(updateImage2)
-                // IMPORTANTE: forzar PUT en multipart
-                .with(
-                    request -> {
-                      request.setMethod("PUT");
-                      return request;
-                    }))
+                .file(updateImage2))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.id").value(article.getFirst()));
   }
@@ -92,14 +90,14 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
   void updateArticle_withoutAuthentication() throws Exception {
     ClubInserted club = utilTest.insertClub();
     Pair<Long, String> article = utilTest.createArticle(club);
-    // ---------- UPDATE ----------
+
     String updateJson =
         """
                         {
-                          "title": "Artículo actualizado",
-                          "description": "Descripción actualizada",
+                          "title": "Articulo actualizado",
+                          "description": "Descripcion actualizada",
                           "images": [
-                            { "image": "image-3" }
+                            { "image": "image-3.jpg" }
                           ],
                           "variants": [
                             {
@@ -107,7 +105,7 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
                               "color": "Azul",
                               "stock": 10,
                               "images": [
-                                { "image": "image-4" }
+                                { "image": "image-4.jpg" }
                               ]
                             }
                           ]
@@ -119,14 +117,14 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
 
     MockMultipartFile updateImage1 =
         new MockMultipartFile(
-            "image-3",
+            "files",
             "image-3.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     MockMultipartFile updateImage2 =
         new MockMultipartFile(
-            "image-4",
+            "files",
             "image-4.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
@@ -162,14 +160,14 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
 
     MockMultipartFile updateImage1 =
         new MockMultipartFile(
-            "image-3",
+            "files",
             "image-3.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     MockMultipartFile updateImage2 =
         new MockMultipartFile(
-            "image-4",
+            "files",
             "image-4.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
@@ -177,7 +175,11 @@ public class UpdateArticleTest extends AbstractWebIntegrationTest {
     utilTest.mockUserWithClub(club.id());
     mockMvc
         .perform(
-            multipart("/clubs/{club}/articles/{article}", club.slug(), article.getSecond())
+            multipart(
+                    HttpMethod.PUT,
+                    "/clubs/{club}/articles/{article}",
+                    club.slug(),
+                    article.getSecond())
                 .part(updatePart)
                 .file(updateImage1)
                 .file(updateImage2))

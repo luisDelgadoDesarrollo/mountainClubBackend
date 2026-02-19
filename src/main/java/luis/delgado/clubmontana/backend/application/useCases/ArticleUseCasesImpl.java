@@ -13,6 +13,7 @@ import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
 import luis.delgado.clubmontana.backend.domain.userCases.ArticleUseCases;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.web.multipart.MultipartFile;
@@ -85,8 +86,8 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
 
   @NoAuthenticationNeeded
   @Override
-  public List<Pair<Article, List<String>>> getAll(Long clubId, Pageable pageable) {
-    return articleRepository.getArticles(clubId, pageable).map(this::buildPair).toList();
+  public Page<Pair<Article, List<String>>> getAll(Long clubId, Pageable pageable) {
+    return articleRepository.getArticles(clubId, pageable).map(this::buildPair);
   }
 
   private void saveArticleImages(Article article, Map<String, MultipartFile> files) {
@@ -101,7 +102,7 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
       fileStorageService.store(
           filesFiltered,
           article.getImages().stream()
-              .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
+              .collect(Collectors.toMap(Image::getImage, Image::getImageId)),
           article.getArticleId(),
           article.getClubId(),
           ImageType.ARTICLE);
@@ -125,7 +126,7 @@ public class ArticleUseCasesImpl implements ArticleUseCases {
             fileStorageService.store(
                 filesFiltered,
                 articleVariant.getImages().stream()
-                    .collect(Collectors.toMap(Image::getImage, Image::getParentId)),
+                    .collect(Collectors.toMap(Image::getImage, Image::getImageId)),
                 articleVariant.getArticleVariantId(),
                 clubId,
                 ImageType.ARTICLE_VARIANT);

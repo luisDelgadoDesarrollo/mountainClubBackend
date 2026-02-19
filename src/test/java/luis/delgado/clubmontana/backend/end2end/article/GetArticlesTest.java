@@ -23,7 +23,7 @@ public class GetArticlesTest extends AbstractWebIntegrationTest {
   @Autowired private MockMvc mockMvc;
 
   @Test
-  void getArticle_happyPath_returnsArticleWithImages() throws Exception {
+  void getArticles_happyPath_returnsArticleWithImages() throws Exception {
 
     ClubInserted club = utilTest.insertClub();
 
@@ -40,12 +40,12 @@ public class GetArticlesTest extends AbstractWebIntegrationTest {
                 .param("size", "10")
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$.length()").value(2))
-        .andExpect(jsonPath("$[0].imagePath").isArray())
-        .andExpect(jsonPath("$[0].imagePath.length()").value(2))
-        .andExpect(jsonPath("$[1].imagePath").isArray())
-        .andExpect(jsonPath("$[1].imagePath.length()").value(2));
+        .andExpect(jsonPath("$.totalElements").value(2))
+        .andExpect(jsonPath("$.content.length()").value(2))
+        .andExpect(jsonPath("$.content[0].imagePath").isArray())
+        .andExpect(jsonPath("$.content[0].imagePath.length()").value(1))
+        .andExpect(jsonPath("$.content[1].imagePath").isArray())
+        .andExpect(jsonPath("$.content[1].imagePath.length()").value(1));
   }
 
   @Test
@@ -56,7 +56,7 @@ public class GetArticlesTest extends AbstractWebIntegrationTest {
     mockMvc
         .perform(get("/clubs/{club}/articles", club.slug()).param("page", "0").param("size", "10"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$").isArray())
-        .andExpect(jsonPath("$.length()").value(0));
+        .andExpect(jsonPath("$.totalElements").value(0))
+        .andExpect(jsonPath("$.content.length()").value(0));
   }
 }

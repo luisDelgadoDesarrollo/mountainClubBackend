@@ -157,7 +157,7 @@ public class UtilTest {
                     "title": "Artículo integración",
                     "description": "Descripción test",
                     "images": [
-                      { "image": "image-1" }
+                      { "image": "image-1.jpg" }
                     ],
                     "variants": [
                       {
@@ -165,7 +165,7 @@ public class UtilTest {
                         "color": "Rojo",
                         "stock": 5,
                         "images": [
-                          { "image": "image-2" }
+                          { "image": "image-2.jpg" }
                         ]
                       }
                     ]
@@ -177,14 +177,14 @@ public class UtilTest {
 
     MockMultipartFile image1 =
         new MockMultipartFile(
-            "image-1",
+            "files",
             "image-1.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
 
     MockMultipartFile image2 =
         new MockMultipartFile(
-            "image-2",
+            "files",
             "image-2.jpg",
             MediaType.IMAGE_JPEG_VALUE,
             new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF});
@@ -273,3 +273,4 @@ public class UtilTest {
             .contentType(MediaType.MULTIPART_FORM_DATA));
   }
 }
+

@@ -27,7 +27,7 @@ public class GetArticleTest extends AbstractWebIntegrationTest {
         .perform(get("/clubs/{club}/articles/{article}", club.slug(), article.getSecond()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.imagePath").isArray())
-        .andExpect(jsonPath("$.imagePath.length()").value(2));
+        .andExpect(jsonPath("$.imagePath.length()").value(1));
   }
 
   @Test

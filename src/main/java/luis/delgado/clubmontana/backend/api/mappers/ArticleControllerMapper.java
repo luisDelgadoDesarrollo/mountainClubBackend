@@ -23,7 +23,7 @@ public interface ArticleControllerMapper {
     Article article = articleListPair.getFirst();
     List<String> articleImages =
         articleListPair.getSecond().stream()
-            .filter(image -> image.contains(String.valueOf(ImageType.ARTICLE)))
+            .filter(image -> image.matches(".*" + ImageType.ARTICLE + "_\\d+.*"))
             .toList();
 
     List<String> articleVariantImages =

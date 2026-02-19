@@ -2,7 +2,6 @@ package luis.delgado.clubmontana.backend.api.controllers;
 
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import luis.delgado.clubmontana.backend.api.dtos.ArticleDto;
 import luis.delgado.clubmontana.backend.api.dtos.CreateArticleDto;
 import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
@@ -10,7 +9,9 @@ import luis.delgado.clubmontana.backend.api.mappers.ArticleControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ArticleId;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.model.Article;
+import luis.delgado.clubmontana.backend.domain.services.RequestPartUtils;
 import luis.delgado.clubmontana.backend.domain.userCases.ArticleUseCases;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
@@ -24,25 +25,29 @@ public class ArticleController {
 
   private final ArticleControllerMapper articleControllerMapper;
   private final ArticleUseCases articleUseCases;
+  private final RequestPartUtils requestPartUtils;
 
   public ArticleController(
-      ArticleControllerMapper articleControllerMapper, ArticleUseCases articleUseCases) {
+      ArticleControllerMapper articleControllerMapper,
+      ArticleUseCases articleUseCases,
+      RequestPartUtils requestPartUtils) {
     this.articleControllerMapper = articleControllerMapper;
     this.articleUseCases = articleUseCases;
+    this.requestPartUtils = requestPartUtils;
   }
 
   @PostMapping
   public ResponseEntity<ResponseDto> post(
       @ClubId Long clubId,
       @RequestPart("article") @Valid CreateArticleDto createArticleDto,
-      @RequestParam Map<String, MultipartFile> files) {
+      @RequestParam(value = "files", required = false) List<MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(
             articleControllerMapper.articleToIdResponseDto(
                 articleUseCases.create(
                     clubId,
                     articleControllerMapper.createArticleDtoToArticle(createArticleDto),
-                    files)));
+                    requestPartUtils.toFileMap(files))));
   }
 
   @PutMapping("/{article}")
@@ -50,7 +55,7 @@ public class ArticleController {
       @ClubId Long clubId,
       @ArticleId Long articleId,
       @RequestPart("article") @Valid CreateArticleDto createArticleDto,
-      @RequestParam Map<String, MultipartFile> files) {
+      @RequestParam(value = "files", required = false) List<MultipartFile> files) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(
             articleControllerMapper.articleToIdResponseDto(
@@ -58,7 +63,7 @@ public class ArticleController {
                     clubId,
                     articleId,
                     articleControllerMapper.createArticleDtoToArticle(createArticleDto),
-                    files)));
+                    requestPartUtils.toFileMap(files))));
   }
 
   @DeleteMapping("/{article}")
@@ -74,9 +79,8 @@ public class ArticleController {
   }
 
   @GetMapping
-  public ResponseEntity<List<ArticleDto>> getAll(@ClubId Long clubId, Pageable pageable) {
+  public ResponseEntity<Page<ArticleDto>> getAll(@ClubId Long clubId, Pageable pageable) {
     return ResponseEntity.ok(
-        articleControllerMapper.articleListToArticleDtoList(
-            articleUseCases.getAll(clubId, pageable)));
+        articleUseCases.getAll(clubId, pageable).map(articleControllerMapper::articleToArticleDto));
   }
 }
