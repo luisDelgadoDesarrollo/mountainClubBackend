@@ -14,6 +14,7 @@ public class ClubUser {
   private String name;
   private String surname;
   private String email;
+  private String federatedNumber;
   private LocalDate birthDate;
   private String address;
   private String city;

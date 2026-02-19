@@ -90,6 +90,10 @@ public class MailSenderImpl implements MailSender {
       case PASSWORD_RESET -> "mail/password-reset";
       case MEMBERSHIP_SIGNUP -> "mail/membership_signup.html";
       case FEDERATION -> "mail/federation.html";
+      case ACTIVITY_FEDERATE_CLUB -> "mail/activity_signup_federated_club.html";
+      case ACTIVITY_FEDERATE_NO_CLUB -> "mail/activity_signup_federated_no_club.html";
+      case ACTIVITY_NO_FEDERATE_CLUB -> "mail/activity_signup_no_federated_club.html";
+      case ACTIVITY_NO_FEDERATE_NO_CLUB -> "mail/activity_signup_no_federated_no_club.html";
     };
   }
 
@@ -102,6 +106,11 @@ public class MailSenderImpl implements MailSender {
       case PASSWORD_RESET -> "Restablece tu contraseña";
       case MEMBERSHIP_SIGNUP -> "Nuevo miembro del club";
       case FEDERATION -> "Solicitud de federacion";
+      case ACTIVITY_FEDERATE_CLUB,
+          ACTIVITY_FEDERATE_NO_CLUB,
+          ACTIVITY_NO_FEDERATE_CLUB,
+          ACTIVITY_NO_FEDERATE_NO_CLUB ->
+          "Solicitud para apuntarse a una actividad";
     };
   }
 }

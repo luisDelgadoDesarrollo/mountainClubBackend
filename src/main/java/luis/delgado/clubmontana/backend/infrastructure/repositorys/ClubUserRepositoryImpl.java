@@ -48,4 +48,12 @@ public class ClubUserRepositoryImpl implements ClubUserRepository {
         .findAllByClubId(clubId, pageable)
         .map(clubUserRepositoryMapper::clubUserEntityToClubUser);
   }
+
+  @Override
+  public ClubUser getUserByClubAndEmailAndNif(Long clubId, String email, String nif) {
+    return clubUserEntityJpa
+        .getUserByClubIdAndEmailAndNif(clubId, email, nif)
+        .map(clubUserRepositoryMapper::clubUserEntityToClubUser)
+        .orElse(null);
+  }
 }

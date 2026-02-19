@@ -8,6 +8,7 @@ public record ClubUserDto(
     String name,
     String surname,
     String email,
+    String federatedNumber,
     LocalDate birthDate,
     String address,
     String city,

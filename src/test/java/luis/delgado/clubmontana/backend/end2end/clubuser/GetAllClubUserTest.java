@@ -26,7 +26,15 @@ class GetAllClubUserTest extends AbstractWebIntegrationTest {
         {
           "nif": "12345678A",
           "name": "Luis",
-          "email": "luis@test.com"
+          "surname": "Prueba",
+          "email": "luis@test.com",
+          "birthDate": "1990-01-10",
+          "address": "Calle Mayor 1",
+          "city": "Madrid",
+          "state": "Madrid",
+          "postalCode": "28001",
+          "phone": "600123123",
+          "homePhone": "910000000"
         }
         """;
     String user2 =
@@ -34,7 +42,15 @@ class GetAllClubUserTest extends AbstractWebIntegrationTest {
         {
           "nif": "87654321B",
           "name": "Ana",
-          "email": "ana@test.com"
+          "surname": "Prueba",
+          "email": "ana@test.com",
+          "birthDate": "1992-03-15",
+          "address": "Avenida Central 4",
+          "city": "Sevilla",
+          "state": "Andalucia",
+          "postalCode": "41001",
+          "phone": "611111111",
+          "homePhone": "955555555"
         }
         """;
 

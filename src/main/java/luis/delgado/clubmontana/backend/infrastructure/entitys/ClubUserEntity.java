@@ -24,23 +24,45 @@ public class ClubUserEntity {
   @Column(name = "email", nullable = false, length = 255)
   private String email;
 
+  @Id
   @Column(name = "nif", nullable = false, length = 50)
   private String nif;
 
   @Column(name = "name", nullable = false, length = 255)
   private String name;
 
-  @Column private String surname;
+  @Column(name = "surname", nullable = false, length = 255)
+  private String surname;
 
-  @Column private LocalDate birthDate;
-  @Column private String address;
-  @Column private String city;
-  @Column private String state;
-  @Column private String postalCode;
-  @Column private String phone;
-  @Column private String homePhone;
+  @Column(name = "federateNumber", nullable = true, length = 50)
+  private String federatedNumber;
+
+  @Column(nullable = false)
+  private LocalDate birthDate;
+
+  @Column(nullable = false)
+  private String address;
+
+  @Column(nullable = false)
+  private String city;
+
+  @Column(nullable = false)
+  private String state;
+
+  @Column(nullable = false)
+  private String postalCode;
+
+  @Column(nullable = false)
+  private String phone;
+
+  @Column(nullable = false)
+  private String homePhone;
+
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
+
+  @Column(name = "deleted_at")
+  private LocalDateTime deletedAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(

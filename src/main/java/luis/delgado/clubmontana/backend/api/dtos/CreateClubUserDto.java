@@ -8,8 +8,9 @@ import java.time.LocalDate;
 public record CreateClubUserDto(
     @NotBlank String nif,
     @NotBlank String name,
-    String surname,
+    @NotBlank String surname,
     @Email @NotBlank String email,
+    String federatedNumber,
     @NotNull LocalDate birthDate,
     @NotBlank String address,
     @NotBlank String city,

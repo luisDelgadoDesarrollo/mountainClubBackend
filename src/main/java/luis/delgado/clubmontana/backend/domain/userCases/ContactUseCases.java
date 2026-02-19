@@ -1,5 +1,6 @@
 package luis.delgado.clubmontana.backend.domain.userCases;
 
+import luis.delgado.clubmontana.backend.domain.model.ActivityRegistrationRequest;
 import luis.delgado.clubmontana.backend.domain.model.ContactRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,4 +10,10 @@ public interface ContactUseCases {
   void memberShipSingup(Long clubId, MultipartFile signUp, MultipartFile receipt);
 
   void federation(Long clubId, MultipartFile dataResponsibility);
+
+  void activity(
+      Long clubId,
+      Long activityId,
+      ActivityRegistrationRequest activityRegistrationRequest,
+      MultipartFile dataResponsibility);
 }

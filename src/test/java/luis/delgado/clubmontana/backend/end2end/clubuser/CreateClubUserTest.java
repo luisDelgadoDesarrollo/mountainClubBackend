@@ -31,7 +31,15 @@ class CreateClubUserTest extends AbstractWebIntegrationTest {
         {
           "nif": "12345678A",
           "name": "Luis Delgado",
-          "email": "luis@test.com"
+          "surname": "Prueba",
+          "email": "luis@test.com",
+          "birthDate": "1990-01-10",
+          "address": "Calle Mayor 1",
+          "city": "Madrid",
+          "state": "Madrid",
+          "postalCode": "28001",
+          "phone": "600123123",
+          "homePhone": "910000000"
         }
         """;
 
@@ -43,7 +51,7 @@ class CreateClubUserTest extends AbstractWebIntegrationTest {
                 .content(json))
         .andExpect(status().isCreated());
 
-    ClubUserIdEntity id = new ClubUserIdEntity(club.id(), "luis@test.com");
+    ClubUserIdEntity id = new ClubUserIdEntity(club.id(), "luis@test.com", "12345678A");
     ClubUserEntity saved = clubUserEntityJpa.findById(id).orElse(null);
 
     assertThat(saved).isNotNull();
@@ -61,7 +69,15 @@ class CreateClubUserTest extends AbstractWebIntegrationTest {
         {
           "nif": "12345678A",
           "name": "Luis Delgado",
-          "email": "luis@test.com"
+          "surname": "Prueba",
+          "email": "luis@test.com",
+          "birthDate": "1990-01-10",
+          "address": "Calle Mayor 1",
+          "city": "Madrid",
+          "state": "Madrid",
+          "postalCode": "28001",
+          "phone": "600123123",
+          "homePhone": "910000000"
         }
         """;
 
@@ -102,7 +118,15 @@ class CreateClubUserTest extends AbstractWebIntegrationTest {
         {
           "nif": "12345678A",
           "name": "Luis Delgado",
-          "email": "luis@test.com"
+          "surname": "Prueba",
+          "email": "luis@test.com",
+          "birthDate": "1990-01-10",
+          "address": "Calle Mayor 1",
+          "city": "Madrid",
+          "state": "Madrid",
+          "postalCode": "28001",
+          "phone": "600123123",
+          "homePhone": "910000000"
         }
         """;
 

@@ -30,7 +30,15 @@ class DeleteClubUserTest extends AbstractWebIntegrationTest {
         {
           "nif": "12345678A",
           "name": "Luis",
-          "email": "luis@test.com"
+          "surname": "Prueba",
+          "email": "luis@test.com",
+          "birthDate": "1990-01-10",
+          "address": "Calle Mayor 1",
+          "city": "Madrid",
+          "state": "Madrid",
+          "postalCode": "28001",
+          "phone": "600123123",
+          "homePhone": "910000000"
         }
         """;
 

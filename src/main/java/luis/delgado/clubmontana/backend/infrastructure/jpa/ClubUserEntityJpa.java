@@ -13,4 +13,6 @@ public interface ClubUserEntityJpa extends JpaRepository<ClubUserEntity, ClubUse
   void deleteByClubIdAndEmail(Long clubId, String email);
 
   Page<ClubUserEntity> findAllByClubId(Long clubId, Pageable pageable);
+
+  Optional<ClubUserEntity> getUserByClubIdAndEmailAndNif(Long clubId, String email, String nif);
 }

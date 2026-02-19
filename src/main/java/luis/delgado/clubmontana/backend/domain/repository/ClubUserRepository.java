@@ -12,4 +12,6 @@ public interface ClubUserRepository {
   void delete(Long clubId, String email);
 
   Page<ClubUser> getAll(Long clubId, Pageable pageable);
+
+  ClubUser getUserByClubAndEmailAndNif(Long clubId, String email, String nif);
 }

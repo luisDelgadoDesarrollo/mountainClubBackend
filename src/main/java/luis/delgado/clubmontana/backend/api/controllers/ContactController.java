@@ -1,8 +1,10 @@
 package luis.delgado.clubmontana.backend.api.controllers;
 
 import jakarta.validation.Valid;
+import luis.delgado.clubmontana.backend.api.dtos.ActivityRegistrationRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.ContactRequestDto;
 import luis.delgado.clubmontana.backend.api.mappers.ContactControllerMapper;
+import luis.delgado.clubmontana.backend.core.annotations.ActivityId;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.userCases.ContactUseCases;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,21 @@ public class ContactController {
   public ResponseEntity<Void> federation(
       @ClubId Long clubId, @RequestParam("signUp") MultipartFile dataResponsibility) {
     contactUseCases.federation(clubId, dataResponsibility);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+  }
+
+  @PostMapping("/activity/{activity}")
+  public ResponseEntity<Void> activity(
+      @ClubId Long clubId,
+      @ActivityId Long activityId,
+      @RequestPart("data") @Valid ActivityRegistrationRequestDto activityRegistrationRequestDto,
+      @RequestParam("receipt") MultipartFile dataResponsibility) {
+    contactUseCases.activity(
+        clubId,
+        activityId,
+        contactControllerMapper.activityRequistrationRequestDtoToActivityRegistrationRequest(
+            activityRegistrationRequestDto),
+        dataResponsibility);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }
