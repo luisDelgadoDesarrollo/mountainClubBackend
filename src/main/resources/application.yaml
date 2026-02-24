@@ -17,7 +17,7 @@ spring:
     host: smtp-relay.brevo.com
     port: 587
     username: 9f86c1001@smtp-brevo.com
-    password: xsmtpsib-f214d970dea1e6cb8f99d520e94511c59f682cafe32ea7f2414a8e39408135dc-ghPfT8LfDJq2QbjO
+    password: ${MAIL_TOKEN}
   servlet:
     multipart:
       max-file-size: 10MB
