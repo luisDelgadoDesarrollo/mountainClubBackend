@@ -20,7 +20,8 @@ public class ClubAuthorizationAspect {
           + "&& execution(* *(..)) "
           + "&& args(clubId, ..) "
           + "&& !@annotation(luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded)"
-          + "&& !@within(luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded)")
+          + "&& !@within(luis.delgado.clubmontana.backend.core.annotations."
+          + "NoAuthenticationNeeded)")
   public void checkClubAuthorization(JoinPoint joinPoint, Long clubId) {
 
     Object[] args = joinPoint.getArgs();

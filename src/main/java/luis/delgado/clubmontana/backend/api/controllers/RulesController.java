@@ -21,13 +21,13 @@ public class RulesController {
   }
 
   @PutMapping
-  public ResponseEntity<Void> saveBylaws(@ClubId Long clubId, @RequestBody List<String> rules) {
+  public ResponseEntity<Void> save(@ClubId Long clubId, @RequestBody List<String> rules) {
     rulesUseCases.save(clubId, rules);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 
   @GetMapping
-  public ResponseEntity<List<RuleDto>> getUs(@ClubId Long clubId) {
+  public ResponseEntity<List<RuleDto>> get(@ClubId Long clubId) {
     return ResponseEntity.ok()
         .body(
             rulesUseCases.get(clubId).stream().map(rulesControllerMapper::ruleToRuleDto).toList());
