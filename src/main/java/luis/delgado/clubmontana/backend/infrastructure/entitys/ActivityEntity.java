@@ -49,12 +49,22 @@ public class ActivityEntity {
   @Column(name = "end_date")
   private LocalDateTime endDate;
 
+  @Column(name = "maxParticipants")
+  private Integer maxParticipants;
+
   @OneToMany(
       mappedBy = "activity",
       cascade = CascadeType.ALL,
       orphanRemoval = true,
       fetch = FetchType.LAZY)
   private Set<ActivityImageEntity> images = new HashSet<>();
+
+  @OneToMany(
+      mappedBy = "activity",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.LAZY)
+  private Set<ActivityEnrollmentEntity> enrollments = new HashSet<>();
 
   public void addImage(ActivityImageEntity image) {
     images.add(image);

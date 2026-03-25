@@ -1,4 +1,4 @@
-package luis.delgado.clubmontana.backend.domain.userCases;
+package luis.delgado.clubmontana.backend.domain.useCases;
 
 import luis.delgado.clubmontana.backend.domain.model.commands.auth.LoginRequest;
 import luis.delgado.clubmontana.backend.domain.model.commands.auth.TokenResponse;

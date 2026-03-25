@@ -12,7 +12,7 @@ import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ArticleRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
-import luis.delgado.clubmontana.backend.domain.userCases.ArticleUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.ArticleUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;

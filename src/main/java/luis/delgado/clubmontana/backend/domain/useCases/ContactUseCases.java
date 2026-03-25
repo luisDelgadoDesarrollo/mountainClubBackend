@@ -1,4 +1,4 @@
-package luis.delgado.clubmontana.backend.domain.userCases;
+package luis.delgado.clubmontana.backend.domain.useCases;
 
 import luis.delgado.clubmontana.backend.domain.model.ActivityRegistrationRequest;
 import luis.delgado.clubmontana.backend.domain.model.ContactRequest;

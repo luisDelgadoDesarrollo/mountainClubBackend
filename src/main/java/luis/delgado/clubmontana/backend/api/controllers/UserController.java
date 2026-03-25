@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import luis.delgado.clubmontana.backend.api.dtos.UserCreateRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.UserResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.UserControllerMapper;
-import luis.delgado.clubmontana.backend.domain.userCases.UserUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.UserUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

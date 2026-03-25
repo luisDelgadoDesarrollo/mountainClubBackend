@@ -25,6 +25,7 @@ public interface ActivityRepositoryMapper {
     activityEntity.setNoAffiliatePrice(activity.getNoAffiliatePrice());
     activityEntity.setStartDate(activity.getStartDate());
     activityEntity.setEndDate(activity.getEndDate());
+    activityEntity.setMaxParticipants(activity.getMaxParticipants());
     if (activity.getImages() != null) {
       activity
           .getImages()
@@ -43,4 +44,5 @@ public interface ActivityRepositoryMapper {
 
   @Mapping(target = "activityImageId", source = "imageId")
   ActivityImageEntity activityImageToActivityImageEntity(Image image);
+
 }

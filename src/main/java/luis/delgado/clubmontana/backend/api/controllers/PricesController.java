@@ -4,7 +4,7 @@ import java.util.List;
 import luis.delgado.clubmontana.backend.api.dtos.PriceDto;
 import luis.delgado.clubmontana.backend.api.mappers.PricesControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
-import luis.delgado.clubmontana.backend.domain.userCases.PricesUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.PricesUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

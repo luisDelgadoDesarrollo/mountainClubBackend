@@ -11,7 +11,7 @@ import luis.delgado.clubmontana.backend.domain.model.commands.createUser.CreateU
 import luis.delgado.clubmontana.backend.domain.model.enums.MailType;
 import luis.delgado.clubmontana.backend.domain.repository.UserRepository;
 import luis.delgado.clubmontana.backend.domain.services.CreateUserService;
-import luis.delgado.clubmontana.backend.domain.userCases.UserUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.UserUseCases;
 
 @UseCase
 public class UserUseCasesImpl implements UserUseCases {

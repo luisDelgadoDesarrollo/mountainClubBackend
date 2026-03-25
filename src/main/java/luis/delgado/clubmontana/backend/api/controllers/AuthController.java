@@ -6,7 +6,7 @@ import luis.delgado.clubmontana.backend.api.dtos.LoginRequestDto;
 import luis.delgado.clubmontana.backend.api.dtos.TokenResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.AuthControllerMapper;
 import luis.delgado.clubmontana.backend.domain.model.commands.auth.TokenResponse;
-import luis.delgado.clubmontana.backend.domain.userCases.AuthUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.AuthUseCases;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;

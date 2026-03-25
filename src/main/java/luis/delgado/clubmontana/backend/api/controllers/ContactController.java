@@ -6,7 +6,7 @@ import luis.delgado.clubmontana.backend.api.dtos.ContactRequestDto;
 import luis.delgado.clubmontana.backend.api.mappers.ContactControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ActivityId;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
-import luis.delgado.clubmontana.backend.domain.userCases.ContactUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.ContactUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

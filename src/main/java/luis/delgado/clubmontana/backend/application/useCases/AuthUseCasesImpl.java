@@ -9,7 +9,7 @@ import luis.delgado.clubmontana.backend.domain.repository.AuthRepository;
 import luis.delgado.clubmontana.backend.domain.repository.UserRepository;
 import luis.delgado.clubmontana.backend.domain.services.PasswordManagerService;
 import luis.delgado.clubmontana.backend.domain.services.TokenManagerService;
-import luis.delgado.clubmontana.backend.domain.userCases.AuthUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.AuthUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 

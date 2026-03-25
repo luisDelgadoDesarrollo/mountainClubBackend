@@ -2,7 +2,7 @@ package luis.delgado.clubmontana.backend.api.controllers;
 
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.domain.model.enums.PdfType;
-import luis.delgado.clubmontana.backend.domain.userCases.DocUseCase;
+import luis.delgado.clubmontana.backend.domain.useCases.DocUseCase;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

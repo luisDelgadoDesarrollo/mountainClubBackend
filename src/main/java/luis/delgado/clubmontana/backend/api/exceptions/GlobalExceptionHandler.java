@@ -82,4 +82,10 @@ public class GlobalExceptionHandler {
       ClubUserAlreadyExisteException ex) {
     return Map.of("error", "CLUB_USER_ALREADY_EXISTS", "message", ex.getMessage());
   }
+
+  @ExceptionHandler(ActivityFullException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public Map<String, String> handleActivityFullException(ActivityFullException ex) {
+    return Map.of("error", "ACTIVITY_FULL", "message", ex.getMessage());
+  }
 }

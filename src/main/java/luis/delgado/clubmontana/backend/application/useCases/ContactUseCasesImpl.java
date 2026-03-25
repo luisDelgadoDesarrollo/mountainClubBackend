@@ -1,18 +1,21 @@
 package luis.delgado.clubmontana.backend.application.useCases;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import luis.delgado.clubmontana.backend.api.exceptions.ActivityFullException;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.mails.MailSender;
 import luis.delgado.clubmontana.backend.domain.model.*;
 import luis.delgado.clubmontana.backend.domain.model.enums.MailType;
+import luis.delgado.clubmontana.backend.domain.repository.ActivityEnrollmentRepository;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.domain.repository.ClubRepository;
 import luis.delgado.clubmontana.backend.domain.repository.ClubUserRepository;
-import luis.delgado.clubmontana.backend.domain.userCases.ContactUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.ContactUseCases;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,16 +27,19 @@ public class ContactUseCasesImpl implements ContactUseCases {
   private final MailSender mailSender;
   private final ClubUserRepository clubUserRepository;
   private final ActivityRepository activityRepository;
+  private final ActivityEnrollmentRepository activityEnrollmentRepository;
 
   public ContactUseCasesImpl(
       ClubRepository clubRepository,
       MailSender mailSender,
       ClubUserRepository clubUserRepository,
-      ActivityRepository activityRepository) {
+      ActivityRepository activityRepository,
+      ActivityEnrollmentRepository activityEnrollmentRepository) {
     this.clubRepository = clubRepository;
     this.mailSender = mailSender;
     this.clubUserRepository = clubUserRepository;
     this.activityRepository = activityRepository;
+    this.activityEnrollmentRepository = activityEnrollmentRepository;
   }
 
   @Override
@@ -93,6 +99,20 @@ public class ContactUseCasesImpl implements ContactUseCases {
       MultipartFile receipt) {
     Club club = clubRepository.getById(clubId);
     Activity activity = activityRepository.getActivity(clubId, activityId);
+    Integer enrollments = activityEnrollmentRepository.getEnrollments(activityId);
+    if (activity.getMaxParticipants() <= enrollments) {
+      throw new ActivityFullException(activityId);
+    }
+    activityEnrollmentRepository.save(
+        ActivityEnrollment.builder()
+            .activityId(activityId)
+            .name(activityRegistrationRequest.getName())
+            .surname(activityRegistrationRequest.getSurname())
+            .nif(activityRegistrationRequest.getNif())
+            .email(activityRegistrationRequest.getEmail())
+            .paid(false)
+            .createdAt(LocalDateTime.now())
+            .build());
     ClubUser clubUser =
         clubUserRepository.getUserByClubAndEmailAndNif(
             clubId, activityRegistrationRequest.getEmail(), activityRegistrationRequest.getNif());
@@ -111,26 +131,37 @@ public class ContactUseCasesImpl implements ContactUseCases {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+
+    chooseMailType(
+        activityRegistrationRequest, params, clubUser, mailAttachments, club.getContactEmail());
+  }
+
+  private void chooseMailType(
+      ActivityRegistrationRequest activityRegistrationRequest,
+      Map<String, Object> params,
+      ClubUser clubUser,
+      List<MailAttachment> mailAttachments,
+      String contactEmail) {
     if (StringUtils.hasText(activityRegistrationRequest.getFederateNumber())) {
       params.put("federateNumber", activityRegistrationRequest.getFederateNumber());
       if (clubUser != null) {
 
         mailSender.execute(
-            new MailMessage(club.getContactEmail(), MailType.ACTIVITY_FEDERATE_CLUB, params),
+            new MailMessage(contactEmail, MailType.ACTIVITY_FEDERATE_CLUB, params),
             mailAttachments);
       } else {
         mailSender.execute(
-            new MailMessage(club.getContactEmail(), MailType.ACTIVITY_FEDERATE_NO_CLUB, params),
+            new MailMessage(contactEmail, MailType.ACTIVITY_FEDERATE_NO_CLUB, params),
             mailAttachments);
       }
     } else {
       if (clubUser != null) {
         mailSender.execute(
-            new MailMessage(club.getContactEmail(), MailType.ACTIVITY_NO_FEDERATE_CLUB, params),
+            new MailMessage(contactEmail, MailType.ACTIVITY_NO_FEDERATE_CLUB, params),
             mailAttachments);
       } else {
         mailSender.execute(
-            new MailMessage(club.getContactEmail(), MailType.ACTIVITY_NO_FEDERATE_NO_CLUB, params),
+            new MailMessage(contactEmail, MailType.ACTIVITY_NO_FEDERATE_NO_CLUB, params),
             mailAttachments);
       }
     }

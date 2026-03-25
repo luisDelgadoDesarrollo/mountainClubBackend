@@ -6,7 +6,7 @@ import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.ClubUser;
 import luis.delgado.clubmontana.backend.domain.repository.ClubUserRepository;
-import luis.delgado.clubmontana.backend.domain.userCases.ClubUserUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.ClubUserUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -21,7 +21,8 @@ public class ActivityRepositoryImpl implements ActivityRepository {
   private final ActivityRepositoryMapper activityRepositoryMapper;
 
   public ActivityRepositoryImpl(
-      ActivityEntityJpa activityEntityJpa, ActivityRepositoryMapper activityRepositoryMapper) {
+      ActivityEntityJpa activityEntityJpa,
+      ActivityRepositoryMapper activityRepositoryMapper) {
     this.activityEntityJpa = activityEntityJpa;
     this.activityRepositoryMapper = activityRepositoryMapper;
   }
@@ -78,4 +79,5 @@ public class ActivityRepositoryImpl implements ActivityRepository {
   public List<Integer> getYearsActivity(Long clubId) {
     return activityEntityJpa.getYears(clubId);
   }
+  
 }

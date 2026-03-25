@@ -15,6 +15,7 @@ import luis.delgado.clubmontana.backend.domain.model.ClubUser;
 import luis.delgado.clubmontana.backend.domain.model.MailAttachment;
 import luis.delgado.clubmontana.backend.domain.model.MailMessage;
 import luis.delgado.clubmontana.backend.domain.model.enums.MailType;
+import luis.delgado.clubmontana.backend.domain.repository.ActivityEnrollmentRepository;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.domain.repository.ClubRepository;
 import luis.delgado.clubmontana.backend.domain.repository.ClubUserRepository;
@@ -31,19 +32,17 @@ import org.springframework.web.multipart.MultipartFile;
 @ExtendWith(MockitoExtension.class)
 class ContactUseCasesActivityTest {
 
-  @Mock private ClubRepository clubRepository;
-  @Mock private MailSender mailSender;
-  @Mock private ClubUserRepository clubUserRepository;
-  @Mock private ActivityRepository activityRepository;
-
-  @InjectMocks private ContactUseCasesImpl contactUseCases;
-
   private static final Long CLUB_ID = 1L;
   private static final Long ACTIVITY_ID = 10L;
   private static final String CONTACT_EMAIL = "club@montana.es";
   private static final String USER_EMAIL = "user@correo.es";
   private static final String USER_NIF = "12345678A";
-
+  @Mock private ClubRepository clubRepository;
+  @Mock private MailSender mailSender;
+  @Mock private ClubUserRepository clubUserRepository;
+  @Mock private ActivityRepository activityRepository;
+  @Mock private ActivityEnrollmentRepository activityEnrollmentRepository;
+  @InjectMocks private ContactUseCasesImpl contactUseCases;
   private Activity activity;
   private MultipartFile receipt;
 
@@ -56,7 +55,9 @@ class ContactUseCasesActivityTest {
     activity = new Activity();
     activity.setTitle("Salida invernal");
     activity.setStartDate(LocalDateTime.of(2026, 2, 20, 9, 30));
+    activity.setMaxParticipants(20);
     when(activityRepository.getActivity(CLUB_ID, ACTIVITY_ID)).thenReturn(activity);
+    when(activityEnrollmentRepository.getEnrollments(ACTIVITY_ID)).thenReturn(7);
 
     receipt =
         new MockMultipartFile("receipt", "receipt.pdf", "application/pdf", "pdf-bytes".getBytes());

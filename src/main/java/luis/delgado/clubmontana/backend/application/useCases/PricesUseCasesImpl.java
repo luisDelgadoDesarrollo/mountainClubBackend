@@ -5,7 +5,7 @@ import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.Price;
 import luis.delgado.clubmontana.backend.domain.repository.PricesRepository;
-import luis.delgado.clubmontana.backend.domain.userCases.PricesUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.PricesUseCases;
 
 @UseCase
 public class PricesUseCasesImpl implements PricesUseCases {

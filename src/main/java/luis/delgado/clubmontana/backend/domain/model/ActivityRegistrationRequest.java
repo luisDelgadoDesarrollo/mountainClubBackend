@@ -12,9 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ActivityRegistrationRequest {
-  String name;
-  String surname;
-  String nif;
-  String email;
-  String federateNumber;
+  private String name;
+  private String surname;
+  private String nif;
+  private String email;
+  private String federateNumber;
 }

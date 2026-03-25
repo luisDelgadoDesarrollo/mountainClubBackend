@@ -4,9 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import luis.delgado.clubmontana.backend.core.annotations.ValidSpanishNif;
 
 public record CreateClubUserDto(
-    @NotBlank String nif,
+    @NotBlank @ValidSpanishNif String nif,
     @NotBlank String name,
     @NotBlank String surname,
     @Email @NotBlank String email,

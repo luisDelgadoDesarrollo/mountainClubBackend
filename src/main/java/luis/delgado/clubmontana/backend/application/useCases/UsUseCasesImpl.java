@@ -12,7 +12,7 @@ import luis.delgado.clubmontana.backend.domain.model.UsResponse;
 import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.UsRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
-import luis.delgado.clubmontana.backend.domain.userCases.UsUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.UsUseCases;
 import org.springframework.web.multipart.MultipartFile;
 
 @UseCase

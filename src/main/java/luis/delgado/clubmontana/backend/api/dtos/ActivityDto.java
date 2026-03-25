@@ -14,4 +14,5 @@ public record ActivityDto(
     BigDecimal noAffiliatePrice,
     @NotNull LocalDateTime startDate,
     LocalDateTime endDate,
+    Integer maxParticipants,
     List<String> imagesPath) {}

@@ -10,7 +10,7 @@ import luis.delgado.clubmontana.backend.core.annotations.ClubId;
 import luis.delgado.clubmontana.backend.core.annotations.PublicationId;
 import luis.delgado.clubmontana.backend.domain.model.Publication;
 import luis.delgado.clubmontana.backend.domain.services.RequestPartUtils;
-import luis.delgado.clubmontana.backend.domain.userCases.PublicationUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.PublicationUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;

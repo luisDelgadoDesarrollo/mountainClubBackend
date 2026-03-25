@@ -4,7 +4,7 @@ import java.util.List;
 import luis.delgado.clubmontana.backend.api.dtos.RuleDto;
 import luis.delgado.clubmontana.backend.api.mappers.RulesControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
-import luis.delgado.clubmontana.backend.domain.userCases.RulesUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.RulesUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

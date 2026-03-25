@@ -21,4 +21,5 @@ public interface ActivityRepository {
   List<Activity> getActivitiesByYear(Long clubId, Integer year);
 
   List<Integer> getYearsActivity(Long clubId);
+
 }

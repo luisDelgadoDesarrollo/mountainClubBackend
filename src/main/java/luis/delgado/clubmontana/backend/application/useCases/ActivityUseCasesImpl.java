@@ -14,7 +14,7 @@ import luis.delgado.clubmontana.backend.domain.model.enums.ImageType;
 import luis.delgado.clubmontana.backend.domain.repository.ActivityRepository;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
 import luis.delgado.clubmontana.backend.domain.services.SlugFactory;
-import luis.delgado.clubmontana.backend.domain.userCases.ActivityUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.ActivityUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
@@ -39,7 +39,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
   public Activity createActivity(Long clubId, Activity activity, Map<String, MultipartFile> files) {
     activity.setClubId(clubId);
     activity.setSlug(slugFactory.makeSlug(activity.getTitle(), activityRepository::existBySlug));
-    Activity activitySaved = chekActivity(activity);
+    Activity activitySaved = chekAndSaveActivity(activity);
     fileStorageService.store(
         files,
         activitySaved.getImages().stream()
@@ -55,7 +55,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
       Long clubId, Long activityId, Activity activity, Map<String, MultipartFile> files) {
     activity.setClubId(clubId);
     activity.setActivityId(activityId);
-    Activity activitySaved = chekActivity(activity);
+    Activity activitySaved = chekAndSaveActivity(activity);
     fileStorageService.deleteImages(clubId, ImageType.ACTIVITY, activityId);
     fileStorageService.store(
         files,
@@ -128,7 +128,7 @@ public class ActivityUseCasesImpl implements ActivityUseCases {
     return activityRepository.getYearsActivity(clubId);
   }
 
-  private Activity chekActivity(Activity activity) throws BadDateActivity {
+  private Activity chekAndSaveActivity(Activity activity) throws BadDateActivity {
     if (activity.getNoAffiliatePrice() == null)
       activity.setNoAffiliatePrice(activity.getAffiliatePrice());
     if (activity.getEndDate() == null) activity.setEndDate(activity.getStartDate());

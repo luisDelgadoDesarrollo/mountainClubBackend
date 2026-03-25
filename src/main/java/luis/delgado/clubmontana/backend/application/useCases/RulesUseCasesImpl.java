@@ -6,7 +6,7 @@ import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.Rules;
 import luis.delgado.clubmontana.backend.domain.repository.RulesRepository;
-import luis.delgado.clubmontana.backend.domain.userCases.RulesUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.RulesUseCases;
 
 @UseCase
 public class RulesUseCasesImpl implements RulesUseCases {

@@ -13,4 +13,5 @@ public record SaveActivityDto(
     BigDecimal noAffiliatePrice,
     @NotNull LocalDateTime startDate,
     LocalDateTime endDate,
+    Integer maxParticipants,
     List<ImageRequestDto> images) {}

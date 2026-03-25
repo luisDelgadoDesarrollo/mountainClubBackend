@@ -7,7 +7,7 @@ import luis.delgado.clubmontana.backend.api.dtos.UsResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.UsControllerMapper;
 import luis.delgado.clubmontana.backend.application.services.RequestPartUtilsImpl;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
-import luis.delgado.clubmontana.backend.domain.userCases.UsUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.UsUseCases;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

@@ -6,7 +6,7 @@ import luis.delgado.clubmontana.backend.domain.model.Club;
 import luis.delgado.clubmontana.backend.domain.model.commands.createClub.CreateClubRequest;
 import luis.delgado.clubmontana.backend.domain.model.commands.createClub.CreateClubResponse;
 import luis.delgado.clubmontana.backend.domain.repository.ClubRepository;
-import luis.delgado.clubmontana.backend.domain.userCases.ClubUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.ClubUseCases;
 
 @UseCase
 public class ClubUseCasesImpl implements ClubUseCases {

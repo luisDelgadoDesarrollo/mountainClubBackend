@@ -5,7 +5,7 @@ import luis.delgado.clubmontana.backend.api.dtos.CreateClubUserDto;
 import luis.delgado.clubmontana.backend.api.dtos.ResponseDto;
 import luis.delgado.clubmontana.backend.api.mappers.ClubUserControllerMapper;
 import luis.delgado.clubmontana.backend.core.annotations.ClubId;
-import luis.delgado.clubmontana.backend.domain.userCases.ClubUserUseCases;
+import luis.delgado.clubmontana.backend.domain.useCases.ClubUserUseCases;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;

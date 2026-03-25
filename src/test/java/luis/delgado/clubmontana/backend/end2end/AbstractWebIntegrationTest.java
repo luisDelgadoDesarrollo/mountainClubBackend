@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,12 @@ public abstract class AbstractWebIntegrationTest {
 
   @BeforeEach
   void setUp() {
+    SecurityContextHolder.clearContext();
     utilTest = new UtilTest(jdbcTemplate, mockMvc, tempDir);
+  }
+
+  @AfterEach
+  void tearDown() {
+    SecurityContextHolder.clearContext();
   }
 }

@@ -1,11 +1,10 @@
 package luis.delgado.clubmontana.backend.application.useCases;
 
-import java.awt.*;
 import luis.delgado.clubmontana.backend.core.annotations.NoAuthenticationNeeded;
 import luis.delgado.clubmontana.backend.core.annotations.UseCase;
 import luis.delgado.clubmontana.backend.domain.model.enums.PdfType;
 import luis.delgado.clubmontana.backend.domain.services.FileStorageService;
-import luis.delgado.clubmontana.backend.domain.userCases.DocUseCase;
+import luis.delgado.clubmontana.backend.domain.useCases.DocUseCase;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 

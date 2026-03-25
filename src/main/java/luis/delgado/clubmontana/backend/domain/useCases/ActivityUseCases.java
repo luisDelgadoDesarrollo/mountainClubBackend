@@ -1,4 +1,4 @@
-package luis.delgado.clubmontana.backend.domain.userCases;
+package luis.delgado.clubmontana.backend.domain.useCases;
 
 import java.util.List;
 import java.util.Map;

@@ -100,12 +100,12 @@ public class UtilTest {
   }
 
   public Pair<Long, String> createActivity(ClubInserted club) throws Exception {
-
+    String suffix = UUID.randomUUID().toString().substring(0, 8);
     String json =
         """
                              {
-                               "title": "Ruta guiada al Pico del Águila",
-                               "description": "Actividad de montaña de nivel medio con guía titulado.",
+                               "title": "Ruta guiada al Pico del ÃƒÂguila %s",
+                               "description": "Actividad de montaÃƒÂ±a de nivel medio con guÃƒÂ­a titulado.",
                                "affiliatePrice": 25.00,
                                "startDate": "2026-01-15T08:30:00",
                                "images": [
@@ -116,6 +116,7 @@ public class UtilTest {
                                ]
                              }
                               """;
+    json = json.formatted(suffix);
 
     MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
@@ -151,11 +152,12 @@ public class UtilTest {
   }
 
   public Pair<Long, String> createArticle(ClubInserted club) throws Exception {
+    String suffix = UUID.randomUUID().toString().substring(0, 8);
     String articleJson =
         """
                   {
-                    "title": "Artículo integración",
-                    "description": "Descripción test",
+                    "title": "ArtÃƒÂ­culo integraciÃƒÂ³n %s",
+                    "description": "DescripciÃƒÂ³n test",
                     "images": [
                       { "image": "image-1.jpg" }
                     ],
@@ -171,6 +173,7 @@ public class UtilTest {
                     ]
                   }
                   """;
+    articleJson = articleJson.formatted(suffix);
 
     MockPart data = new MockPart("article", articleJson.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);
@@ -206,10 +209,11 @@ public class UtilTest {
   }
 
   public Pair<Long, String> createPublication(ClubInserted club) throws Exception {
+    String suffix = UUID.randomUUID().toString().substring(0, 8);
     String json =
         """
                   {
-                    "title": "Mi publicación",
+                    "title": "Mi publicaciÃƒÂ³n %s",
                     "text": "Texto",
                     "images": [
                       { "image": "photo.jpg", "description": "foto 1" }
@@ -217,6 +221,7 @@ public class UtilTest {
                     "links": []
                   }
                   """;
+    json = json.formatted(suffix);
 
     MockPart data = new MockPart("data", json.getBytes(StandardCharsets.UTF_8));
     data.getHeaders().setContentType(MediaType.APPLICATION_JSON);

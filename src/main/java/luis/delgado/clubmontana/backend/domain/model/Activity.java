@@ -11,14 +11,15 @@ import lombok.*;
 @Getter
 @Setter
 public class Activity {
-  Long activityId;
-  String slug;
-  Long clubId;
-  String title;
-  String description;
-  BigDecimal affiliatePrice;
-  BigDecimal noAffiliatePrice;
-  LocalDateTime startDate;
-  LocalDateTime endDate;
-  List<Image> images;
+  private Long activityId;
+  private String slug;
+  private Long clubId;
+  private String title;
+  private String description;
+  private BigDecimal affiliatePrice;
+  private BigDecimal noAffiliatePrice;
+  private LocalDateTime startDate;
+  private LocalDateTime endDate;
+  private Integer maxParticipants;
+  private List<Image> images;
 }
